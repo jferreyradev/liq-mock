@@ -44,6 +44,7 @@ const router = createRouter({
   ]
 })
 
+
 router.beforeEach((to, from, next) => {
 
   const publicPages = ['/login']
@@ -53,9 +54,8 @@ router.beforeEach((to, from, next) => {
   if (authRequired && !loggedIn) {
     return next('/login')
   }
-
+  //router.push('/')
   next()
-
 })
 
 export default router

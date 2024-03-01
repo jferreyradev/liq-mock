@@ -1,7 +1,26 @@
 <script setup>  
     import { ref } from 'vue';
+	import { useRouter } from 'vue-router'
+	import { useUserStore } from '@/stores/user'
+
+	// access the `store` variable anywhere in the component ✨
+	const store = useUserStore()
+	const router = useRouter()
 
     const showPassword = ref(false)
+	const userInput = ref({
+							username: '',
+							password: '',
+							})
+
+	function handleSubmit() {
+		console.log(userInput)
+		localStorage.setItem('user', userInput.value)
+		store.user.value = userInput.value
+		//store.value = userInput.value
+		router.push('/')
+	}
+
 </script>
 
 <template>
@@ -11,13 +30,14 @@
 		</v-card-title>
 		<v-card-text class="ma-5">
 			<v-form>
-				<v-text-field label="Username" prepend-icon="mdi-account-circle" />
+				<v-text-field label="Username" prepend-icon="mdi-account-circle" v-model="userInput.username" />
 				<v-text-field
 					:type="showPassword ? 'text' : 'password'"
 					label="Password"
 					prepend-icon="mdi-lock"
 					:append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
 					@click:append="showPassword = !showPassword"
+					v-model="userInput.password"
 				/>
 			</v-form>
 		</v-card-text>
@@ -25,7 +45,7 @@
 		<v-card-actions>
 			<v-btn color="success">Registrar</v-btn>
 			<v-spacer></v-spacer>
-			<v-btn color="info">Ingresar</v-btn>
+			<v-btn  @click="handleSubmit" color="info">Ingresar</v-btn>
 		</v-card-actions>
 	</v-card>
 </template>
