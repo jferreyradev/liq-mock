@@ -13,7 +13,7 @@
 							password: '',
 							})
 
-	function handleSubmit() {
+	const submit = ()=>{
 		console.log(userInput)
 		localStorage.setItem('user', userInput.value)
 		store.user.value = userInput.value
@@ -29,7 +29,7 @@
 			<h2 class="display-1 ma-5">Acceso al sistema</h2>
 		</v-card-title>
 		<v-card-text class="ma-5">
-			<v-form>
+			<v-form @submit.prevent="submit">
 				<v-text-field label="Username" prepend-icon="mdi-account-circle" v-model="userInput.username" />
 				<v-text-field
 					:type="showPassword ? 'text' : 'password'"
@@ -45,7 +45,7 @@
 		<v-card-actions>
 			<v-btn color="success">Registrar</v-btn>
 			<v-spacer></v-spacer>
-			<v-btn  @click="handleSubmit" color="info">Ingresar</v-btn>
+			<v-btn type="submit"  @click="submit" color="info">Ingresar</v-btn>
 		</v-card-actions>
 	</v-card>
 </template>

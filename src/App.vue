@@ -14,10 +14,9 @@ function toggleTheme() {
 }
 
 function handleLogout() {
-  //localStorage.removeItem('user')
+  localStorage.removeItem('user')
   store.user.value=''
   router.push('/login')
-
 }
 
 import { ref } from 'vue'
@@ -29,6 +28,7 @@ const items = [
 ]
 
 const drawer = ref(false)
+
 </script>
 
 <template>
@@ -41,7 +41,7 @@ const drawer = ref(false)
         <v-spacer></v-spacer>
 
         <v-spacer></v-spacer>
-        <v-btn icon="mdi-logout" variant="logout" @click="handleLogout"></v-btn>
+        <v-btn icon="mdi-logout" @click="handleLogout"></v-btn>
 
         <v-btn @click="toggleTheme">Cambiar tema</v-btn>
       </v-app-bar>
