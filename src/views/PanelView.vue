@@ -49,7 +49,7 @@ function handleInput() {
 </script>
 
 <template>
-    <v-container>
+    <v-container >
         <v-row justify="space-around" class="bg-primary">
             <h3>Panel principal</h3>
         </v-row>
@@ -68,11 +68,11 @@ function handleInput() {
             </v-card>
         </v-dialog>
 
-        <v-row v-if="liq && liqitem">
-            <v-col cols="5">
+        <v-row v-if="liq && liqitem" no-gutters>
+            <v-col class="px-0">
                 <LiqTable :liq="liq" :liqitem="liqitem" @select="handleSelect"></LiqTable>
             </v-col>
-            <v-col cols="7">
+            <v-col class="px-0" >
                 <LiqItemCard :items="liqitemfilter" :subtitle="text">
                 </LiqItemCard>
             </v-col>

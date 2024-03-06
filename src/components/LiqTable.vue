@@ -60,7 +60,7 @@ const getVto = (vto) => {
             <v-divider></v-divider>
 
             <v-data-table :headers="liqHeaders" :items="props.liq" 
-                            item-key="LIQUIDACIONID" items-per-page="15" :search="search"
+                            item-key="LIQUIDACIONID" items-per-page="20" :search="search"
                             hover density="compact"
                 class="elevation-1 text-caption pa-0 ma-0 w-auto">
                 <template v-slot:item="{ item }">

@@ -3,7 +3,7 @@
 <template>
   <v-app>    
       <slot name="topbar" />
-    <v-main>
+    <v-main >
       <slot name="content" />
     </v-main>
   </v-app>

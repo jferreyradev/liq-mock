@@ -64,14 +64,13 @@ function getNumberFormat(n) {
 
 <template>
     <v-container>
-
-        <v-card class="text-caption bg-blue-accent-1" title="Detalle de la liquidacion" :subtitle="props.subtitle">
-            <template v-slot:text>
-
-                <v-table class="text-caption" hover density="compact" height="600px" >
+        <v-card flat title="Detalle de la liquidacion" :subtitle="props.subtitle"
+         class="bg-blue-accent-1">
+          
+            <v-table class="text-caption pa-0 ma-0 w-auto" hover density="compact" >
                     <thead>
                         <tr>
-                            <th v-for="header in liqHeaders" :key="header.key" class="text-left">
+                            <th v-for="header in liqHeaders" :key="header.key" class="text-left m-0">
                                 {{ header.title }}
                             </th>
                         </tr>
@@ -84,11 +83,11 @@ function getNumberFormat(n) {
                             'bg-orange-lighten-5': item.TIPOCONCEPTOID === 4,
                             'bg-blue-lighten-5': item.TIPOCONCEPTOID === 1,
                         }">
-                            <td class="text-right">{{ item.CODIGO * 1000 + item.SUBCODIGO }}</td>
-                            <td class="text-left">{{ item.DESCRIPCION }}</td>
-                            <td class="text-right">{{ item.CANTIDAD }}</td>
-                            <td class="text-center">{{ item.VENCIMIENTO }}</td>
-                            <td class="text-right">{{ item.IMPORTE.toFixed(2) }}</td>
+                            <td class="text-right m-0 p-0">{{ item.CODIGO * 1000 + item.SUBCODIGO }}</td>
+                            <td class="text-left m-0 p-0">{{ item.DESCRIPCION }}</td>
+                            <td class="text-right m-0 p-0">{{ item.CANTIDAD }}</td>
+                            <td class="text-center m-0 p-0">{{ item.VENCIMIENTO }}</td>
+                            <td class="text-right m-0 p-0">{{ item.IMPORTE.toFixed(2) }}</td>
                         </tr>
                     </tbody>
                     <tfoot class="font-weight-bold">
@@ -113,8 +112,6 @@ function getNumberFormat(n) {
                     </tfoot>
                 </v-table>
 
-            </template>
-        
         </v-card>
 
     </v-container>
