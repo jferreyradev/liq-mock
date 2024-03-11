@@ -25,6 +25,7 @@ export const useFilterStore = defineStore('filter', {
     filterString: (state) => `TipoLiquidacionId=${state.tipoliq}&GrupoAdicionalId=${state.nroadi}&Periodo=01/${state.month}/${state.year}`,
     periodoString:(state)=>`${meses[state.month-1]} - ${state.year}`,
     liqString: (state) => `${liqMap.get(state.tipoliq.toString())}-${state.nroadi}  ${meses[state.month-1]}-${state.year}`,
-    getURLAPI:(state)=>`${state.URL_API}`
+    getURLAPI:(state)=>`${state.URL_API}`,
+    liqCompactString: (state) => `${state.year}${meses[state.month-1].substring(0,3)}${liqMap.get(state.tipoliq.toString()).substring(0,1)}${state.nroadi}`
   },
 })

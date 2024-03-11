@@ -24,7 +24,8 @@ import { ref } from 'vue'
 const items = [
   { title: 'Panel', value: '/panel'  },
   { title: 'Reportes', value: '/repo'},
-  { title: 'About', value: '/about'}
+  { title: 'Boletas', value: '/boletas'},
+  { title: 'About', value: '/about'},
 ]
 
 const drawer = ref(false)

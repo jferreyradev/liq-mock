@@ -1,13 +1,8 @@
 <script setup>
 import { ref } from 'vue';
-//import LiqService from '@/services/LiqService.js'
 import { useFilterStore } from '@/stores/filterStore.js'
-//import { storeToRefs } from 'pinia'
 
 const store = useFilterStore();
-
-// storeToRefs lets todoList keep reactivity:
-//const { todoList } = storeToRefs(store)
 
 const emit = defineEmits(['submit'])
 

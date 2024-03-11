@@ -1,7 +1,8 @@
 <script setup>
 import { utils, writeFileXLSX } from 'xlsx'
 import { useFetch } from '@/composables/useFetch'
-import { useFilterStore } from '@/stores/filterStore';
+import { useFilterStore } from '@/stores/filterStore'
+import RepoHeader from './RepoHeader.vue';
 
 const store = useFilterStore()
 
@@ -11,7 +12,7 @@ function useResLiq(getId) {
 
 const { data, error, isPending } = useResLiq(() => store.filterString)
 
-const props = defineProps(['fileName'])
+const props = defineProps(['title','subtitle','fileName'])
 
 const headers = [
   {
@@ -72,38 +73,42 @@ function exportFile() {
   utils.book_append_sheet(wb, ws, 'Data')
 
   /* export to XLSX */
-  writeFileXLSX(wb, props.fileName || 'exportacion.xlsx', { compression: true })
+  writeFileXLSX(wb, props.fileName || `${store.liqCompactString}_ResumenLiq.xlsx`, {
+    compression: true
+  })
 }
 </script>
 
 <template>
   <v-container>
-    <div v-if="isPending">loading...</div>
-    <v-data-table
-      v-else-if="data"
-      class="text-caption"
-      hover
-      density="compact"
-      :items="data"
-      :headers="headers"
-    >
-      <template v-slot:item="{ item }">
-        <tr class="pa-0 ma-0">
-          <td class="text-right ma-0 pa-0">{{ item.ORDEN }}</td>
-          <td class="text-right">{{ item.PERSONADOCUMENTO }}</td>
-          <td class="text-left">{{ item.PERSONAAPELLIDO }}</td>
-          <td class="text-left">{{ item.PERSONANOMBRE }}</td>
-          <td class="text-right">{{ financial(item.SUJETOAPORTE) }}</td>
-          <td class="text-right">{{ financial(item.EXCENTOAPORTE) }}</td>
-          <td class="text-right">{{ financial(item.DESCUENTOSLEY) }}</td>
-          <td class="text-right">{{ financial(item.DESCUENTOSVARIOS) }}</td>
-          <td class="text-right">{{ financial(item.NETO) }}</td>
-        </tr>
-      </template>
-    </v-data-table>
-    <div v-else-if="error">Ocurrio algún error: {{ error.message }}</div>
-
-    <v-btn color="primary" @click="handleDownload">Descargar</v-btn>
-    
+    <RepoHeader title="Resumen de liquidación" :subtitle="store.liqString">
+      <v-btn color="primary" @click="handleDownload" :disabled="!data">Descargar</v-btn>
+    </RepoHeader>
+    <v-row>
+      <div v-if="isPending">loading...</div>
+      <v-data-table
+        v-else-if="data"
+        class="text-caption"
+        hover
+        density="compact"
+        :items="data"
+        :headers="headers"
+      >
+        <template v-slot:item="{ item }">
+          <tr class="pa-0 ma-0">
+            <td class="text-right ma-0 pa-0">{{ item.ORDEN }}</td>
+            <td class="text-right">{{ item.PERSONADOCUMENTO }}</td>
+            <td class="text-left">{{ item.PERSONAAPELLIDO }}</td>
+            <td class="text-left">{{ item.PERSONANOMBRE }}</td>
+            <td class="text-right">{{ financial(item.SUJETOAPORTE) }}</td>
+            <td class="text-right">{{ financial(item.EXCENTOAPORTE) }}</td>
+            <td class="text-right">{{ financial(item.DESCUENTOSLEY) }}</td>
+            <td class="text-right">{{ financial(item.DESCUENTOSVARIOS) }}</td>
+            <td class="text-right">{{ financial(item.NETO) }}</td>
+          </tr>
+        </template>
+      </v-data-table>
+      <div v-else-if="error">No se puede obtener los datos solicitados.</div>
+    </v-row>
   </v-container>
 </template>

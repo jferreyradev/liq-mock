@@ -143,7 +143,7 @@ const res = computed(() => {
         </tfoot>
       </v-table>
     </v-card>
-    <div v-else-if="error">Ocurrio algún error: {{ error.message }}</div>
+    <div v-else-if="error">No se puede obtener los datos solicitados: {{ error.message }}</div>
   </v-container>
 </template>
 
