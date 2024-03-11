@@ -1,49 +1,21 @@
 <script setup>
 import LiqInputPanel from '@/components/LiqInputPanel.vue';
 import { ref } from 'vue';
-import LiqItemCard from '@/components/LiqItemCard.vue';
-import LiqTable from '@/components/LiqTable.vue';
-import LiqService from '@/services/LiqService.js'
 import { useFilterStore } from '@/stores/filterStore.js'
+import LiquidacionTable from '@/components/LiquidacionTable.vue';
+import LiquidacionItemTable from '@/components/LiquidacionItemTable.vue';
 
 const store = useFilterStore();
 
-const liq = ref([])
-const liqitem = ref([])
-const liqitemfilter = ref([])
 const dialog = ref(false)
 
 const text = ref('')
 
-function handleSelect(id, items, objElement) {
-    //console.log(items)
-    liqitemfilter.value = items
+const idliqitem = ref(null)
+
+function handleSelect(id, objElement) {
+    idliqitem.value = id
     text.value = 'Orden:' + objElement.orden + ' DNI:' + objElement.dni + ' Nombre:' + objElement.apellido + objElement.nombre
-}
-
-function handleInput() {
-    liq.value = []
-    liqitem.value = []
-
-    console.log('--- Paramtros')
-    console.log(store.filterString )
-
-    LiqService.getLiq(store.filterString).then((response) => {
-        liq.value = response.data.value
-        console.log(liq.value)
-    })
-        .catch((error) => {
-            console.log(error)
-            dialog.value = true
-        })
-
-    LiqService.getLiqItem(store.filterString).then((response) => {
-        liqitem.value = response.data.value
-    })
-        .catch((error) => {
-            console.log(error)
-        })
-
 }
 
 </script>
@@ -54,7 +26,7 @@ function handleInput() {
             <h3>Panel principal</h3>
         </v-row>
         <v-row>
-            <LiqInputPanel @submit="handleInput"></LiqInputPanel>
+            <LiqInputPanel></LiqInputPanel>
         </v-row>
 
         <v-dialog v-model="dialog" width="auto">
@@ -67,16 +39,27 @@ function handleInput() {
                 </v-card-actions>
             </v-card>
         </v-dialog>
+        <v-row>
+            <v-col class="px-0">
+                <LiquidacionTable @select="handleSelect" title="Liquidaciones" :subtitle="store.liqString"></LiquidacionTable>
+            </v-col>
+            <v-col class="px-0" >
+                <LiquidacionItemTable v-if="idliqitem" :id="idliqitem" :subtitle="text">
+                </LiquidacionItemTable>
+            </v-col>            
+        </v-row>
 
+<!-- 
         <v-row v-if="liq && liqitem" no-gutters>
             <v-col class="px-0">
-                <LiqTable :liq="liq" :liqitem="liqitem" @select="handleSelect"></LiqTable>
+                <LiqTable :liq="liq" :liqitem="liqitem" @select="handleSelect"
+                 title="Liquidaciones" :subtitle="store.liqString"></LiqTable>
             </v-col>
             <v-col class="px-0" >
                 <LiqItemCard :items="liqitemfilter" :subtitle="text">
                 </LiqItemCard>
             </v-col>
-        </v-row>
+        </v-row> -->
 
     </v-container>
 </template>

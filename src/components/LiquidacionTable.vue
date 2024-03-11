@@ -1,12 +1,17 @@
 <script setup>
 import { ref } from 'vue'
-//import { useFilterStore } from '@/stores/filterStore.js'
+import { useFilterStore } from '@/stores/filterStore.js'
+import { useFetch } from '@/composables/useFetch';
 
-//const store = useFilterStore();
+const store = useFilterStore()
 
-//const {tipoliq, nroadi, periodo} = store
+function useLiq(getId) {
+  return useFetch(() => `${store.URL_API}/view/liq?${getId()}&sort={"Orden":"asc"}`)
+}
 
-const props = defineProps(['liq', 'liqitem', 'title', 'subtitle'])
+const { data, error, isPending } = useLiq(() => store.filterString)
+
+const props = defineProps(['title', 'subtitle'])
 const emit = defineEmits(['select'])
 
 const search = ref()
@@ -20,21 +25,7 @@ const liqHeaders = [
 ]
 
 function handleClick(item) {
-  console.log(item.LIQUIDACIONID)
-
-  let items = props.liqitem.filter((x) => x.LIQUIDACIONID === item.LIQUIDACIONID)
-
-  items.sort((a, b) => {
-    if (a.CODIGO * 1000 + a.SUBCODIGO > b.CODIGO * 1000 + b.SUBCODIGO) {
-      return 1
-    }
-    if (a.CODIGO * 1000 + a.SUBCODIGO < b.CODIGO * 1000 + b.SUBCODIGO) {
-      return -1
-    }
-    return 0
-  })
-
-  emit('select', item.LIQUIDACIONID, items, {
+  emit('select', item.LIQUIDACIONID,  {
     apellido: item.APELLIDO,
     nombre: item.NOMBRE,
     orden: item.ORDEN,
@@ -53,7 +44,8 @@ const getVto = (vto) => {
 
 <template>
   <v-container>
-    <v-card flat>
+    <div v-if="isPending">loading...</div>
+    <v-card flat v-else-if="data">
       <v-card-title class="d-flex align-center pe-2 bg-blue-accent-1">
         {{ props.title }}
         <v-spacer></v-spacer>
@@ -76,7 +68,7 @@ const getVto = (vto) => {
 
       <v-data-table
         :headers="liqHeaders"
-        :items="props.liq"
+        :items="data"
         item-key="LIQUIDACIONID"
         items-per-page="20"
         :search="search"
@@ -95,6 +87,7 @@ const getVto = (vto) => {
         </template>
       </v-data-table>
     </v-card>
+    <div v-else-if="error">Ocurrio algún error: {{ error.message }}</div>
   </v-container>
 </template>
 

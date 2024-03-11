@@ -18,13 +18,11 @@ const nmonth = data.value[0].PERIODO.split('-')[1]
 
 export const useFilterStore = defineStore('filter', {
   state: () => ({
-    tipoliq: 1, nroadi: 0, year: nyear, month: nmonth,
-    URL_API : 'http://200.55.244.26:3005/api'
+    tipoliq: 1, nroadi: 0, year: nyear, month: nmonth
   }),
   getters: {
     filterString: (state) => `TipoLiquidacionId=${state.tipoliq}&GrupoAdicionalId=${state.nroadi}&Periodo=01/${state.month}/${state.year}`,
     periodoString:(state)=>`${meses[state.month-1]} - ${state.year}`,
-    liqString: (state) => `${liqMap.get(state.tipoliq.toString())}-${state.nroadi}  ${meses[state.month-1]}-${state.year}`,
-    getURLAPI:(state)=>`${state.URL_API}`
+    liqString: (state) => `${liqMap.get(state.tipoliq.toString())}-${state.nroadi}  ${meses[state.month-1]}-${state.year}`
   },
 })

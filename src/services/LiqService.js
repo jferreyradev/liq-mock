@@ -1,7 +1,10 @@
 import { useFetch } from '@vueuse/core'
 
 //const url_api = import.meta.env.VITE_APP_ROOT_API
-const url_api = 'http://192.168.1.59:3005/api'
+//const url_api = 'http://192.168.1.59:3005/api'
+
+//const url_api = 'http://www.serverburru2.duckdns.org:3005/api'
+const url_api = 'http://200.55.244.26:3005/api'
 
 function getFilterString(param) {
   console.log(`TipoLiquidacionId=${param.tipoliq}&GrupoAdicionalId=${param.adi}&Periodo=${param.periodo}`)
