@@ -2,10 +2,13 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
+import { useFilterStore } from '@/stores/filterStore';
 
 // access the `store` variable anywhere in the component ✨
 const store = useUserStore()
 const router = useRouter()
+
+const filterStore = useFilterStore()
 
 const showPassword = ref(false)
 const userInput = ref({
@@ -20,7 +23,8 @@ const submit = () => {
     //console.log(userInput)
     //localStorage.setItem('user', userInput.value)
     //store.user.value = userInput.value
-    //store.value = userInput.value
+    //store.value = userInput.value    
+    filterStore.setPer()
     router.push('/')
   }
 }

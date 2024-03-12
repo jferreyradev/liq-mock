@@ -87,7 +87,7 @@ const getVto = (vto) => {
         </template>
       </v-data-table>
     </v-card>
-    <div v-else-if="error">No se puede obtener los datos solicitados: {{ error.message }}</div>
+    <div v-else-if="error">No se puede obtener los datos solicitados.</div>
   </v-container>
 </template>
 
