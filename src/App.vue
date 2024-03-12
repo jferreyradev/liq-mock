@@ -22,13 +22,12 @@ function handleLogout() {
 import { ref } from 'vue'
 
 const items = [
-  { title: 'Panel', value: '/panel' },
-  { title: 'Reportes', value: '/repo' },
-  { title: 'Boletas', value: '/boletas' },
-  { title: 'About', value: '/about' }
+  { text: 'Panel', disabled: false, href: '/panel' },
+  { text: 'Reportes', disabled: false, href: '/repo' },
+  { text: 'Boletas',disabled: false, href: '/boletas' },
+  { text: 'About',disabled: false, href: '/about' }
 ]
 
-const drawer = ref(false)
 </script>
 
 <template>
@@ -36,27 +35,23 @@ const drawer = ref(false)
     <v-layout>
       <!-- <v-system-bar color="deep-purple darken-3"></v-system-bar> -->
       <v-app-bar color="primary" prominent>
-        <v-app-bar-nav-icon variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
         <v-toolbar-title>Sistema de liquidación</v-toolbar-title>
         <v-spacer></v-spacer>
-
+       <div>         
+            <nav v-if="store.isAuth">
+              <RouterLink class="text-body-1" to="/">Home</RouterLink>
+              <RouterLink class="text-body-1" to="/panel">Panel</RouterLink>
+              <RouterLink class="text-body-1" to="/repo">Reportes</RouterLink>
+              <RouterLink class="text-body-1" to="/boletas">Boletas</RouterLink>
+            </nav>         
+        </div> 
         <v-spacer></v-spacer>
         <span>{{ store.getUser }}</span>
         <v-btn icon="mdi-logout" @click="handleLogout"></v-btn>
 
         <v-btn @click="toggleTheme">Cambiar tema</v-btn>
       </v-app-bar>
-
-      <v-navigation-drawer v-model="drawer" temporary v-if="store.isAuth" >
-        <v-list :lines="false" density="compact" nav>
-          <v-list-item v-for="(item, i) in items" :key="i" :value="item.title" color="primary">
-            <v-btn>
-              <RouterLink :to="item.value">{{ item.title }}</RouterLink>
-            </v-btn>
-          </v-list-item>
-        </v-list>
-      </v-navigation-drawer>
-
+      
       <v-main class="d-flex align-center justify-center" style="min-height: 300px">
         <Suspense>
           <RouterView />
