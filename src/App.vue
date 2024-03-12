@@ -14,22 +14,21 @@ function toggleTheme() {
 }
 
 function handleLogout() {
-  localStorage.removeItem('user')
-  store.user.value=''
+  store.logout()
+  //store.user.value=''
   router.push('/login')
 }
 
 import { ref } from 'vue'
 
 const items = [
-  { title: 'Panel', value: '/panel'  },
-  { title: 'Reportes', value: '/repo'},
-  { title: 'Boletas', value: '/boletas'},
-  { title: 'About', value: '/about'},
+  { title: 'Panel', value: '/panel' },
+  { title: 'Reportes', value: '/repo' },
+  { title: 'Boletas', value: '/boletas' },
+  { title: 'About', value: '/about' }
 ]
 
 const drawer = ref(false)
-
 </script>
 
 <template>
@@ -42,18 +41,18 @@ const drawer = ref(false)
         <v-spacer></v-spacer>
 
         <v-spacer></v-spacer>
+        <span>{{ store.getUser }}</span>
         <v-btn icon="mdi-logout" @click="handleLogout"></v-btn>
 
         <v-btn @click="toggleTheme">Cambiar tema</v-btn>
       </v-app-bar>
 
-      <v-navigation-drawer v-model="drawer" temporary>
+      <v-navigation-drawer v-model="drawer" temporary v-if="store.isAuth" >
         <v-list :lines="false" density="compact" nav>
           <v-list-item v-for="(item, i) in items" :key="i" :value="item.title" color="primary">
-            <RouterLink :to="item.value">{{ item.title }}</RouterLink>
-            <template v-slot:prepend>
-              <h3>{{ i }}</h3>
-            </template>
+            <v-btn>
+              <RouterLink :to="item.value">{{ item.title }}</RouterLink>
+            </v-btn>
           </v-list-item>
         </v-list>
       </v-navigation-drawer>

@@ -1,7 +1,9 @@
 <script setup>
 import { useRouter } from 'vue-router'
 import { useTheme } from 'vuetify'
+import { useUserStore } from '@/stores/user';
 
+const store = useUserStore()
 const theme = useTheme()
 
 function toggleTheme() {
@@ -12,7 +14,7 @@ const props = defineProps(['title'])
 const router = useRouter()
 
 function handleLogout() {
-		localStorage.removeItem('user')
+		store.logout()    
     router('/login')
 	}
 
@@ -23,7 +25,12 @@ function handleLogout() {
     <v-app-bar-title>{{ props.title }}</v-app-bar-title>
     <v-spacer></v-spacer>
     <div>
-      <v-btn @click="handleLogout" >logout</v-btn>
+      <h4>USUARIO</h4>
+
+    </div>
+    <div>
+      
+      <v-btn @click="handleLogout">logout</v-btn>
     </div>
     <v-btn @click="toggleTheme">Cambiar tema</v-btn>
   </v-app-bar>
