@@ -11,7 +11,7 @@ export const useUserStore = defineStore('user', {
   },
   actions: {
     login(user, pass) {
-      if (user === 'admin' && pass === 'trancas'){
+      if (user === 'admin' && pass === 'concepcion'){
         this.isAuth = true
         this.username = user
       }

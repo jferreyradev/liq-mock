@@ -24,34 +24,31 @@ import { ref } from 'vue'
 const items = [
   { text: 'Panel', disabled: false, href: '/panel' },
   { text: 'Reportes', disabled: false, href: '/repo' },
-  { text: 'Boletas',disabled: false, href: '/boletas' },
-  { text: 'About',disabled: false, href: '/about' }
+  { text: 'Boletas', disabled: false, href: '/boletas' },
+  { text: 'About', disabled: false, href: '/about' }
 ]
-
 </script>
 
 <template>
   <v-container>
     <v-layout>
-      <!-- <v-system-bar color="deep-purple darken-3"></v-system-bar> -->
       <v-app-bar color="primary" prominent>
-        <v-toolbar-title>Sistema de liquidación</v-toolbar-title>
+        <v-app-bar-title>Sistema de consultas de liquidaciones</v-app-bar-title>
         <v-spacer></v-spacer>
-       <div>         
-            <nav v-if="store.isAuth">
-              <RouterLink class="text-body-1" to="/">Home</RouterLink>
-              <RouterLink class="text-body-1" to="/panel">Panel</RouterLink>
-              <RouterLink class="text-body-1" to="/repo">Reportes</RouterLink>
-              <RouterLink class="text-body-1" to="/boletas">Boletas</RouterLink>
-            </nav>         
-        </div> 
+        <div>
+          <nav>
+            <RouterLink class="text-body-1" to="/">Home</RouterLink>
+            <RouterLink class="text-body-1" to="/panel">Panel</RouterLink>
+            <RouterLink class="text-body-1" to="/repo">Reportes</RouterLink>
+            <RouterLink class="text-body-1" to="/boletas">Boletas</RouterLink>
+          </nav>
+        </div>
         <v-spacer></v-spacer>
         <span>{{ store.getUser }}</span>
         <v-btn icon="mdi-logout" @click="handleLogout"></v-btn>
-
         <v-btn @click="toggleTheme">Cambiar tema</v-btn>
       </v-app-bar>
-      
+
       <v-main class="d-flex align-center justify-center" style="min-height: 300px">
         <Suspense>
           <RouterView />
@@ -60,58 +57,6 @@ const items = [
     </v-layout>
   </v-container>
 </template>
-
-<!-- 
- <div>
-        <AppNavbar title="Liquidación de sueldos" />       
-          
-      </div>
-      <h2>Subtitulo</h2>
-
-
-
-      <v-row>
-          <header>
-            <div class="header-bar">
-              <h2>Subtitulo</h2>
-              <nav>
-                <RouterLink to="/">Home</RouterLink>
-                <RouterLink to="/panel">Panel</RouterLink>
-                <RouterLink to="/repo">Reportes</RouterLink>
-                <RouterLink to="/about">About</RouterLink>
-                <RouterLink to="/login">Login</RouterLink>
-              </nav>
-            </div>
-          </header>
-        </v-row>
-
--->
-
-<!--   <AppLayout>
-    <template v-slot:topbar>
-    
-      <div class="header-bar">      
-        <AppNavbar></AppNavbar>
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/panel">Panel</RouterLink>
-        <RouterLink to="/repo">Reportes</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-        <RouterLink to="/login">Login</RouterLink>
-      </nav>
-    </div>
-    </template>
-    
-    <template v-slot:content>
-      <Suspense>
-        <RouterView />
-        <template v-slot:fallback>
-          <p>Content not found. Contact your developer for more info.</p>
-        </template>
-      </Suspense>
-    </template>
-  </AppLayout>
- -->
 
 <style scoped>
 header {

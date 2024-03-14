@@ -1,13 +1,4 @@
 import { defineStore } from 'pinia'
-import { useFetch } from '@/composables/useFetch';
-
-function useConf() {
-  return useFetch(() => `http://200.55.244.26:3005/api/view/periodo?Activo=1`)
-}
-
-const { data, error, isPending } = useConf()
-
-console.log(data)
 
 const liqMap = new Map([
   ['1', "Mensual"],
@@ -16,14 +7,13 @@ const liqMap = new Map([
   ['3', "2Do SAC"],
 ]);
 
-
 const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 
 export const useFilterStore = defineStore('filter', {
   state: () => ({
     tipoliq: 1, nroadi: 0, year: 0, month: 0,
-    //URL_API: 'http://200.55.244.26:3005/api'
-    URL_API: 'https://midliq-api--dev-trancas.deno.dev/api'
+    URL_API: 'https://midliq-api-jr2sc3ef7gnx.deno.dev/api',
+    serverConfig: {}
   }),
   getters: {
     filterString: (state) => `TipoLiquidacionId=${state.tipoliq}&GrupoAdicionalId=${state.nroadi}&Periodo=01/${state.month}/${state.year}`,
@@ -34,7 +24,7 @@ export const useFilterStore = defineStore('filter', {
   },
   actions: {
     setPer() {
-      fetch(`https://midliq-api--dev-trancas.deno.dev/api/view/periodo?Activo=1`)
+      fetch(`${this.URL_API}/view/periodo?Activo=1`)
         .then((res) => res.json())
         .then((_data) => {
           this.year = _data[0].PERIODO.split('-')[0]
@@ -44,5 +34,15 @@ export const useFilterStore = defineStore('filter', {
           console.log(err)
         })
     },
+    setConfig() {
+      fetch(`${this.URL_API}/view/configServer`)
+        .then((res) => res.json())
+        .then((_data) => {
+          this.serverConfig = _data[0]
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    }
   },
 })
