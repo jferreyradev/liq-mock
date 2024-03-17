@@ -3,8 +3,11 @@ import { ref } from 'vue'
 import { useFilterStore } from '@/stores/filterStore.js'
 import { useFetch } from '@/composables/useFetch'
 import RepoHeader from './RepoHeader.vue'
+import { useLiqStore } from '@/stores/liqStore.js'
 
 const store = useFilterStore()
+
+const liqStore = useLiqStore()
 
 function useLiqBoletas(getId) {
   return useFetch(() => `${store.URL_API}/view/boletas?${getId()}`)
@@ -36,6 +39,13 @@ const headers = [
   { key: 'FECHADEV', title: 'Devengado' },
   { key: 'LIQUIDACIONID', title: 'link descarga' }
 ]
+
+function handleDownload(idliq) {
+  //console.log(idliq)  
+  liqStore.setLiqItems(idliq)
+  console.log(liqStore.getLiqItems.value)
+}
+
 </script>
 
 <template>

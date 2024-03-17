@@ -49,17 +49,5 @@ function handleSelect(id, objElement) {
             </v-col>            
         </v-row>
 
-<!-- 
-        <v-row v-if="liq && liqitem" no-gutters>
-            <v-col class="px-0">
-                <LiqTable :liq="liq" :liqitem="liqitem" @select="handleSelect"
-                 title="Liquidaciones" :subtitle="store.liqString"></LiqTable>
-            </v-col>
-            <v-col class="px-0" >
-                <LiqItemCard :items="liqitemfilter" :subtitle="text">
-                </LiqItemCard>
-            </v-col>
-        </v-row> -->
-
     </v-container>
 </template>
