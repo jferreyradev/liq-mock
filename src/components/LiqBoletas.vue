@@ -1,10 +1,13 @@
 <script setup>
 import { ref } from 'vue'
 import { useFilterStore } from '@/stores/filterStore.js'
+import { useBoletatxt } from '@/stores/boletaStore'
 import { useFetch } from '@/composables/useFetch'
 import RepoHeader from './RepoHeader.vue'
 
 const store = useFilterStore()
+
+const liqStore = useBoletatxt()
 
 function useLiqBoletas(getId) {
   return useFetch(() => `${store.URL_API}/view/boletas?${getId()}`)
@@ -36,12 +39,23 @@ const headers = [
   { key: 'FECHADEV', title: 'Devengado' },
   { key: 'LIQUIDACIONID', title: 'link descarga' }
 ]
+
+async function handleDownload(idliq) {
+  //liqStore.setBoleta(idliq)
+  /*
+    console.log(liqStore.boletaCabPie)
+    console.log(liqStore.boletaDet)
+    */
+  //console.log(liqStore.getBoletaTXT)
+  console.log(idliq)
+  await liqStore.setId(idliq)
+  await liqStore.createPdf()
+}
 </script>
 
 <template>
   <v-container>
-    <RepoHeader title="Boletas disponibles para descarga" :subtitle="store.liqString">
-    </RepoHeader>
+    <RepoHeader title="Boletas disponibles para descarga" :subtitle="store.liqString"> </RepoHeader>
     <v-row>
       <div v-if="isPending">loading...</div>
 
@@ -72,7 +86,7 @@ const headers = [
           </template>
 
           <template v-slot:item.LIQUIDACIONID="{ value }">
-            <a :href="store.URL_API + '/boleta?IdLiq=' + value">descargar</a>
+            <v-btn @click="handleDownload(value)">Descargar</v-btn>
           </template>
         </v-data-table>
       </v-card>

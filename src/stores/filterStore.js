@@ -5,7 +5,7 @@ function useConf() {
   return useFetch(() => `http://200.55.244.26:3005/api/view/periodo?Activo=1`)
 }
 
-const { data, error, isPending } = useConf()
+const { data } = useConf()
 
 console.log(data)
 
