@@ -1,5 +1,5 @@
 import { defineStore } from "pinia"
-import { computed, ref } from "vue"
+import { ref } from "vue"
 import { PDFDocument, StandardFonts, rgb } from 'pdf-lib'
 import download from 'downloadjs'
 import logo from '../assets/logohcdt1.png'
