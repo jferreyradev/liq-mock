@@ -15,6 +15,12 @@ const { data, error, isPending } = useResLiq(() => store.filterString)
 const props = defineProps(['title','subtitle','fileName'])
 
 const headers = [
+{
+    title: 'Rep',
+    align: 'end',
+    sortable: true,
+    key: 'IDREP'
+  },
   {
     title: 'Orden',
     align: 'end',
@@ -43,6 +49,7 @@ function financial(x) {
 function exportFile() {
   const map1 = data.value.map((x) => {
     return {
+      REP: x.IDREP,
       ORDEN: x.ORDEN,
       DNI: x.PERSONADOCUMENTO,
       Apellido: x.PERSONAAPELLIDO,
@@ -58,6 +65,7 @@ function exportFile() {
   /* generate worksheet from state */
   const ws = utils.json_to_sheet(map1)
   ws['!cols'] = [
+  { wch: 7 },
     { wch: 7 },
     { wch: 11 },
     { wch: 15 },
@@ -96,6 +104,7 @@ function exportFile() {
       >
         <template v-slot:item="{ item }">
           <tr class="pa-0 ma-0">
+            <td class="text-right">{{ item.IDREP }}</td>
             <td class="text-right ma-0 pa-0">{{ item.ORDEN }}</td>
             <td class="text-right">{{ item.PERSONADOCUMENTO }}</td>
             <td class="text-left">{{ item.PERSONAAPELLIDO }}</td>

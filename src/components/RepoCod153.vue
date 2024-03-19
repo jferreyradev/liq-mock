@@ -2,7 +2,7 @@
 import { utils, writeFileXLSX } from 'xlsx'
 import { useFilterStore } from '@/stores/filterStore'
 import { useFetch } from '@/composables/useFetch'
-import RepoHeader from './RepoHeader.vue';
+import RepoHeader from './RepoHeader.vue'
 
 const store = useFilterStore()
 
@@ -12,9 +12,15 @@ function useResLiqCod(getId) {
 
 const { data, error, isPending } = useResLiqCod(() => store.filterString)
 
-const props = defineProps(['title', 'subtitle','fileName'])
+const props = defineProps(['title', 'subtitle', 'fileName'])
 
 const headers = [
+  {
+    title: 'REP',
+    align: 'start',
+    sortable: true,
+    key: 'IDREP'
+  },
   {
     title: 'DNI',
     align: 'start',
@@ -33,6 +39,7 @@ function handleDownload() {
 function exportFile() {
   const map1 = data.value.map((x) => {
     return {
+      REP: x.IDREP,
       DNI: x.DOCUMENTO,
       NOMBRE: x.APENOM,
       IMPORTE: x.IMPORTE
@@ -41,13 +48,15 @@ function exportFile() {
 
   /* generate worksheet from state */
   const ws = utils.json_to_sheet(map1)
-  ws['!cols'] = [{ wch: 10 }, { wch: 35 }, { wch: 20 }]
+  ws['!cols'] = [{ wch: 10 }, { wch: 10 }, { wch: 35 }, { wch: 20 }]
   /* create workbook and append worksheet */
   const wb = utils.book_new()
   utils.book_append_sheet(wb, ws, 'Data')
 
   /* export to XLSX */
-  writeFileXLSX(wb, props.fileName || `${store.liqCompactString}_ResumenLiqCod153.xlsx`, { compression: true })
+  writeFileXLSX(wb, props.fileName || `${store.liqCompactString}_ResumenLiqCod153.xlsx`, {
+    compression: true
+  })
 }
 </script>
 
