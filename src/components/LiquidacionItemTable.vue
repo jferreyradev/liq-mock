@@ -18,7 +18,7 @@ const liqHeaders = [
   { title: 'Descripcion', key: 'DESCRIPCION' },
   { title: 'Cant', key: 'CANTIDAD' },
   { title: 'VTO', key: 'VENCIMIENTO' },
-  { title: 'Importe', key: 'IMPORTE' }
+  { title: 'Importe', key: 'IMPORTETICKET' }
 ]
 
 const getVto = (vto) => {
@@ -120,7 +120,7 @@ const res = computed(() => {
             <td class="text-left m-0 p-0">{{ item.DESCRIPCION }}</td>
             <td class="text-right m-0 p-0">{{ item.CANTIDAD }}</td>
             <td class="text-center m-0 p-0">{{ item.VENCIMIENTO }}</td>
-            <td class="text-right m-0 p-0">{{ item.IMPORTE.toFixed(2) }}</td>
+            <td class="text-right m-0 p-0">{{ item.IMPORTETICKET.toFixed(2) }}</td>
           </tr>
         </tbody>
         <tfoot class="font-weight-bold">
