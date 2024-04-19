@@ -12,7 +12,7 @@ const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', '
 export const useFilterStore = defineStore('filter', {
   state: () => ({
     tipoliq: 1, nroadi: 0, year: 0, month: 0,
-    URL_API: 'https://midliq-api-jr2sc3ef7gnx.deno.dev/api',
+    URL_API: 'https://www.serverburru2.duckdns.org:3003/api',
     serverConfig: {}
   }),
   getters: {
