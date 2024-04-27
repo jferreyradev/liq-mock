@@ -5,14 +5,17 @@ import RepoResumenCod from '@/components/RepoResumenCod.vue'
 import RepoResumenLiqFDO from '@/components/RepoResumenLiqFdo.vue'
 import LiqInputPanel from '@/components/LiqInputPanel.vue'
 import RepoApoPatronales from '@/components/RepoApoPatronales.vue'
+import RepoPlanillaDetLiq from '@/components/RepoPlanillaDetLiq.vue'
+
 import { ref } from 'vue'
 
 const reportes = [
-  { title: 'Resumen Liquidacion', value: 1},
+  { title: 'Resumen Liquidacion', value: 1 },
   { title: 'Detalle por concepto (153)', value: 2 },
   { title: 'Resumen de liquidación por codigos', value: 4 },
   { title: 'Resumen pedido FDO', value: 5 },
-  { title: 'Resumen Aportes Patronales', value: 6 }
+  { title: 'Resumen Aportes Patronales', value: 6 },
+  { title: 'Planilla de Det. Liq.', value: 7 }
 ]
 
 const repo = ref()
@@ -46,6 +49,8 @@ const repo = ref()
       <RepoResumenLiqFDO v-if="repo == 5"></RepoResumenLiqFDO>
 
       <RepoApoPatronales v-if="repo == 6"></RepoApoPatronales>
+
+      <RepoPlanillaDetLiq v-if="repo == 7"></RepoPlanillaDetLiq>
     </v-row>
   </v-container>
 </template>
