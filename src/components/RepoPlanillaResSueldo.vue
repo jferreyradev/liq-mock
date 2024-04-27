@@ -7,8 +7,7 @@ import RepoHeader from './RepoHeader.vue'
 const store = useFilterStore()
 
 function useResLiqCod(getId) {
- 
-  return useFetch(() => `${store.URL_API}/view/planillaDetLiq?${getId()}`)
+   return useFetch(() => `${store.URL_API}/view/resumenSueldos?${getId()}`)
 }
 
 const { data, error, isPending } = useResLiqCod(() => store.filterString)
@@ -35,25 +34,20 @@ const headers = [
     key: 'DOCUMENTO'
   },
   { title: 'Apellido y nombre', key: 'APENOM' },
-  { title: 'Código', key: 'CODIGO' },
-  { title: 'SubCod.', key: 'SUBCODIGO' },
-  { title: 'Descripción', key: 'DESCRIPCION' },
-  { title: 'VTO', key: 'VTO' },
-  { title: 'Importe', key: 'IMPORTE' },
-  { title: 'Fecha Dev.', key: 'FECHADEV' }
+  { title: 'Mes Liq.', key: 'MESLIQ' },
+  { title: 'Categoría', key: 'CAT' },
+  { title: 'Hab. c/Ap.', key: 'HABCONAP' },
+  { title: 'Hab. S/Ap.', key: 'HABSINAP' },
+  { title: 'Asig. Fam.', key: 'ASIGNFAM' },
+  { title: 'Desc. Ley', key: 'DESCLEY' },
+  { title: 'Desc. Varios', key: 'DESCVARIOS' },
+  { title: 'Neto', key: 'NETO' }
 ]
 
 function financial(x) {
   return Number.parseFloat(x).toFixed(2)
 }
 
-const getVto = (vto) => {
-  if (vto) {
-    const d = vto.split('-')
-    return `${d[1]}/${d[0]}`
-  }
-  return null
-}
 
 function handleDownload() {
   console.log('download')
@@ -67,12 +61,14 @@ function exportFile() {
       ORDEN: x.ORDEN,
       DNI: x.DOCUMENTO,
       NOMBRE: x.APENOM,
-      PATJUB: x.CODIGO,
-      PATOS: x.SUBCODIGO,
-      PATART: x.DESCRIPCION,
-      VTO: getVto(x.VTO),
-      IMPORTE: x.IMPORTE,
-      FECHADEV: getVto(x.FECHADEV)
+      MESLIQ: x.MESLIQ,
+      CAT: x.CAT, 
+      HAB_CON_AP: x.HABCONAP,
+      HAB_SIN_AP: x.HABSINAP,
+      ASIG_FAM: x.ASIGNFAM,
+      DESC_LEY: x.DESCLEY,
+      DESC_VARIOS: x.DESCVARIOS,
+      NETO: x.NETO
     }
   })
 
@@ -85,17 +81,19 @@ function exportFile() {
     { wch: 35 },
     { wch: 10 },
     { wch: 10 },
-    { wch: 20 },
-    { wch: 10 },
     { wch: 15 },
-    { wch: 10 }
+    { wch: 15 },
+    { wch: 15 },
+    { wch: 15 },
+    { wch: 15 },
+    { wch: 15 }
   ]
   /* create workbook and append worksheet */
   const wb = utils.book_new()
   utils.book_append_sheet(wb, ws, 'Data')
 
   /* export to XLSX */
-  writeFileXLSX(wb, props.fileName || `${store.liqCompactString}_PlanDetLiq.xlsx`, {
+  writeFileXLSX(wb, props.fileName || `${store.liqCompactString}_ResumenSueldos.xlsx`, {
     compression: true
   })
 }
@@ -103,7 +101,7 @@ function exportFile() {
 
 <template>
   <v-container>
-    <RepoHeader title="Planilla de Detalle de Liquidación" :subtitle="store.liqString">
+    <RepoHeader title="Resumen de Sueldos" :subtitle="store.liqString">
       <v-btn color="primary" @click="handleDownload" :disabled="!data">Descargar</v-btn>
     </RepoHeader>
     <v-row>
@@ -122,12 +120,14 @@ function exportFile() {
             <td class="text-right">{{ item.ORDEN }}</td>
             <td class="text-right">{{ item.DOCUMENTO }}</td>
             <td class="text-left">{{ item.APENOM }}</td>
-            <td class="text-right">{{ item.CODIGO }}</td>
-            <td class="text-right">{{ item.SUBCODIGO }}</td>
-            <td class="text-left">{{ item.DESCRIPCION }}</td>
-            <td class="text-left">{{ getVto(item.VTO) }}</td>
-            <td class="text-right">{{ financial(item.IMPORTE) }}</td>
-            <td class="text-left">{{ getVto(item.FECHADEV) }}</td>
+            <td class="text-right">{{ item.MESLIQ }}</td>
+            <td class="text-center">{{ item.CAT }}</td>
+            <td class="text-right">{{ financial(item.HABCONAP) }}</td>
+            <td class="text-right">{{ financial(item.HABSINAP) }}</td>
+            <td class="text-right">{{ financial(item.ASIGNFAM) }}</td>
+            <td class="text-right">{{ financial(item.DESCLEY) }}</td>
+            <td class="text-right">{{ financial(item.DESCVARIOS) }}</td>
+            <td class="text-right">{{ financial(item.NETO) }}</td>
           </tr>
         </template>
       </v-data-table>
