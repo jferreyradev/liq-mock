@@ -7,7 +7,7 @@ import RepoHeader from './RepoHeader.vue'
 const store = useFilterStore()
 
 function useResLiqCod(getId) {
-  return useFetch(() => `${store.URL_API}/view/aportesPat?${getId()}`)
+   return useFetch(() => `${store.URL_API}/view/planillaLey?${getId()}`)
 }
 
 const { data, error, isPending } = useResLiqCod(() => store.filterString)
@@ -34,14 +34,14 @@ const headers = [
     key: 'DOCUMENTO'
   },
   { title: 'Apellido y nombre', key: 'APENOM' },
-  { title: 'Pat. Jub.', key: 'PATJUB' },
-  { title: 'Pat. OS', key: 'PATOS' },
-  { title: 'Pat. ART', key: 'PATART' }
+  { title: 'Descripción', key: 'DESCRIPCION' },
+  { title: 'Importe', key: 'IMPORTE' }
 ]
 
 function financial(x) {
   return Number.parseFloat(x).toFixed(2)
 }
+
 
 function handleDownload() {
   console.log('download')
@@ -55,9 +55,8 @@ function exportFile() {
       ORDEN: x.ORDEN,
       DNI: x.DOCUMENTO,
       NOMBRE: x.APENOM,
-      PATJUB: x.PATJUB,
-      PATOS: x.PATOS,
-      PATART: x.PATART
+      DESCRIPCION: x.DESCRIPCION,
+      IMPORTE: x.IMPORTE
     }
   })
 
@@ -68,8 +67,7 @@ function exportFile() {
     { wch: 10 },
     { wch: 15 },
     { wch: 35 },
-    { wch: 15 },
-    { wch: 15 },
+    { wch: 20 },
     { wch: 15 }
   ]
   /* create workbook and append worksheet */
@@ -77,7 +75,7 @@ function exportFile() {
   utils.book_append_sheet(wb, ws, 'Data')
 
   /* export to XLSX */
-  writeFileXLSX(wb, props.fileName || `${store.liqCompactString}_ResumenPatJub.xlsx`, {
+  writeFileXLSX(wb, props.fileName || `${store.liqCompactString}_PlanillaLey.xlsx`, {
     compression: true
   })
 }
@@ -85,7 +83,7 @@ function exportFile() {
 
 <template>
   <v-container>
-    <RepoHeader title="Resumen de Aportes Patromales" :subtitle="store.liqString">
+    <RepoHeader title="Planilla de Ley" :subtitle="store.liqString">
       <v-btn color="primary" @click="handleDownload" :disabled="!data">Descargar</v-btn>
     </RepoHeader>
     <v-row>
@@ -104,9 +102,8 @@ function exportFile() {
             <td class="text-right">{{ item.ORDEN }}</td>
             <td class="text-right">{{ item.DOCUMENTO }}</td>
             <td class="text-left">{{ item.APENOM }}</td>
-            <td class="text-right">{{ financial(item.PATJUB) }}</td>
-            <td class="text-right">{{ financial(item.PATOS) }}</td>
-            <td class="text-right">{{ financial(item.PATART) }}</td>
+            <td class="text-left">{{ item.DESCRIPCION }}</td>
+            <td class="text-right">{{ financial(item.IMPORTE) }}</td>
           </tr>
         </template>
       </v-data-table>

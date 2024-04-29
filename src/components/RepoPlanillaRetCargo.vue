@@ -7,7 +7,8 @@ import RepoHeader from './RepoHeader.vue'
 const store = useFilterStore()
 
 function useResLiqCod(getId) {
-  return useFetch(() => `${store.URL_API}/view/aportesPat?${getId()}`)
+  console.log(`${store.URL_API}/view/retencionesCargo?${getId()}`)
+   return useFetch(() => `${store.URL_API}/view/retencionesCargo?${getId()}`)
 }
 
 const { data, error, isPending } = useResLiqCod(() => store.filterString)
@@ -28,20 +29,23 @@ const headers = [
     key: 'ORDEN'
   },
   {
+    title: 'AFILIADO',
+    align: 'start',
+    sortable: true,
+    key: 'AFILIADO'
+  },
+  { title: 'Categoría', key: 'CATEGORIA' },
+  { title: 'Sit. Rev.', key: 'SITREV' },
+  {
     title: 'Documento',
     align: 'start',
     sortable: true,
     key: 'DOCUMENTO'
   },
-  { title: 'Apellido y nombre', key: 'APENOM' },
-  { title: 'Pat. Jub.', key: 'PATJUB' },
-  { title: 'Pat. OS', key: 'PATOS' },
-  { title: 'Pat. ART', key: 'PATART' }
+  { title: 'Apellido y nombre', key: 'APENOM' } 
 ]
 
-function financial(x) {
-  return Number.parseFloat(x).toFixed(2)
-}
+
 
 function handleDownload() {
   console.log('download')
@@ -53,11 +57,11 @@ function exportFile() {
     return {
       REP: x.IDREP,
       ORDEN: x.ORDEN,
+      AFILIADO: x.AFILIADO,
+      CATEGORIA: x.CATEGORIA, 
+      SITREV: x.SITREV,
       DNI: x.DOCUMENTO,
-      NOMBRE: x.APENOM,
-      PATJUB: x.PATJUB,
-      PATOS: x.PATOS,
-      PATART: x.PATART
+      NOMBRE: x.APENOM
     }
   })
 
@@ -66,18 +70,18 @@ function exportFile() {
   ws['!cols'] = [
     { wch: 10 },
     { wch: 10 },
+    { wch: 10 },
+    { wch: 10 },
+    { wch: 10 },
     { wch: 15 },
-    { wch: 35 },
-    { wch: 15 },
-    { wch: 15 },
-    { wch: 15 }
+    { wch: 35 }
   ]
   /* create workbook and append worksheet */
   const wb = utils.book_new()
   utils.book_append_sheet(wb, ws, 'Data')
 
   /* export to XLSX */
-  writeFileXLSX(wb, props.fileName || `${store.liqCompactString}_ResumenPatJub.xlsx`, {
+  writeFileXLSX(wb, props.fileName || `${store.liqCompactString}_RetencionesCargo.xlsx`, {
     compression: true
   })
 }
@@ -85,7 +89,7 @@ function exportFile() {
 
 <template>
   <v-container>
-    <RepoHeader title="Resumen de Aportes Patromales" :subtitle="store.liqString">
+    <RepoHeader title="Retenciones de Cargo" :subtitle="store.liqString">
       <v-btn color="primary" @click="handleDownload" :disabled="!data">Descargar</v-btn>
     </RepoHeader>
     <v-row>
@@ -102,11 +106,10 @@ function exportFile() {
           <tr class="pa-0 ma-0">
             <td class="text-right">{{ item.IDREP }}</td>
             <td class="text-right">{{ item.ORDEN }}</td>
+            <td class="text-right">{{ item.AFILIADO }}</td>
+            <td class="text-center">{{ item.CATEGORIA }}</td>
+            <td class="text-center">{{ item.SITREV }}</td>
             <td class="text-right">{{ item.DOCUMENTO }}</td>
-            <td class="text-left">{{ item.APENOM }}</td>
-            <td class="text-right">{{ financial(item.PATJUB) }}</td>
-            <td class="text-right">{{ financial(item.PATOS) }}</td>
-            <td class="text-right">{{ financial(item.PATART) }}</td>
           </tr>
         </template>
       </v-data-table>
