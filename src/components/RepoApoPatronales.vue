@@ -49,20 +49,51 @@ function handleDownload() {
 }
 
 function exportFile() {
-  const map1 = data.value.map((x) => {
-    return {
-      REP: x.IDREP,
-      ORDEN: x.ORDEN,
-      DNI: x.DOCUMENTO,
-      NOMBRE: x.APENOM,
-      PATJUB: x.PATJUB,
-      PATOS: x.PATOS,
-      PATART: x.PATART
-    }
-  })
+  const map1 = data.value.map((x) => [
+    x.IDREP,
+    x.ORDEN,
+    x.DOCUMENTO,
+    x.APENOM,
+    x.PATJUB,
+    x.PATOS,
+    x.PATART
+  ])
+  const tituloTabla = [
+    'Rep',
+    'Orden',
+    'Documento',
+    'Apellido y Nombre',
+    'Pat. Jub',
+    'Pat. OS',
+    'Pat. ART'
+  ]
+  const tituloTablaFormato = tituloTabla.map((t) => ({
+    v: t,
+    s: { font: { bold: true, sz: 12 } } // sz: Tamaño de letra (14 por ejemplo)
+  }))
+  map1.unshift(tituloTablaFormato)
 
+  const linea = ['']
+  map1.unshift(linea)
+
+  // agrega título secundario
+  const tituloSec = ['', store.liqString]
+  const tituloSecFormato = tituloSec.map((t) => ({
+    v: t,
+    s: { font: { bold: true, sz: 12 } } // sz: Tamaño de letra (14 por ejemplo)
+  }))
+  map1.unshift(tituloSecFormato)
+
+  // Agrega Título Principal
+  const tituloPpal = ['', 'Aportes Patronales']
+  const tituloPpalFormato = tituloPpal.map((t) => ({
+    v: t,
+    s: { font: { bold: true, sz: 12 } } // sz: Tamaño de letra (14 por ejemplo)
+  }))
+  map1.unshift(tituloPpalFormato)
   /* generate worksheet from state */
-  const ws = utils.json_to_sheet(map1)
+  const ws = utils.aoa_to_sheet(map1)
+
   ws['!cols'] = [
     { wch: 10 },
     { wch: 10 },
@@ -72,6 +103,7 @@ function exportFile() {
     { wch: 15 },
     { wch: 15 }
   ]
+
   /* create workbook and append worksheet */
   const wb = utils.book_new()
   utils.book_append_sheet(wb, ws, 'Data')

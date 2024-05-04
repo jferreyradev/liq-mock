@@ -8,7 +8,7 @@ const store = useFilterStore()
 
 function useResLiqCod(getId) {
   console.log(`${store.URL_API}/view/retencionesCargo?${getId()}`)
-   return useFetch(() => `${store.URL_API}/view/retencionesCargo?${getId()}`)
+  return useFetch(() => `${store.URL_API}/view/retencionesCargo?${getId()}`)
 }
 
 const { data, error, isPending } = useResLiqCod(() => store.filterString)
@@ -42,10 +42,8 @@ const headers = [
     sortable: true,
     key: 'DOCUMENTO'
   },
-  { title: 'Apellido y nombre', key: 'APENOM' } 
+  { title: 'Apellido y nombre', key: 'APENOM' }
 ]
-
-
 
 function handleDownload() {
   console.log('download')
@@ -54,19 +52,45 @@ function handleDownload() {
 
 function exportFile() {
   const map1 = data.value.map((x) => {
-    return {
-      REP: x.IDREP,
-      ORDEN: x.ORDEN,
-      AFILIADO: x.AFILIADO,
-      CATEGORIA: x.CATEGORIA, 
-      SITREV: x.SITREV,
-      DNI: x.DOCUMENTO,
-      NOMBRE: x.APENOM
-    }
+    return [x.IDREP, x.ORDEN, x.AFILIADO, x.CATEGORIA, x.SITREV, x.DOCUMENTO, x.APENOM]
   })
 
+  const tituloTabla = [
+    'Rep',
+    'Orden',
+    'Afiliado',
+    'Categoría',
+    'Sit. de Rev.',
+    'Documento',
+    'Apellido y Nombre'
+  ]
+  const tituloTablaFormato = tituloTabla.map((t) => ({
+    v: t,
+    s: { font: { bold: true, sz: 12 } } // sz: Tamaño de letra (14 por ejemplo)
+  }))
+  map1.unshift(tituloTablaFormato)
+
+  const linea = ['']
+  map1.unshift(linea)
+
+  // agrega título secundario
+  const tituloSec = ['', store.liqString]
+  const tituloSecFormato = tituloSec.map((t) => ({
+    v: t,
+    s: { font: { bold: true, sz: 12 } } // sz: Tamaño de letra (14 por ejemplo)
+  }))
+  map1.unshift(tituloSecFormato)
+
+  // Agrega Título Principal
+  const tituloPpal = ['', 'Retenciones de Cargo']
+  const tituloPpalFormato = tituloPpal.map((t) => ({
+    v: t,
+    s: { font: { bold: true, sz: 12 } } // sz: Tamaño de letra (14 por ejemplo)
+  }))
+  map1.unshift(tituloPpalFormato)
   /* generate worksheet from state */
-  const ws = utils.json_to_sheet(map1)
+  const ws = utils.aoa_to_sheet(map1)
+
   ws['!cols'] = [
     { wch: 10 },
     { wch: 10 },

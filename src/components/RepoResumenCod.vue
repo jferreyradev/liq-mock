@@ -7,6 +7,7 @@ import RepoHeader from './RepoHeader.vue'
 const store = useFilterStore()
 
 function useResLiqCod(getId) {
+  console.log(`${store.URL_API}/view/resumenCodLiq?${getId()}`)
   return useFetch(() => `${store.URL_API}/view/resumenCodLiq?${getId()}`)
 }
 
@@ -36,7 +37,7 @@ function financial(x) {
 function exportFile() {
   const map1 = data.value.map((x) => {
     return {
-      REP : x.IDREP,
+      REP: x.IDREP,
       CODIGO: x.CODIGO,
       SUBCODIGO: x.SUBCODIGO,
       DESCRIPCION: x.DESCRIPCION,
@@ -48,7 +49,15 @@ function exportFile() {
 
   /* generate worksheet from state */
   const ws = utils.json_to_sheet(map1)
-  ws['!cols'] = [{ wch: 10 },{ wch: 10 }, { wch: 10 }, { wch: 25 }, { wch: 10 }, { wch: 20 }, { wch: 10 }]
+  ws['!cols'] = [
+    { wch: 10 },
+    { wch: 10 },
+    { wch: 10 },
+    { wch: 25 },
+    { wch: 10 },
+    { wch: 20 },
+    { wch: 10 }
+  ]
   /* create workbook and append worksheet */
   const wb = utils.book_new()
   utils.book_append_sheet(wb, ws, 'Data')

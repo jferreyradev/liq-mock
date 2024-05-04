@@ -7,7 +7,8 @@ import RepoHeader from './RepoHeader.vue'
 const store = useFilterStore()
 
 function useResLiqCod(getId) {
-   return useFetch(() => `${store.URL_API}/view/resumenSueldos?${getId()}`)
+  console.log(`${store.URL_API}/view/resumenSueldos?${getId()}`)
+  return useFetch(() => `${store.URL_API}/view/resumenSueldos?${getId()}`)
 }
 
 const { data, error, isPending } = useResLiqCod(() => store.filterString)
@@ -48,7 +49,6 @@ function financial(x) {
   return Number.parseFloat(x).toFixed(2)
 }
 
-
 function handleDownload() {
   console.log('download')
   exportFile()
@@ -56,24 +56,63 @@ function handleDownload() {
 
 function exportFile() {
   const map1 = data.value.map((x) => {
-    return {
-      REP: x.IDREP,
-      ORDEN: x.ORDEN,
-      DNI: x.DOCUMENTO,
-      NOMBRE: x.APENOM,
-      MESLIQ: x.MESLIQ,
-      CAT: x.CAT, 
-      HAB_CON_AP: x.HABCONAP,
-      HAB_SIN_AP: x.HABSINAP,
-      ASIG_FAM: x.ASIGNFAM,
-      DESC_LEY: x.DESCLEY,
-      DESC_VARIOS: x.DESCVARIOS,
-      NETO: x.NETO
-    }
+    return [
+      x.IDREP,
+      x.ORDEN,
+      x.DOCUMENTO,
+      x.APENOM,
+      x.MESLIQ,
+      x.CAT,
+      x.HABCONAP,
+      x.HABSINAP,
+      x.ASIGNFAM,
+      x.DESCLEY,
+      x.DESCVARIOS,
+      x.NETO
+    ]
   })
 
+  const tituloTabla = [
+    'Rep',
+    'Orden',
+    'Documento',
+    'Apellido y Nombre',
+    'Mes Liq.',
+    'categoría',
+    'Hab. con Ap.',
+    'Hab. sin Ap.',
+    'Asign. Fam.',
+    'Desc. de Ley',
+    'Desc. varios',
+    'Neto'
+  ]
+  const tituloTablaFormato = tituloTabla.map((t) => ({
+    v: t,
+    s: { font: { bold: true, sz: 12 } } // sz: Tamaño de letra (14 por ejemplo)
+  }))
+  map1.unshift(tituloTablaFormato)
+
+  const linea = ['']
+  map1.unshift(linea)
+
+  // agrega título secundario
+  const tituloSec = ['', store.liqString]
+  const tituloSecFormato = tituloSec.map((t) => ({
+    v: t,
+    s: { font: { bold: true, sz: 12 } } // sz: Tamaño de letra (14 por ejemplo)
+  }))
+  map1.unshift(tituloSecFormato)
+
+  // Agrega Título Principal
+  const tituloPpal = ['', 'Resumen de Sueldos']
+  const tituloPpalFormato = tituloPpal.map((t) => ({
+    v: t,
+    s: { font: { bold: true, sz: 12 } } // sz: Tamaño de letra (14 por ejemplo)
+  }))
+  map1.unshift(tituloPpalFormato)
   /* generate worksheet from state */
-  const ws = utils.json_to_sheet(map1)
+  const ws = utils.aoa_to_sheet(map1)
+
   ws['!cols'] = [
     { wch: 10 },
     { wch: 10 },
