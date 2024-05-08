@@ -7,7 +7,10 @@ import RepoHeader from './RepoHeader.vue'
 const store = useFilterStore()
 
 function useResLiqCod(getId) {
-  return useFetch(() => `${store.URL_API}/view/planillaRet?${getId()}&sort={"IdRep":"asc","Orden":"asc","Codigo":"asc","SubCodigo":"asc"}`)
+  return useFetch(
+    () =>
+      `${store.URL_API}/view/planillaRet?${getId()}&sort={"IdRep":"asc","Orden":"asc","Codigo":"asc","SubCodigo":"asc"}`
+  )
 }
 
 const { data, error, isPending } = useResLiqCod(() => store.filterString)
@@ -18,27 +21,27 @@ const headers = [
   {
     title: 'REP',
     align: 'start',
-    sortable: true,
+    sortable: false,
     key: 'IDREP'
   },
   {
     title: 'ORDEN',
     align: 'start',
-    sortable: true,
+    sortable: false,
     key: 'ORDEN'
   },
   {
     title: 'Documento',
     align: 'start',
-    sortable: true,
+    sortable: false,
     key: 'DOCUMENTO'
   },
-  { title: 'Apellido y nombre', key: 'APENOM' },
-  { title: 'Código', key: 'CODIGO' },
-  { title: 'SubCod.', key: 'SUBCODIGO' },
-  { title: 'Descripción', key: 'DESCRIPCION' },
-  { title: 'VTO', key: 'VTO' },
-  { title: 'Importe', key: 'IMPORTE' }
+  { title: 'Apellido y nombre', key: 'APENOM', sortable: false },
+  { title: 'Código', key: 'CODIGO', sortable: false },
+  { title: 'SubCod.', key: 'SUBCODIGO', sortable: false },
+  { title: 'Descripción', key: 'DESCRIPCION', sortable: false },
+  { title: 'VTO', key: 'VTO', sortable: false },
+  { title: 'Importe', key: 'IMPORTE', sortable: false }
 ]
 
 function financial(x) {

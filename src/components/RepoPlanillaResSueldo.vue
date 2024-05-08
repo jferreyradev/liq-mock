@@ -7,7 +7,7 @@ import RepoHeader from './RepoHeader.vue'
 const store = useFilterStore()
 
 function useResLiqCod(getId) {
-  console.log(`${store.URL_API}/view/resumenSueldos?${getId()}&sort={"IdRep":"asc","Orden":"asc"}`)
+  console.log(`${store.URL_API}/view/resumenSueldos?${getId()}`)
   return useFetch(() => `${store.URL_API}/view/resumenSueldos?${getId()}`)
 }
 
@@ -19,30 +19,30 @@ const headers = [
   {
     title: 'REP',
     align: 'start',
-    sortable: true,
+    sortable: false,
     key: 'IDREP'
   },
   {
     title: 'ORDEN',
     align: 'start',
-    sortable: true,
+    sortable: false,
     key: 'ORDEN'
   },
   {
     title: 'Documento',
     align: 'start',
-    sortable: true,
+    sortable: false,
     key: 'DOCUMENTO'
   },
-  { title: 'Apellido y nombre', key: 'APENOM' },
-  { title: 'Mes Liq.', key: 'MESLIQ' },
-  { title: 'Categoría', key: 'CAT' },
-  { title: 'Hab. c/Ap.', key: 'HABCONAP' },
-  { title: 'Hab. S/Ap.', key: 'HABSINAP' },
-  { title: 'Asig. Fam.', key: 'ASIGNFAM' },
-  { title: 'Desc. Ley', key: 'DESCLEY' },
-  { title: 'Desc. Varios', key: 'DESCVARIOS' },
-  { title: 'Neto', key: 'NETO' }
+  { title: 'Apellido y nombre', key: 'APENOM', sortable: false },
+  { title: 'Mes Liq.', key: 'MESLIQ', sortable: false },
+  { title: 'Categoría', key: 'CAT', sortable: false },
+  { title: 'Hab. c/Ap.', key: 'HABCONAP', sortable: false },
+  { title: 'Hab. S/Ap.', key: 'HABSINAP', sortable: false },
+  { title: 'Asig. Fam.', key: 'ASIGNFAM', sortable: false },
+  { title: 'Desc. Ley', key: 'DESCLEY', sortable: false },
+  { title: 'Desc. Varios', key: 'DESCVARIOS', sortable: false },
+  { title: 'Neto', key: 'NETO', sortable: false }
 ]
 
 function financial(x) {

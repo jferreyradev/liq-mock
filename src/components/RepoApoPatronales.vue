@@ -7,7 +7,6 @@ import RepoHeader from './RepoHeader.vue'
 const store = useFilterStore()
 
 function useResLiqCod(getId) {
-  
   return useFetch(() => `${store.URL_API}/view/aportesPat?${getId()}`)
 }
 
@@ -19,25 +18,25 @@ const headers = [
   {
     title: 'REP',
     align: 'start',
-    sortable: true,
+    sortable: false,
     key: 'IDREP'
   },
   {
     title: 'ORDEN',
     align: 'start',
-    sortable: true,
+    sortable: false,
     key: 'ORDEN'
   },
   {
     title: 'Documento',
     align: 'start',
-    sortable: true,
+    sortable: false,
     key: 'DOCUMENTO'
   },
-  { title: 'Apellido y nombre', key: 'APENOM' },
-  { title: 'Pat. Jub.', key: 'PATJUB' },
-  { title: 'Pat. OS', key: 'PATOS' },
-  { title: 'Pat. ART', key: 'PATART' }
+  { title: 'Apellido y nombre', key: 'APENOM', sortable: false },
+  { title: 'Pat. Jub.', key: 'PATJUB', sortable: false },
+  { title: 'Pat. OS', key: 'PATOS', sortable: false },
+  { title: 'Pat. ART', key: 'PATART', sortable: false }
 ]
 
 function financial(x) {

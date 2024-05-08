@@ -24,8 +24,8 @@ const reportes = [
   { title: 'Planilla de Retenciones', value: 8 },
   { title: 'Planilla de Ley', value: 9 },
   { title: 'Resumen de Sueldos', value: 10 },
-  { title: 'Retenciones de Cargo', value: 11 },
-  { title: 'Retenciones de CPA', value: 12 }
+  { title: 'Retenciones de CPA', value: 11 },
+  { title: 'Retenciones de Cargo', value: 12 }
 ]
 
 const repo = ref()
@@ -68,9 +68,9 @@ const repo = ref()
 
       <RepoPlanillaResSueldo v-if="repo == 10"></RepoPlanillaResSueldo>
 
-      <RepoPlanillaRetCargo v-if="repo == 11"></RepoPlanillaRetCargo>
+      <RepoPlanillaRetencionesCPA v-if="repo == 11"></RepoPlanillaRetencionesCPA>
 
-      <RepoPlanillaRetencionesCPA v-if="repo == 12"></RepoPlanillaRetencionesCPA>
+      <RepoPlanillaRetCargo v-if="repo == 12"></RepoPlanillaRetCargo>
     </v-row>
   </v-container>
 </template>

@@ -7,7 +7,9 @@ import RepoHeader from './RepoHeader.vue'
 const store = useFilterStore()
 
 function useResLiqCod(getId) {
-  return useFetch(() => `${store.URL_API}/view/planillaLey?${getId()}`)
+  return useFetch(
+    () => `${store.URL_API}/view/planillaLey?${getId()}&sort={"IdRep":"asc","Orden":"asc"}`
+  )
 }
 
 const { data, error, isPending } = useResLiqCod(() => store.filterString)
@@ -18,24 +20,25 @@ const headers = [
   {
     title: 'REP',
     align: 'start',
-    sortable: true,
+    sortable: false,
     key: 'IDREP'
   },
   {
     title: 'ORDEN',
     align: 'start',
-    sortable: true,
+    sortable: false,
     key: 'ORDEN'
   },
   {
     title: 'Documento',
     align: 'start',
-    sortable: true,
+    sortable: false,
     key: 'DOCUMENTO'
   },
-  { title: 'Apellido y nombre', key: 'APENOM' },
-  { title: 'Descripción', key: 'DESCRIPCION' },
-  { title: 'Importe', key: 'IMPORTE' }
+  { title: 'Apellido y nombre', key: 'APENOM', sortable: false },
+  { title: 'Descripción', key: 'DESCRIPCION', sortable: false },
+  { title: 'Importe', key: 'IMPORTE', sortable: false }
+  //  { title: 'FechaDev', key: 'FECHADEV', sortable: false }
 ]
 
 function financial(x) {

@@ -16,13 +16,13 @@ const { data, error, isPending } = useResLiqCod(() => store.filterString)
 const props = defineProps(['fileName'])
 
 const headers = [
-  { title: 'Rep', key: 'IDREP', align: 'start' },
-  { title: 'Codigo', key: 'CODIGO', align: 'end' },
-  { title: 'Subcodigo', key: 'SUBCODIGO', align: 'start' },
-  { title: 'Descripción', key: 'DESCRIPCION', align: 'start' },
-  { title: 'Cantidad', key: 'CANTIDAD', align: 'end' },
-  { title: 'Importe', key: 'IMPORTE', align: 'end' },
-  { title: 'Tipo total', key: 'TIPOTOTAL', align: 'end' }
+  { title: 'Rep', key: 'IDREP', align: 'start', sortable: false },
+  { title: 'Codigo', key: 'CODIGO', align: 'end', sortable: false },
+  { title: 'Subcodigo', key: 'SUBCODIGO', align: 'start', sortable: false },
+  { title: 'Descripción', key: 'DESCRIPCION', align: 'start', sortable: false },
+  { title: 'Cantidad', key: 'CANTIDAD', align: 'end', sortable: false },
+  { title: 'Importe', key: 'IMPORTE', align: 'end', sortable: false },
+  { title: 'Tipo total', key: 'TIPOTOTAL', align: 'end', sortable: false }
 ]
 
 function handleDownload() {
@@ -36,19 +36,45 @@ function financial(x) {
 
 function exportFile() {
   const map1 = data.value.map((x) => {
-    return {
-      REP: x.IDREP,
-      CODIGO: x.CODIGO,
-      SUBCODIGO: x.SUBCODIGO,
-      DESCRIPCION: x.DESCRIPCION,
-      CANTIDAD: x.CANTIDAD,
-      IMPORTE: x.IMPORTE,
-      TIPOTOTAL: x.TIPOTOTAL
-    }
+    return [x.IDREP, x.CODIGO, x.SUBCODIGO, x.DESCRIPCION, x.CANTIDAD, x.IMPORTE, x.TIPOTOTAL]
   })
 
+  const tituloTabla = [
+    'Rep',
+    'Codigo',
+    'Subcódigo',
+    'Descripción',
+    'Cantidad',
+    'Importe',
+    'TipoTotal'
+  ]
+  const tituloTablaFormato = tituloTabla.map((t) => ({
+    v: t,
+    s: { font: { bold: true, sz: 12 } } // sz: Tamaño de letra (14 por ejemplo)
+  }))
+  map1.unshift(tituloTablaFormato)
+
+  const linea = ['']
+  map1.unshift(linea)
+
+  // agrega título secundario
+  const tituloSec = ['', store.liqString]
+  const tituloSecFormato = tituloSec.map((t) => ({
+    v: t,
+    s: { font: { bold: true, sz: 12 } } // sz: Tamaño de letra (14 por ejemplo)
+  }))
+  map1.unshift(tituloSecFormato)
+
+  // Agrega Título Principal
+  const tituloPpal = ['', 'Resúmen de códigos por liquidación']
+  const tituloPpalFormato = tituloPpal.map((t) => ({
+    v: t,
+    s: { font: { bold: true, sz: 12 } } // sz: Tamaño de letra (14 por ejemplo)
+  }))
+  map1.unshift(tituloPpalFormato)
+
   /* generate worksheet from state */
-  const ws = utils.json_to_sheet(map1)
+  const ws = utils.aoa_to_sheet(map1)
   ws['!cols'] = [
     { wch: 10 },
     { wch: 10 },

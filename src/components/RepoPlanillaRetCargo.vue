@@ -8,7 +8,9 @@ const store = useFilterStore()
 
 function useResLiqCod(getId) {
   console.log(`${store.URL_API}/view/retencionesCargo?${getId()}`)
-  return useFetch(() => `${store.URL_API}/view/retencionesCargo?${getId()}`)
+  return useFetch(
+    () => `${store.URL_API}/view/retencionesCargo?${getId()}&sort={"IdRep":"asc","Orden":"asc"}`
+  )
 }
 
 const { data, error, isPending } = useResLiqCod(() => store.filterString)
@@ -19,30 +21,30 @@ const headers = [
   {
     title: 'REP',
     align: 'start',
-    sortable: true,
+    sortable: false,
     key: 'IDREP'
   },
   {
     title: 'ORDEN',
     align: 'start',
-    sortable: true,
+    sortable: false,
     key: 'ORDEN'
   },
   {
     title: 'AFILIADO',
     align: 'start',
-    sortable: true,
+    sortable: false,
     key: 'AFILIADO'
   },
-  { title: 'Categoría', key: 'CATEGORIA' },
-  { title: 'Sit. Rev.', key: 'SITREV' },
+  { title: 'Categoría', key: 'CATEGORIA', sortable: false },
+  { title: 'Sit. Rev.', key: 'SITREV', sortable: false },
   {
     title: 'Documento',
     align: 'start',
-    sortable: true,
+    sortable: false,
     key: 'DOCUMENTO'
   },
-  { title: 'Apellido y nombre', key: 'APENOM' }
+  { title: 'Apellido y nombre', key: 'APENOM', sortable: false }
 ]
 
 function handleDownload() {
