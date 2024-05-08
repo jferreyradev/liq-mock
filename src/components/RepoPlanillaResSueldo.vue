@@ -7,7 +7,7 @@ import RepoHeader from './RepoHeader.vue'
 const store = useFilterStore()
 
 function useResLiqCod(getId) {
-  console.log(`${store.URL_API}/view/resumenSueldos?${getId()}`)
+  console.log(`${store.URL_API}/view/resumenSueldos?${getId()}&sort={"IdRep":"asc","Orden":"asc"}`)
   return useFetch(() => `${store.URL_API}/view/resumenSueldos?${getId()}`)
 }
 

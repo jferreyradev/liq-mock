@@ -16,9 +16,9 @@ import { ref } from 'vue'
 
 const reportes = [
   //{ title: 'Resumen Liquidacion', value: 1 },
-  { title: 'Detalle por concepto (153)', value: 2 },
-  //{ title: 'Resumen de liquidación por codigos', value: 4 },
-  { title: 'Resumen pedido FDO', value: 5 },
+  //{ title: 'Detalle por concepto (153)', value: 2 },
+  { title: 'Resumen de liquidación por codigos', value: 4 },
+  //{ title: 'Resumen pedido FDO', value: 5 },
   { title: 'Resumen Aportes Patronales', value: 6 },
   { title: 'Planilla de Det. Liq.', value: 7 },
   { title: 'Planilla de Retenciones', value: 8 },

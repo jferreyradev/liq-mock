@@ -7,8 +7,7 @@ import RepoHeader from './RepoHeader.vue'
 const store = useFilterStore()
 
 function useResLiqCod(getId) {
-  console.log(`${store.URL_API}/view/planillaDetLiq?${getId()}`)
-  return useFetch(() => `${store.URL_API}/view/planillaDetLiq?${getId()}`)
+  return useFetch(() => `${store.URL_API}/view/planillaDetLiq?${getId()}&sort={"IdRep":"asc","Orden":"asc","Codigo":"asc","SubCodigo":"asc"}`)
 }
 
 const { data, error, isPending } = useResLiqCod(() => store.filterString)
@@ -19,19 +18,19 @@ const headers = [
   {
     title: 'REP',
     align: 'start',
-    sortable: true,
+    sortable: false,
     key: 'IDREP'
   },
   {
     title: 'ORDEN',
     align: 'start',
-    sortable: true,
+    sortable: false,
     key: 'ORDEN'
   },
   {
     title: 'Documento',
     align: 'start',
-    sortable: true,
+    sortable: false,
     key: 'DOCUMENTO'
   },
   { title: 'Apellido y nombre', key: 'APENOM' },

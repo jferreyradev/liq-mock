@@ -7,7 +7,7 @@ import RepoHeader from './RepoHeader.vue'
 const store = useFilterStore()
 
 function useResLiqCod(getId) {
-  return useFetch(() => `${store.URL_API}/view/planillaRet?${getId()}`)
+  return useFetch(() => `${store.URL_API}/view/planillaRet?${getId()}&sort={"IdRep":"asc","Orden":"asc","Codigo":"asc","SubCodigo":"asc"}`)
 }
 
 const { data, error, isPending } = useResLiqCod(() => store.filterString)

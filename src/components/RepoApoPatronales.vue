@@ -7,6 +7,7 @@ import RepoHeader from './RepoHeader.vue'
 const store = useFilterStore()
 
 function useResLiqCod(getId) {
+  
   return useFetch(() => `${store.URL_API}/view/aportesPat?${getId()}`)
 }
 
