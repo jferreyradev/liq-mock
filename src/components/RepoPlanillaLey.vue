@@ -8,7 +8,7 @@ const store = useFilterStore()
 
 function useResLiqCod(getId) {
   return useFetch(
-    () => `${store.URL_API}/view/planillaLey?${getId()}&sort={"IdRep":"asc","Orden":"asc"}`
+    () => `${store.URL_API}/view/planillaLey?${getId()}&sort={"IdRep":"asc","Orden":"asc","FechaDev":"asc"}`
   )
 }
 
@@ -37,12 +37,20 @@ const headers = [
   },
   { title: 'Apellido y nombre', key: 'APENOM', sortable: false },
   { title: 'Descripción', key: 'DESCRIPCION', sortable: false },
-  { title: 'Importe', key: 'IMPORTE', sortable: false }
-  //  { title: 'FechaDev', key: 'FECHADEV', sortable: false }
+  { title: 'Importe', key: 'IMPORTE', sortable: false },
+  { title: 'FechaDev', key: 'FECHADEV', sortable: false }
 ]
 
 function financial(x) {
   return Number.parseFloat(x).toFixed(2)
+}
+
+const getVto = (vto) => {
+  if (vto) {
+    const d = vto.split('-')
+    return `${d[1]}/${d[0]}`
+  }
+  return null
 }
 
 function handleDownload() {
@@ -52,10 +60,10 @@ function handleDownload() {
 
 function exportFile() {
   const map1 = data.value.map((x) => {
-    return [x.IDREP, x.ORDEN, x.DOCUMENTO, x.APENOM, x.DESCRIPCION, x.IMPORTE]
+    return [x.IDREP, x.ORDEN, x.DOCUMENTO, x.APENOM, x.DESCRIPCION, x.IMPORTE, getVto(x.FECHADEV)]
   })
 
-  const tituloTabla = ['Rep', 'Orden', 'Documento', 'Apellido y Nombre', 'Descripción', 'Importe']
+  const tituloTabla = ['Rep', 'Orden', 'Documento', 'Apellido y Nombre', 'Descripción', 'Importe', 'Fecha Dev.']
   const tituloTablaFormato = tituloTabla.map((t) => ({
     v: t,
     s: { font: { bold: true, sz: 12 } } // sz: Tamaño de letra (14 por ejemplo)
@@ -118,6 +126,7 @@ function exportFile() {
             <td class="text-left">{{ item.APENOM }}</td>
             <td class="text-left">{{ item.DESCRIPCION }}</td>
             <td class="text-right">{{ financial(item.IMPORTE) }}</td>
+            <td class="text-center">{{ getVto(item.FECHADEV) }}</td>
           </tr>
         </template>
       </v-data-table>

@@ -3,31 +3,16 @@ import { utils, writeFileXLSX } from 'xlsx'
 import { useFilterStore } from '@/stores/filterStore'
 import { useFetch } from '@/composables/useFetch'
 import RepoHeader from './RepoHeader.vue'
-import { ref } from 'vue'
+
 
 const store = useFilterStore()
 
-function useResLiqCod153(getId) {
-  return useFetch(() => `${store.URL_API}/view/resumenCodigo?${getId()}&Codigo=153`)
+function useResLiqCod(getId) {
+  return useFetch(() => `${store.URL_API}/view/planillaRetCPA?${getId()}&sort={"IdRep":"asc","Orden":"asc","Periodo":"asc"}`)
 }
 
-function useResLiqCod154(getId) {
-  return useFetch(() => `${store.URL_API}/view/resumenCodigo?${getId()}&Codigo=154`)
-}
-/*
-function obtieneDatos(cod153, cod154) {
-  let arrayResultante = false
-  if (cod153.data || cod154.data) {
-    if (cod153.data) arrayResultante = arrayResultante.concat(cod153.data)
-    if (cod154.data) arrayResultante = arrayResultante.concat(cod154.data)
-  }
-  return arrayResultante
-}
-const cod153 = useResLiqCod153(() => store.filterString)
-const cod154 = useResLiqCod154(() => store.filterString)
-*/
-//const data = obtieneDatos(cod153, cod154)
-const c153 = ref(useResLiqCod153(() => store.filterString))
+
+const { data, error, isPending } = useResLiqCod(() => store.filterString)
 
 const props = defineProps(['title', 'subtitle', 'fileName'])
 
@@ -35,20 +20,32 @@ const headers = [
   {
     title: 'REP',
     align: 'start',
-    sortable: true,
+    sortable: false,
     key: 'IDREP'
   },
   {
     title: 'DNI',
     align: 'start',
-    sortable: true,
+    sortable: false,
     key: 'DOCUMENTO'
   },
-  { title: 'Apellido y nombre', key: 'APENOM' },
-  { title: 'Código', key: 'CODIGO', align: 'center' },
-  { title: 'Subcódigo', key: 'SUBCODIGO', align: 'center' },
-  { title: 'Importe', key: 'IMPORTE', align: 'end' }
+  { title: 'Apellido y nombre', key: 'APENOM', sortable: false },
+  { title: 'Código', key: 'CODIGO', align: 'center', sortable: false },
+  { title: 'Subcódigo', key: 'SUBCODIGO', align: 'center', sortable: false },
+  { title: 'Importe', key: 'IMPORTE', align: 'end', sortable: false },
+  { title: 'VTO', key: 'vto', align: 'end', sortable: false }
 ]
+
+function financial(x) {
+  return Number.parseFloat(x).toFixed(2)
+}
+const getVto = (vto) => {
+  if (vto) {
+    const d = vto.split('-')
+    return `${d[1]}/${d[0]}`
+  }
+  return null
+}
 
 function handleDownload() {
   console.log('download')
@@ -56,20 +53,47 @@ function handleDownload() {
 }
 
 function exportFile() {
-  const map1 = c153.value.data.value.map((x) => {
-    return {
-      REP: x.IDREP,
-      DNI: x.DOCUMENTO,
-      NOMBRE: x.APENOM,
-      CODIGO: x.CODIGO,
-      SUBCODIGO: x.SUBCODIGO,
-      IMPORTE: x.IMPORTE
-    }
+  const map1 = data.value.map((x) => {
+    return [
+      x.IDREP,
+      x.DOCUMENTO,
+      x.APENOM,
+      x.CODIGO,
+      x.SUBCODIGO,
+      x.IMPORTE,
+      getVto(x.VTO)
+  ]
   })
 
+  const tituloTabla = ['Rep', 'Orden', 'Documento', 'Apellido y Nombre', 'Descripción', 'Importe', 'Vto']
+  const tituloTablaFormato = tituloTabla.map((t) => ({
+    v: t,
+    s: { font: { bold: true, sz: 12 } } // sz: Tamaño de letra (14 por ejemplo)
+  }))
+  map1.unshift(tituloTablaFormato)
+
+  const linea = ['']
+  map1.unshift(linea)
+
+  // agrega título secundario
+  const tituloSec = ['', store.liqString]
+  const tituloSecFormato = tituloSec.map((t) => ({
+    v: t,
+    s: { font: { bold: true, sz: 12 } } // sz: Tamaño de letra (14 por ejemplo)
+  }))
+  map1.unshift(tituloSecFormato)
+
+  // Agrega Título Principal
+  const tituloPpal = ['', 'Resumen de códigos de retención CPA']
+  const tituloPpalFormato = tituloPpal.map((t) => ({
+    v: t,
+    s: { font: { bold: true, sz: 12 } } // sz: Tamaño de letra (14 por ejemplo)
+  }))
+  map1.unshift(tituloPpalFormato)
   /* generate worksheet from state */
-  const ws = utils.json_to_sheet(map1)
-  ws['!cols'] = [{ wch: 10 }, { wch: 10 }, { wch: 35 }, { wch: 15 }, { wch: 15 }, { wch: 20 }]
+  const ws = utils.aoa_to_sheet(map1)
+
+  ws['!cols'] = [{ wch: 10 }, { wch: 10 }, { wch: 35 }, { wch: 15 }, { wch: 15 }, { wch: 20 }, { wch: 10 }]
   /* create workbook and append worksheet */
   const wb = utils.book_new()
   utils.book_append_sheet(wb, ws, 'Data')
@@ -84,20 +108,31 @@ function exportFile() {
 <template>
   <v-container>
     <RepoHeader title="Resumen de códigos de retención CPA" :subtitle="store.liqString">
-      <v-btn color="primary" @click="handleDownload" :disabled="!c153.value.data">Descargar</v-btn>
+      <v-btn color="primary" @click="handleDownload" :disabled="!data">Descargar</v-btn>
     </RepoHeader>
     <v-row>
-      <div v-if="c153.value.isPending">loading...</div>
+      <div v-if="isPending">loading...</div>
       <v-data-table
-        v-else-if="c153.value.data"
+        v-else-if="data"
         class="text-caption"
         hover
         density="compact"
-        :items="c153.value.data"
+        :items="data"
         :headers="headers"
       >
+      <template v-slot:item="{ item }">
+          <tr class="pa-0 ma-0">
+            <td class="text-right">{{ item.IDREP }}</td>
+            <td class="text-right">{{ item.DOCUMENTO }}</td>
+            <td class="text-left">{{ item.APENOM }}</td>
+            <td class="text-right">{{ item.CODIGO }}</td>
+            <td class="text-right">{{ item.SUBCODIGO }}</td>
+            <td class="text-right">{{ financial(item.IMPORTE) }}</td>
+            <td class="text-center">{{ getVto(item.VTO) }}</td>
+          </tr>
+        </template>
       </v-data-table>
-      <div v-else-if="c153.value.error">No se puede obtener los datos solicitados.</div>
+      <div v-else-if="error">No se puede obtener los datos solicitados.</div>
     </v-row>
   </v-container>
 </template>
