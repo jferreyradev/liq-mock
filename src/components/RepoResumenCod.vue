@@ -3,10 +3,12 @@ import { utils, writeFileXLSX } from 'xlsx'
 import { useFilterStore } from '@/stores/filterStore'
 import { useFetch } from '@/composables/useFetch'
 import RepoHeader from './RepoHeader.vue'
+import {financial, agregaTitulosExcel} from '@/utils/reportes.js'
 
 const store = useFilterStore()
 
 function useResLiqCod(getId) {
+  console.log(`${store.URL_API}/view/resumenCodLiq?${getId()}`)
   return useFetch(() => `${store.URL_API}/view/resumenCodLiq?${getId()}`)
 }
 
@@ -15,13 +17,13 @@ const { data, error, isPending } = useResLiqCod(() => store.filterString)
 const props = defineProps(['fileName'])
 
 const headers = [
-  { title: 'Rep', key: 'IDREP', align: 'start' },
-  { title: 'Codigo', key: 'CODIGO', align: 'end' },
-  { title: 'Subcodigo', key: 'SUBCODIGO', align: 'start' },
-  { title: 'Descripción', key: 'DESCRIPCION', align: 'start' },
-  { title: 'Cantidad', key: 'CANTIDAD', align: 'end' },
-  { title: 'Importe', key: 'IMPORTE', align: 'end' },
-  { title: 'Tipo total', key: 'TIPOTOTAL', align: 'end' }
+  { title: 'Rep', key: 'IDREP', align: 'start', sortable: false },
+  { title: 'Codigo', key: 'CODIGO', align: 'end', sortable: false },
+  { title: 'Subcodigo', key: 'SUBCODIGO', align: 'start', sortable: false },
+  { title: 'Descripción', key: 'DESCRIPCION', align: 'start', sortable: false },
+  { title: 'Cantidad', key: 'CANTIDAD', align: 'end', sortable: false },
+  { title: 'Importe', key: 'IMPORTE', align: 'end', sortable: false },
+  { title: 'Tipo total', key: 'TIPOTOTAL', align: 'end', sortable: false }
 ]
 
 function handleDownload() {
@@ -29,26 +31,35 @@ function handleDownload() {
   exportFile()
 }
 
-function financial(x) {
-  return Number.parseFloat(x).toFixed(2)
-}
+
 
 function exportFile() {
   const map1 = data.value.map((x) => {
-    return {
-      REP : x.IDREP,
-      CODIGO: x.CODIGO,
-      SUBCODIGO: x.SUBCODIGO,
-      DESCRIPCION: x.DESCRIPCION,
-      CANTIDAD: x.CANTIDAD,
-      IMPORTE: x.IMPORTE,
-      TIPOTOTAL: x.TIPOTOTAL
-    }
+    return [x.IDREP, x.CODIGO, x.SUBCODIGO, x.DESCRIPCION, x.CANTIDAD, x.IMPORTE, x.TIPOTOTAL]
   })
 
-  /* generate worksheet from state */
-  const ws = utils.json_to_sheet(map1)
-  ws['!cols'] = [{ wch: 10 },{ wch: 10 }, { wch: 10 }, { wch: 25 }, { wch: 10 }, { wch: 20 }, { wch: 10 }]
+  const titulosTabla = [
+    'Rep',
+    'Codigo',
+    'Subcódigo',
+    'Descripción',
+    'Cantidad',
+    'Importe',
+    'TipoTotal'
+  ]
+  const filtros = store.liqString
+  const tituloReporte = 'Resúmen de códigos por liquidación'
+  agregaTitulosExcel(map1,tituloReporte, filtros, titulosTabla) 
+  const ws = utils.aoa_to_sheet(map1)
+  ws['!cols'] = [
+    { wch: 10 },
+    { wch: 10 },
+    { wch: 10 },
+    { wch: 25 },
+    { wch: 10 },
+    { wch: 20 },
+    { wch: 10 }
+  ]
   /* create workbook and append worksheet */
   const wb = utils.book_new()
   utils.book_append_sheet(wb, ws, 'Data')

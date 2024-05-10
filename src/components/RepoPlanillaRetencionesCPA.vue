@@ -3,13 +3,14 @@ import { utils, writeFileXLSX } from 'xlsx'
 import { useFilterStore } from '@/stores/filterStore'
 import { useFetch } from '@/composables/useFetch'
 import RepoHeader from './RepoHeader.vue'
-import {financial, agregaTitulosExcel} from '@/utils/reportes.js'
+import {financial, getVto, agregaTitulosExcel} from '@/utils/reportes.js'
 
 const store = useFilterStore()
 
 function useResLiqCod(getId) {
-  return useFetch(() => `${store.URL_API}/view/aportesPat?${getId()}`)
+  return useFetch(() => `${store.URL_API}/view/planillaRetCPA?${getId()}&sort={"IdRep":"asc","Orden":"asc","Periodo":"asc"}`)
 }
+
 
 const { data, error, isPending } = useResLiqCod(() => store.filterString)
 
@@ -23,21 +24,16 @@ const headers = [
     key: 'IDREP'
   },
   {
-    title: 'ORDEN',
-    align: 'start',
-    sortable: false,
-    key: 'ORDEN'
-  },
-  {
-    title: 'Documento',
+    title: 'DNI',
     align: 'start',
     sortable: false,
     key: 'DOCUMENTO'
   },
   { title: 'Apellido y nombre', key: 'APENOM', sortable: false },
-  { title: 'Pat. Jub.', key: 'PATJUB', sortable: false },
-  { title: 'Pat. OS', key: 'PATOS', sortable: false },
-  { title: 'Pat. ART', key: 'PATART', sortable: false }
+  { title: 'Código', key: 'CODIGO', align: 'center', sortable: false },
+  { title: 'Subcódigo', key: 'SUBCODIGO', align: 'center', sortable: false },
+  { title: 'Importe', key: 'IMPORTE', align: 'end', sortable: false },
+  { title: 'VTO', key: 'vto', align: 'end', sortable: false }
 ]
 
 
@@ -47,45 +43,31 @@ function handleDownload() {
 }
 
 function exportFile() {
-  const map1 = data.value.map((x) => [
-    x.IDREP,
-    x.ORDEN,
-    x.DOCUMENTO,
-    x.APENOM,
-    x.PATJUB,
-    x.PATOS,
-    x.PATART
-  ])
-  const titulosTabla = [
-    'Rep',
-    'Orden',
-    'Documento',
-    'Apellido y Nombre',
-    'Pat. Jub',
-    'Pat. OS',
-    'Pat. ART'
+  const map1 = data.value.map((x) => {
+    return [
+      x.IDREP,
+      x.DOCUMENTO,
+      x.APENOM,
+      x.CODIGO,
+      x.SUBCODIGO,
+      x.IMPORTE,
+      getVto(x.VTO)
   ]
+  })
+
+  const titulosTabla = ['Rep', 'Orden', 'Documento', 'Apellido y Nombre', 'Descripción', 'Importe', 'Vto']
   const filtros = store.liqString
-  const tituloReporte = 'Aportes Patronales'
+  const tituloReporte = 'Resumen de códigos de retención CPA'
   agregaTitulosExcel(map1,tituloReporte, filtros, titulosTabla) 
   const ws = utils.aoa_to_sheet(map1)
-  
-  ws['!cols'] = [
-    { wch: 10 },
-    { wch: 10 },
-    { wch: 15 },
-    { wch: 35 },
-    { wch: 15 },
-    { wch: 15 },
-    { wch: 15 }
-  ]
-
+    
+  ws['!cols'] = [{ wch: 10 }, { wch: 10 }, { wch: 35 }, { wch: 15 }, { wch: 15 }, { wch: 20 }, { wch: 10 }]
   /* create workbook and append worksheet */
   const wb = utils.book_new()
   utils.book_append_sheet(wb, ws, 'Data')
 
   /* export to XLSX */
-  writeFileXLSX(wb, props.fileName || `${store.liqCompactString}_ResumenPatJub.xlsx`, {
+  writeFileXLSX(wb, props.fileName || `${store.liqCompactString}_PlanillasRetCPA.xlsx`, {
     compression: true
   })
 }
@@ -93,7 +75,7 @@ function exportFile() {
 
 <template>
   <v-container>
-    <RepoHeader title="Resumen de Aportes Patromales" :subtitle="store.liqString">
+    <RepoHeader title="Resumen de códigos de retención CPA" :subtitle="store.liqString">
       <v-btn color="primary" @click="handleDownload" :disabled="!data">Descargar</v-btn>
     </RepoHeader>
     <v-row>
@@ -106,15 +88,15 @@ function exportFile() {
         :items="data"
         :headers="headers"
       >
-        <template v-slot:item="{ item }">
+      <template v-slot:item="{ item }">
           <tr class="pa-0 ma-0">
             <td class="text-right">{{ item.IDREP }}</td>
-            <td class="text-right">{{ item.ORDEN }}</td>
             <td class="text-right">{{ item.DOCUMENTO }}</td>
             <td class="text-left">{{ item.APENOM }}</td>
-            <td class="text-right">{{ financial(item.PATJUB) }}</td>
-            <td class="text-right">{{ financial(item.PATOS) }}</td>
-            <td class="text-right">{{ financial(item.PATART) }}</td>
+            <td class="text-right">{{ item.CODIGO }}</td>
+            <td class="text-right">{{ item.SUBCODIGO }}</td>
+            <td class="text-right">{{ financial(item.IMPORTE) }}</td>
+            <td class="text-center">{{ getVto(item.VTO) }}</td>
           </tr>
         </template>
       </v-data-table>

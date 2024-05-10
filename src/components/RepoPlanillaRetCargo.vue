@@ -3,12 +3,15 @@ import { utils, writeFileXLSX } from 'xlsx'
 import { useFilterStore } from '@/stores/filterStore'
 import { useFetch } from '@/composables/useFetch'
 import RepoHeader from './RepoHeader.vue'
+import {agregaTitulosExcel} from '@/utils/reportes.js'
 
 const store = useFilterStore()
 
 function useResLiqCod(getId) {
   console.log(`${store.URL_API}/view/retencionesCargo?${getId()}`)
-   return useFetch(() => `${store.URL_API}/view/retencionesCargo?${getId()}`)
+  return useFetch(
+    () => `${store.URL_API}/view/retencionesCargo?${getId()}&sort={"IdRep":"asc","Orden":"asc"}`
+  )
 }
 
 const { data, error, isPending } = useResLiqCod(() => store.filterString)
@@ -19,33 +22,31 @@ const headers = [
   {
     title: 'REP',
     align: 'start',
-    sortable: true,
+    sortable: false,
     key: 'IDREP'
   },
   {
     title: 'ORDEN',
     align: 'start',
-    sortable: true,
+    sortable: false,
     key: 'ORDEN'
   },
   {
     title: 'AFILIADO',
     align: 'start',
-    sortable: true,
+    sortable: false,
     key: 'AFILIADO'
   },
-  { title: 'Categoría', key: 'CATEGORIA' },
-  { title: 'Sit. Rev.', key: 'SITREV' },
+  { title: 'Categoría', key: 'CATEGORIA', sortable: false },
+  { title: 'Sit. Rev.', key: 'SITREV', sortable: false },
   {
     title: 'Documento',
     align: 'start',
-    sortable: true,
+    sortable: false,
     key: 'DOCUMENTO'
   },
-  { title: 'Apellido y nombre', key: 'APENOM' } 
+  { title: 'Apellido y nombre', key: 'APENOM', sortable: false }
 ]
-
-
 
 function handleDownload() {
   console.log('download')
@@ -54,19 +55,23 @@ function handleDownload() {
 
 function exportFile() {
   const map1 = data.value.map((x) => {
-    return {
-      REP: x.IDREP,
-      ORDEN: x.ORDEN,
-      AFILIADO: x.AFILIADO,
-      CATEGORIA: x.CATEGORIA, 
-      SITREV: x.SITREV,
-      DNI: x.DOCUMENTO,
-      NOMBRE: x.APENOM
-    }
+    return [x.IDREP, x.ORDEN, x.AFILIADO, x.CATEGORIA, x.SITREV, x.DOCUMENTO, x.APENOM]
   })
 
-  /* generate worksheet from state */
-  const ws = utils.json_to_sheet(map1)
+  const titulosTabla = [
+    'Rep',
+    'Orden',
+    'Afiliado',
+    'Categoría',
+    'Sit. de Rev.',
+    'Documento',
+    'Apellido y Nombre'
+  ]
+  const filtros = store.liqString
+  const tituloReporte = 'Retenciones de Cargo'
+  agregaTitulosExcel(map1,tituloReporte, filtros, titulosTabla) 
+  const ws = utils.aoa_to_sheet(map1)
+  
   ws['!cols'] = [
     { wch: 10 },
     { wch: 10 },

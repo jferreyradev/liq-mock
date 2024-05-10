@@ -3,12 +3,15 @@ import { utils, writeFileXLSX } from 'xlsx'
 import { useFilterStore } from '@/stores/filterStore'
 import { useFetch } from '@/composables/useFetch'
 import RepoHeader from './RepoHeader.vue'
+import {financial, getVto, agregaTitulosExcel} from '@/utils/reportes.js'
 
 const store = useFilterStore()
 
 function useResLiqCod(getId) {
- 
-  return useFetch(() => `${store.URL_API}/view/planillaDetLiq?${getId()}`)
+  return useFetch(
+    () =>
+      `${store.URL_API}/view/planillaDetLiq?${getId()}&sort={"IdRep":"asc","Orden":"asc","FechaDev":"asc","Codigo":"asc","SubCodigo":"asc"}`
+  )
 }
 
 const { data, error, isPending } = useResLiqCod(() => store.filterString)
@@ -19,41 +22,30 @@ const headers = [
   {
     title: 'REP',
     align: 'start',
-    sortable: true,
+    sortable: false,
     key: 'IDREP'
   },
   {
     title: 'ORDEN',
     align: 'start',
-    sortable: true,
+    sortable: false,
     key: 'ORDEN'
   },
   {
     title: 'Documento',
     align: 'start',
-    sortable: true,
+    sortable: false,
     key: 'DOCUMENTO'
   },
-  { title: 'Apellido y nombre', key: 'APENOM' },
-  { title: 'Código', key: 'CODIGO' },
-  { title: 'SubCod.', key: 'SUBCODIGO' },
-  { title: 'Descripción', key: 'DESCRIPCION' },
-  { title: 'VTO', key: 'VTO' },
-  { title: 'Importe', key: 'IMPORTE' },
-  { title: 'Fecha Dev.', key: 'FECHADEV' }
+  { title: 'Apellido y nombre', key: 'APENOM', sortable: false },
+  { title: 'Código', key: 'CODIGO', sortable: false },
+  { title: 'SubCod.', key: 'SUBCODIGO', sortable: false },
+  { title: 'Descripción', key: 'DESCRIPCION', sortable: false },
+  { title: 'VTO', key: 'VTO', sortable: false },
+  { title: 'Importe', key: 'IMPORTE', sortable: false },
+  { title: 'Fecha Dev.', key: 'FECHADEV', sortable: false }
 ]
 
-function financial(x) {
-  return Number.parseFloat(x).toFixed(2)
-}
-
-const getVto = (vto) => {
-  if (vto) {
-    const d = vto.split('-')
-    return `${d[1]}/${d[0]}`
-  }
-  return null
-}
 
 function handleDownload() {
   console.log('download')
@@ -62,22 +54,37 @@ function handleDownload() {
 
 function exportFile() {
   const map1 = data.value.map((x) => {
-    return {
-      REP: x.IDREP,
-      ORDEN: x.ORDEN,
-      DNI: x.DOCUMENTO,
-      NOMBRE: x.APENOM,
-      PATJUB: x.CODIGO,
-      PATOS: x.SUBCODIGO,
-      PATART: x.DESCRIPCION,
-      VTO: getVto(x.VTO),
-      IMPORTE: x.IMPORTE,
-      FECHADEV: getVto(x.FECHADEV)
-    }
+    return [
+      x.IDREP,
+      x.ORDEN,
+      x.DOCUMENTO,
+      x.APENOM,
+      x.CODIGO,
+      x.SUBCODIGO,
+      x.DESCRIPCION,
+      getVto(x.VTO),
+      x.IMPORTE,
+      getVto(x.FECHADEV)
+    ]
   })
 
-  /* generate worksheet from state */
-  const ws = utils.json_to_sheet(map1)
+  const titulosTabla = [
+    'Rep',
+    'Orden',
+    'Documento',
+    'Apellido y Nombre',
+    'Código',
+    'Subcódigo',
+    'Descripción',
+    'Vencimiento',
+    'Importe',
+    'Fecha Dev.'
+  ]
+  const filtros = store.liqString
+  const tituloReporte = 'Planilla de Detalle de Liquidación'
+  agregaTitulosExcel(map1,tituloReporte, filtros, titulosTabla) 
+  const ws = utils.aoa_to_sheet(map1)
+   
   ws['!cols'] = [
     { wch: 10 },
     { wch: 10 },

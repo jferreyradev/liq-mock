@@ -3,11 +3,13 @@ import { utils, writeFileXLSX } from 'xlsx'
 import { useFilterStore } from '@/stores/filterStore'
 import { useFetch } from '@/composables/useFetch'
 import RepoHeader from './RepoHeader.vue'
+import {financial, agregaTitulosExcel} from '@/utils/reportes.js'
 
 const store = useFilterStore()
 
 function useResLiqCod(getId) {
-   return useFetch(() => `${store.URL_API}/view/resumenSueldos?${getId()}`)
+  console.log(`${store.URL_API}/view/resumenSueldos?${getId()}`)
+  return useFetch(() => `${store.URL_API}/view/resumenSueldos?${getId()}`)
 }
 
 const { data, error, isPending } = useResLiqCod(() => store.filterString)
@@ -18,35 +20,31 @@ const headers = [
   {
     title: 'REP',
     align: 'start',
-    sortable: true,
+    sortable: false,
     key: 'IDREP'
   },
   {
     title: 'ORDEN',
     align: 'start',
-    sortable: true,
+    sortable: false,
     key: 'ORDEN'
   },
   {
     title: 'Documento',
     align: 'start',
-    sortable: true,
+    sortable: false,
     key: 'DOCUMENTO'
   },
-  { title: 'Apellido y nombre', key: 'APENOM' },
-  { title: 'Mes Liq.', key: 'MESLIQ' },
-  { title: 'Categoría', key: 'CAT' },
-  { title: 'Hab. c/Ap.', key: 'HABCONAP' },
-  { title: 'Hab. S/Ap.', key: 'HABSINAP' },
-  { title: 'Asig. Fam.', key: 'ASIGNFAM' },
-  { title: 'Desc. Ley', key: 'DESCLEY' },
-  { title: 'Desc. Varios', key: 'DESCVARIOS' },
-  { title: 'Neto', key: 'NETO' }
+  { title: 'Apellido y nombre', key: 'APENOM', sortable: false },
+  { title: 'Mes Liq.', key: 'MESLIQ', sortable: false },
+  { title: 'Categoría', key: 'CAT', sortable: false },
+  { title: 'Hab. c/Ap.', key: 'HABCONAP', sortable: false },
+  { title: 'Hab. S/Ap.', key: 'HABSINAP', sortable: false },
+  { title: 'Asig. Fam.', key: 'ASIGNFAM', sortable: false },
+  { title: 'Desc. Ley', key: 'DESCLEY', sortable: false },
+  { title: 'Desc. Varios', key: 'DESCVARIOS', sortable: false },
+  { title: 'Neto', key: 'NETO', sortable: false }
 ]
-
-function financial(x) {
-  return Number.parseFloat(x).toFixed(2)
-}
 
 
 function handleDownload() {
@@ -56,24 +54,41 @@ function handleDownload() {
 
 function exportFile() {
   const map1 = data.value.map((x) => {
-    return {
-      REP: x.IDREP,
-      ORDEN: x.ORDEN,
-      DNI: x.DOCUMENTO,
-      NOMBRE: x.APENOM,
-      MESLIQ: x.MESLIQ,
-      CAT: x.CAT, 
-      HAB_CON_AP: x.HABCONAP,
-      HAB_SIN_AP: x.HABSINAP,
-      ASIG_FAM: x.ASIGNFAM,
-      DESC_LEY: x.DESCLEY,
-      DESC_VARIOS: x.DESCVARIOS,
-      NETO: x.NETO
-    }
+    return [
+      x.IDREP,
+      x.ORDEN,
+      x.DOCUMENTO,
+      x.APENOM,
+      x.MESLIQ,
+      x.CAT,
+      x.HABCONAP,
+      x.HABSINAP,
+      x.ASIGNFAM,
+      x.DESCLEY,
+      x.DESCVARIOS,
+      x.NETO
+    ]
   })
 
-  /* generate worksheet from state */
-  const ws = utils.json_to_sheet(map1)
+  const titulosTabla = [
+    'Rep',
+    'Orden',
+    'Documento',
+    'Apellido y Nombre',
+    'Mes Liq.',
+    'categoría',
+    'Hab. con Ap.',
+    'Hab. sin Ap.',
+    'Asign. Fam.',
+    'Desc. de Ley',
+    'Desc. varios',
+    'Neto'
+  ]
+  const filtros = store.liqString
+  const tituloReporte = 'Resumen de Sueldos'
+  agregaTitulosExcel(map1,tituloReporte, filtros, titulosTabla) 
+  const ws = utils.aoa_to_sheet(map1)
+
   ws['!cols'] = [
     { wch: 10 },
     { wch: 10 },

@@ -15,7 +15,7 @@ const { data, error, isPending } = useResLiqFdo(() => store.filterString)
 const props = defineProps(['title', 'subtitle', 'fileName'])
 
 const headers = [
-{
+  {
     title: 'Rep',
     align: 'end',
     sortable: true,
@@ -46,22 +46,57 @@ function financial(x) {
 
 function exportFile() {
   const map1 = data.value.map((x) => {
-    return {
-      REP: x.IDREP,
-      ORDEN: x.ORDEN,
-      DNI: x.PERSONADOCUMENTO,
-      Apellido: x.PERSONAAPELLIDO,
-      Nombre: x.PERSONANOMBRE,
-      'Sujeto a aporte': x.SUJETOAPORTE,
-      AsignacionFamiliar: x.ASIGNACIONFAMILIAR,
-      Neto: x.NETO
-    }
+    return [
+      x.IDREP,
+      x.ORDEN,
+      x.PERSONADOCUMENTO,
+      x.PERSONAAPELLIDO,
+      x.PERSONANOMBRE,
+      x.SUJETOAPORTE,
+      x.ASIGNACIONFAMILIAR,
+      x.NETO
+    ]
   })
 
+  const tituloTabla = [
+    'Rep',
+    'Orden',
+    'Documento',
+    'Apellido',
+    'Nombre',
+    'Sujeto a Aporte',
+    'Asig. Familiar',
+    'Neto'
+  ]
+  const tituloTablaFormato = tituloTabla.map((t) => ({
+    v: t,
+    s: { font: { bold: true, sz: 12 } } // sz: Tamaño de letra (14 por ejemplo)
+  }))
+  map1.unshift(tituloTablaFormato)
+
+  const linea = ['']
+  map1.unshift(linea)
+
+  // agrega título secundario
+  const tituloSec = ['', store.liqString]
+  const tituloSecFormato = tituloSec.map((t) => ({
+    v: t,
+    s: { font: { bold: true, sz: 12 } } // sz: Tamaño de letra (14 por ejemplo)
+  }))
+  map1.unshift(tituloSecFormato)
+
+  // Agrega Título Principal
+  const tituloPpal = ['', 'Resúmen de Liquidación - Fondo']
+  const tituloPpalFormato = tituloPpal.map((t) => ({
+    v: t,
+    s: { font: { bold: true, sz: 12 } } // sz: Tamaño de letra (14 por ejemplo)
+  }))
+  map1.unshift(tituloPpalFormato)
   /* generate worksheet from state */
-  const ws = utils.json_to_sheet(map1)
+  const ws = utils.aoa_to_sheet(map1)
+
   ws['!cols'] = [
-  { wch: 7 },
+    { wch: 7 },
     { wch: 7 },
     { wch: 10 },
     { wch: 15 },
@@ -98,7 +133,7 @@ function exportFile() {
       >
         <template v-slot:item="{ item }">
           <tr class="pa-0 ma-0">
-            <td class="text-right">{{ item.IDREP}}</td>
+            <td class="text-right">{{ item.IDREP }}</td>
             <td class="text-right ma-0 pa-0">{{ item.ORDEN }}</td>
             <td class="text-right">{{ item.PERSONADOCUMENTO }}</td>
             <td class="text-left">{{ item.PERSONAAPELLIDO }}</td>

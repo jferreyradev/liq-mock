@@ -3,11 +3,13 @@ import { utils, writeFileXLSX } from 'xlsx'
 import { useFilterStore } from '@/stores/filterStore'
 import { useFetch } from '@/composables/useFetch'
 import RepoHeader from './RepoHeader.vue'
-
+import {financial, getVto, agregaTitulosExcel} from '@/utils/reportes.js'
 const store = useFilterStore()
 
 function useResLiqCod(getId) {
-   return useFetch(() => `${store.URL_API}/view/planillaLey?${getId()}`)
+  return useFetch(
+    () => `${store.URL_API}/view/planillaLey?${getId()}&sort={"IdRep":"asc","Orden":"asc","FechaDev":"asc"}`
+  )
 }
 
 const { data, error, isPending } = useResLiqCod(() => store.filterString)
@@ -18,29 +20,26 @@ const headers = [
   {
     title: 'REP',
     align: 'start',
-    sortable: true,
+    sortable: false,
     key: 'IDREP'
   },
   {
     title: 'ORDEN',
     align: 'start',
-    sortable: true,
+    sortable: false,
     key: 'ORDEN'
   },
   {
     title: 'Documento',
     align: 'start',
-    sortable: true,
+    sortable: false,
     key: 'DOCUMENTO'
   },
-  { title: 'Apellido y nombre', key: 'APENOM' },
-  { title: 'Descripción', key: 'DESCRIPCION' },
-  { title: 'Importe', key: 'IMPORTE' }
+  { title: 'Apellido y nombre', key: 'APENOM', sortable: false },
+  { title: 'Descripción', key: 'DESCRIPCION', sortable: false },
+  { title: 'Importe', key: 'IMPORTE', sortable: false },
+  { title: 'FechaDev', key: 'FECHADEV', sortable: false }
 ]
-
-function financial(x) {
-  return Number.parseFloat(x).toFixed(2)
-}
 
 
 function handleDownload() {
@@ -48,28 +47,19 @@ function handleDownload() {
   exportFile()
 }
 
+
 function exportFile() {
   const map1 = data.value.map((x) => {
-    return {
-      REP: x.IDREP,
-      ORDEN: x.ORDEN,
-      DNI: x.DOCUMENTO,
-      NOMBRE: x.APENOM,
-      DESCRIPCION: x.DESCRIPCION,
-      IMPORTE: x.IMPORTE
-    }
+    return [x.IDREP, x.ORDEN, x.DOCUMENTO, x.APENOM, x.DESCRIPCION, x.IMPORTE, getVto(x.FECHADEV)]
   })
 
-  /* generate worksheet from state */
-  const ws = utils.json_to_sheet(map1)
-  ws['!cols'] = [
-    { wch: 10 },
-    { wch: 10 },
-    { wch: 15 },
-    { wch: 35 },
-    { wch: 20 },
-    { wch: 15 }
-  ]
+  const titulosTabla = ['Rep', 'Orden', 'Documento', 'Apellido y Nombre', 'Descripción', 'Importe', 'Fecha Dev.']
+  const filtros = store.liqString
+  const tituloReporte = 'Planilla de Ley'
+  agregaTitulosExcel(map1,tituloReporte, filtros, titulosTabla) 
+  const ws = utils.aoa_to_sheet(map1)
+
+  ws['!cols'] = [{ wch: 10 }, { wch: 10 }, { wch: 15 }, { wch: 35 }, { wch: 20 }, { wch: 15 }, { wch: 10 }]
   /* create workbook and append worksheet */
   const wb = utils.book_new()
   utils.book_append_sheet(wb, ws, 'Data')
@@ -104,6 +94,7 @@ function exportFile() {
             <td class="text-left">{{ item.APENOM }}</td>
             <td class="text-left">{{ item.DESCRIPCION }}</td>
             <td class="text-right">{{ financial(item.IMPORTE) }}</td>
+            <td class="text-center">{{ getVto(item.FECHADEV) }}</td>
           </tr>
         </template>
       </v-data-table>
