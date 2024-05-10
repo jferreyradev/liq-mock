@@ -3,7 +3,7 @@ import { utils, writeFileXLSX } from 'xlsx'
 import { useFilterStore } from '@/stores/filterStore'
 import { useFetch } from '@/composables/useFetch'
 import RepoHeader from './RepoHeader.vue'
-
+import {financial, getVto, agregaTitulosExcel} from '@/utils/reportes.js'
 
 const store = useFilterStore()
 
@@ -36,16 +36,6 @@ const headers = [
   { title: 'VTO', key: 'vto', align: 'end', sortable: false }
 ]
 
-function financial(x) {
-  return Number.parseFloat(x).toFixed(2)
-}
-const getVto = (vto) => {
-  if (vto) {
-    const d = vto.split('-')
-    return `${d[1]}/${d[0]}`
-  }
-  return null
-}
 
 function handleDownload() {
   console.log('download')
@@ -65,34 +55,12 @@ function exportFile() {
   ]
   })
 
-  const tituloTabla = ['Rep', 'Orden', 'Documento', 'Apellido y Nombre', 'Descripción', 'Importe', 'Vto']
-  const tituloTablaFormato = tituloTabla.map((t) => ({
-    v: t,
-    s: { font: { bold: true, sz: 12 } } // sz: Tamaño de letra (14 por ejemplo)
-  }))
-  map1.unshift(tituloTablaFormato)
-
-  const linea = ['']
-  map1.unshift(linea)
-
-  // agrega título secundario
-  const tituloSec = ['', store.liqString]
-  const tituloSecFormato = tituloSec.map((t) => ({
-    v: t,
-    s: { font: { bold: true, sz: 12 } } // sz: Tamaño de letra (14 por ejemplo)
-  }))
-  map1.unshift(tituloSecFormato)
-
-  // Agrega Título Principal
-  const tituloPpal = ['', 'Resumen de códigos de retención CPA']
-  const tituloPpalFormato = tituloPpal.map((t) => ({
-    v: t,
-    s: { font: { bold: true, sz: 12 } } // sz: Tamaño de letra (14 por ejemplo)
-  }))
-  map1.unshift(tituloPpalFormato)
-  /* generate worksheet from state */
+  const titulosTabla = ['Rep', 'Orden', 'Documento', 'Apellido y Nombre', 'Descripción', 'Importe', 'Vto']
+  const filtros = store.liqString
+  const tituloReporte = 'Resumen de códigos de retención CPA'
+  agregaTitulosExcel(map1,tituloReporte, filtros, titulosTabla) 
   const ws = utils.aoa_to_sheet(map1)
-
+    
   ws['!cols'] = [{ wch: 10 }, { wch: 10 }, { wch: 35 }, { wch: 15 }, { wch: 15 }, { wch: 20 }, { wch: 10 }]
   /* create workbook and append worksheet */
   const wb = utils.book_new()

@@ -3,6 +3,7 @@ import { utils, writeFileXLSX } from 'xlsx'
 import { useFilterStore } from '@/stores/filterStore'
 import { useFetch } from '@/composables/useFetch'
 import RepoHeader from './RepoHeader.vue'
+import {financial, agregaTitulosExcel} from '@/utils/reportes.js'
 
 const store = useFilterStore()
 
@@ -45,9 +46,6 @@ const headers = [
   { title: 'Neto', key: 'NETO', sortable: false }
 ]
 
-function financial(x) {
-  return Number.parseFloat(x).toFixed(2)
-}
 
 function handleDownload() {
   console.log('download')
@@ -72,7 +70,7 @@ function exportFile() {
     ]
   })
 
-  const tituloTabla = [
+  const titulosTabla = [
     'Rep',
     'Orden',
     'Documento',
@@ -86,31 +84,9 @@ function exportFile() {
     'Desc. varios',
     'Neto'
   ]
-  const tituloTablaFormato = tituloTabla.map((t) => ({
-    v: t,
-    s: { font: { bold: true, sz: 12 } } // sz: Tamaño de letra (14 por ejemplo)
-  }))
-  map1.unshift(tituloTablaFormato)
-
-  const linea = ['']
-  map1.unshift(linea)
-
-  // agrega título secundario
-  const tituloSec = ['', store.liqString]
-  const tituloSecFormato = tituloSec.map((t) => ({
-    v: t,
-    s: { font: { bold: true, sz: 12 } } // sz: Tamaño de letra (14 por ejemplo)
-  }))
-  map1.unshift(tituloSecFormato)
-
-  // Agrega Título Principal
-  const tituloPpal = ['', 'Resumen de Sueldos']
-  const tituloPpalFormato = tituloPpal.map((t) => ({
-    v: t,
-    s: { font: { bold: true, sz: 12 } } // sz: Tamaño de letra (14 por ejemplo)
-  }))
-  map1.unshift(tituloPpalFormato)
-  /* generate worksheet from state */
+  const filtros = store.liqString
+  const tituloReporte = 'Resumen de Sueldos'
+  agregaTitulosExcel(map1,tituloReporte, filtros, titulosTabla) 
   const ws = utils.aoa_to_sheet(map1)
 
   ws['!cols'] = [
