@@ -3,7 +3,8 @@ import { utils, writeFileXLSX } from 'xlsx'
 import { useFilterStore } from '@/stores/filterStore'
 import { useFetch } from '@/composables/useFetch'
 import RepoHeader from './RepoHeader.vue'
-import {financial, agregaTitulosExcel} from '@/utils/reportes.js'
+import { financial, agregaTitulosExcel } from '@/utils/reportes.js'
+import { computed } from 'vue'
 
 const store = useFilterStore()
 
@@ -14,23 +15,44 @@ function useResLiqCod(getId) {
 
 const { data, error, isPending } = useResLiqCod(() => store.filterString)
 
+const totImporte = computed(() => {
+  var totHabCA = 0
+  var totHabSA = 0
+  var totAsigFam = 0
+  var totDescLey = 0
+  var totDesVarios = 0
+  var totNeto = 0
+  if (data.value) {
+    data.value.forEach((x) => {
+      totHabCA += x.HABCONAP
+      totHabSA += x.HABSINAP
+      totAsigFam += x.ASIGNFAM
+      totDescLey += x.DESCLEY
+      totDesVarios += x.DESCVARIOS
+      totNeto += x.NETO
+    })
+  }
+
+  return { totHabCA, totHabSA, totAsigFam, totDescLey, totDesVarios, totNeto }
+})
+
 const props = defineProps(['title', 'subtitle', 'fileName'])
 
 const headers = [
   {
-    title: 'REP',
+    title: 'Rep',
     align: 'start',
     sortable: false,
     key: 'IDREP'
   },
   {
-    title: 'ORDEN',
+    title: 'Orden',
     align: 'start',
     sortable: false,
     key: 'ORDEN'
   },
   {
-    title: 'Documento',
+    title: 'DNI',
     align: 'start',
     sortable: false,
     key: 'DOCUMENTO'
@@ -45,7 +67,6 @@ const headers = [
   { title: 'Desc. Varios', key: 'DESCVARIOS', sortable: false },
   { title: 'Neto', key: 'NETO', sortable: false }
 ]
-
 
 function handleDownload() {
   console.log('download')
@@ -84,9 +105,24 @@ function exportFile() {
     'Desc. varios',
     'Neto'
   ]
+  const totalesTabla = [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    totImporte.value.totHabCA,
+    totImporte.value.totHabSA,
+    totImporte.value.totAsigFam,
+    totImporte.value.totDescLey,
+    totImporte.value.totDesVarios,
+    totImporte.value.totNeto
+  ]
+  map1.push(totalesTabla)
   const filtros = store.liqString
   const tituloReporte = 'Resumen de Sueldos'
-  agregaTitulosExcel(map1,tituloReporte, filtros, titulosTabla) 
+  agregaTitulosExcel(map1, tituloReporte, filtros, titulosTabla)
   const ws = utils.aoa_to_sheet(map1)
 
   ws['!cols'] = [
@@ -143,6 +179,22 @@ function exportFile() {
             <td class="text-right">{{ financial(item.DESCLEY) }}</td>
             <td class="text-right">{{ financial(item.DESCVARIOS) }}</td>
             <td class="text-right">{{ financial(item.NETO) }}</td>
+          </tr>
+        </template>
+        <template v-slot:body.append>
+          <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th class="text-right">{{ financial(totImporte.totHabCA) }}</th>
+            <th class="text-right">{{ financial(totImporte.totHabSA) }}</th>
+            <th class="text-right">{{ financial(totImporte.totAsigFam) }}</th>
+            <th class="text-right">{{ financial(totImporte.totDescLey) }}</th>
+            <th class="text-right">{{ financial(totImporte.totDesVarios) }}</th>
+            <th class="text-right">{{ financial(totImporte.totNeto) }}</th>
           </tr>
         </template>
       </v-data-table>

@@ -3,34 +3,47 @@ import { utils, writeFileXLSX } from 'xlsx'
 import { useFilterStore } from '@/stores/filterStore'
 import { useFetch } from '@/composables/useFetch'
 import RepoHeader from './RepoHeader.vue'
-import {financial, getVto, agregaTitulosExcel} from '@/utils/reportes.js'
+import { financial, getVto, agregaTitulosExcel } from '@/utils/reportes.js'
+import { computed } from 'vue'
 const store = useFilterStore()
 
 function useResLiqCod(getId) {
   return useFetch(
-    () => `${store.URL_API}/view/planillaLey?${getId()}&sort={"IdRep":"asc","Orden":"asc","FechaDev":"asc"}`
+    () =>
+      `${store.URL_API}/view/planillaLey?${getId()}&sort={"IdRep":"asc","Orden":"asc","FechaDev":"asc"}`
   )
 }
 
 const { data, error, isPending } = useResLiqCod(() => store.filterString)
 
+const totImporte = computed(() => {
+  var totImp = 0
+  if (data.value) {
+    data.value.forEach((x) => {
+      totImp += x.IMPORTE
+    })
+  }
+
+  return { totImp }
+})
+
 const props = defineProps(['title', 'subtitle', 'fileName'])
 
 const headers = [
   {
-    title: 'REP',
+    title: 'Rep',
     align: 'start',
     sortable: false,
     key: 'IDREP'
   },
   {
-    title: 'ORDEN',
+    title: 'Orden',
     align: 'start',
     sortable: false,
     key: 'ORDEN'
   },
   {
-    title: 'Documento',
+    title: 'DNI',
     align: 'start',
     sortable: false,
     key: 'DOCUMENTO'
@@ -38,28 +51,44 @@ const headers = [
   { title: 'Apellido y nombre', key: 'APENOM', sortable: false },
   { title: 'Descripción', key: 'DESCRIPCION', sortable: false },
   { title: 'Importe', key: 'IMPORTE', sortable: false },
-  { title: 'FechaDev', key: 'FECHADEV', sortable: false }
+  { title: 'Fecha Dev', key: 'FECHADEV', sortable: false }
 ]
-
 
 function handleDownload() {
   console.log('download')
   exportFile()
 }
 
-
 function exportFile() {
   const map1 = data.value.map((x) => {
     return [x.IDREP, x.ORDEN, x.DOCUMENTO, x.APENOM, x.DESCRIPCION, x.IMPORTE, getVto(x.FECHADEV)]
   })
 
-  const titulosTabla = ['Rep', 'Orden', 'Documento', 'Apellido y Nombre', 'Descripción', 'Importe', 'Fecha Dev.']
+  const titulosTabla = [
+    'Rep',
+    'Orden',
+    'Documento',
+    'Apellido y Nombre',
+    'Descripción',
+    'Importe',
+    'Fecha Dev.'
+  ]
+  const totalesTabla = [null, null, null, null, null, totImporte.value.totImp, null]
+  map1.push(totalesTabla)
   const filtros = store.liqString
   const tituloReporte = 'Planilla de Ley'
-  agregaTitulosExcel(map1,tituloReporte, filtros, titulosTabla) 
+  agregaTitulosExcel(map1, tituloReporte, filtros, titulosTabla)
   const ws = utils.aoa_to_sheet(map1)
 
-  ws['!cols'] = [{ wch: 10 }, { wch: 10 }, { wch: 15 }, { wch: 35 }, { wch: 20 }, { wch: 15 }, { wch: 10 }]
+  ws['!cols'] = [
+    { wch: 10 },
+    { wch: 10 },
+    { wch: 15 },
+    { wch: 35 },
+    { wch: 20 },
+    { wch: 15 },
+    { wch: 10 }
+  ]
   /* create workbook and append worksheet */
   const wb = utils.book_new()
   utils.book_append_sheet(wb, ws, 'Data')
@@ -95,6 +124,16 @@ function exportFile() {
             <td class="text-left">{{ item.DESCRIPCION }}</td>
             <td class="text-right">{{ financial(item.IMPORTE) }}</td>
             <td class="text-center">{{ getVto(item.FECHADEV) }}</td>
+          </tr>
+        </template>
+        <template v-slot:body.append>
+          <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th class="text-right">{{ financial(totImporte.totImp) }}</th>
           </tr>
         </template>
       </v-data-table>

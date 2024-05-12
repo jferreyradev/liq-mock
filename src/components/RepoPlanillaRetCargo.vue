@@ -3,7 +3,7 @@ import { utils, writeFileXLSX } from 'xlsx'
 import { useFilterStore } from '@/stores/filterStore'
 import { useFetch } from '@/composables/useFetch'
 import RepoHeader from './RepoHeader.vue'
-import {agregaTitulosExcel} from '@/utils/reportes.js'
+import { agregaTitulosExcel } from '@/utils/reportes.js'
 
 const store = useFilterStore()
 
@@ -20,19 +20,19 @@ const props = defineProps(['title', 'subtitle', 'fileName'])
 
 const headers = [
   {
-    title: 'REP',
+    title: 'Rep',
     align: 'start',
     sortable: false,
     key: 'IDREP'
   },
   {
-    title: 'ORDEN',
+    title: 'Orden',
     align: 'start',
     sortable: false,
     key: 'ORDEN'
   },
   {
-    title: 'AFILIADO',
+    title: 'Afiliado',
     align: 'start',
     sortable: false,
     key: 'AFILIADO'
@@ -40,7 +40,7 @@ const headers = [
   { title: 'Categoría', key: 'CATEGORIA', sortable: false },
   { title: 'Sit. Rev.', key: 'SITREV', sortable: false },
   {
-    title: 'Documento',
+    title: 'DNI',
     align: 'start',
     sortable: false,
     key: 'DOCUMENTO'
@@ -69,9 +69,9 @@ function exportFile() {
   ]
   const filtros = store.liqString
   const tituloReporte = 'Retenciones de Cargo'
-  agregaTitulosExcel(map1,tituloReporte, filtros, titulosTabla) 
+  agregaTitulosExcel(map1, tituloReporte, filtros, titulosTabla)
   const ws = utils.aoa_to_sheet(map1)
-  
+
   ws['!cols'] = [
     { wch: 10 },
     { wch: 10 },
