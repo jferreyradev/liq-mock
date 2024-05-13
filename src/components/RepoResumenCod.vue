@@ -4,7 +4,6 @@ import { useFilterStore } from '@/stores/filterStore'
 import { useFetch } from '@/composables/useFetch'
 import RepoHeader from './RepoHeader.vue'
 import { financial, agregaTitulosExcel } from '@/utils/reportes.js'
-import { computed } from 'vue'
 
 const store = useFilterStore()
 
@@ -15,16 +14,6 @@ function useResLiqCod(getId) {
 
 const { data, error, isPending } = useResLiqCod(() => store.filterString)
 
-const totImporte = computed(() => {
-  var totImp = 0
-  if (data.value) {
-    data.value.forEach((x) => {
-      totImp += x.IMPORTE
-    })
-  }
-  //totImp = totImp.toFixed(2)
-  return { totImp }
-})
 
 const props = defineProps(['fileName'])
 
@@ -57,8 +46,6 @@ function exportFile() {
     'Importe',
     'TipoTotal'
   ]
-  const totalesTabla = [null, null, null, null, null, totImporte.value.totImp, null]
-  map1.push(totalesTabla)
   const filtros = store.liqString
   const tituloReporte = 'Resúmen de códigos por liquidación'
   agregaTitulosExcel(map1, tituloReporte, filtros, titulosTabla)
@@ -107,16 +94,6 @@ function exportFile() {
             <td class="text-right">{{ item.CANTIDAD }}</td>
             <td class="text-right">{{ financial(item.IMPORTE) }}</td>
             <td class="text-right">{{ item.TIPOTOTAL }}</td>
-          </tr>
-        </template>
-        <template v-slot:body.append>
-          <tr>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th></th>
-            <th class="text-right">{{ financial(totImporte.totImp) }}</th>
           </tr>
         </template>
       </v-data-table>
