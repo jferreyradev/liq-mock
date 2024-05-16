@@ -3,7 +3,23 @@ import { utils, writeFileXLSX } from 'xlsx'
 import { useFilterStore } from '@/stores/filterStore'
 import { useFetch } from '@/composables/useFetch'
 import RepoHeader from './RepoHeader.vue'
-import {financial, agregaTitulosExcel} from '@/utils/reportes.js'
+import { financial, agregaTitulosExcel } from '@/utils/reportes.js'
+import { computed } from 'vue'
+
+const totImporte = computed(() => {
+  var totPatJub = 0
+  var totPatOS = 0
+  var totPatART = 0
+  if (data.value) {
+    data.value.forEach((x) => {
+      totPatJub += x.PATJUB
+      totPatOS += x.PATOS
+      totPatART += x.PATART
+    })
+  }
+
+  return { totPatJub, totPatOS, totPatART }
+})
 
 const store = useFilterStore()
 
@@ -17,19 +33,19 @@ const props = defineProps(['title', 'subtitle', 'fileName'])
 
 const headers = [
   {
-    title: 'REP',
+    title: 'Rep',
     align: 'start',
     sortable: false,
     key: 'IDREP'
   },
   {
-    title: 'ORDEN',
+    title: 'Orden',
     align: 'start',
     sortable: false,
     key: 'ORDEN'
   },
   {
-    title: 'Documento',
+    title: 'DNI',
     align: 'start',
     sortable: false,
     key: 'DOCUMENTO'
@@ -39,7 +55,6 @@ const headers = [
   { title: 'Pat. OS', key: 'PATOS', sortable: false },
   { title: 'Pat. ART', key: 'PATART', sortable: false }
 ]
-
 
 function handleDownload() {
   console.log('download')
@@ -65,11 +80,21 @@ function exportFile() {
     'Pat. OS',
     'Pat. ART'
   ]
+  const totalesTabla = [
+    null,
+    null,
+    null,
+    null,
+    totImporte.value.totPatJub,
+    totImporte.value.totPatOS,
+    totImporte.value.totPatART
+  ]
+  map1.push(totalesTabla)
   const filtros = store.liqString
   const tituloReporte = 'Aportes Patronales'
-  agregaTitulosExcel(map1,tituloReporte, filtros, titulosTabla) 
+  agregaTitulosExcel(map1, tituloReporte, filtros, titulosTabla)
   const ws = utils.aoa_to_sheet(map1)
-  
+
   ws['!cols'] = [
     { wch: 10 },
     { wch: 10 },
@@ -115,6 +140,17 @@ function exportFile() {
             <td class="text-right">{{ financial(item.PATJUB) }}</td>
             <td class="text-right">{{ financial(item.PATOS) }}</td>
             <td class="text-right">{{ financial(item.PATART) }}</td>
+          </tr>
+        </template>
+        <template v-slot:body.append>
+          <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th class="text-right">{{ financial(totImporte.totPatJub) }}</th>
+            <th class="text-right">{{ financial(totImporte.totPatOS) }}</th>
+            <th class="text-right">{{ financial(totImporte.totPatART) }}</th>
           </tr>
         </template>
       </v-data-table>
