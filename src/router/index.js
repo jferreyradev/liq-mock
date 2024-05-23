@@ -49,18 +49,24 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/LoginView.vue')
+    },
+    {
+      path: '/hojas',
+      name: 'hojas',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/HojasView.vue')
     }
   ]
 })
 
-
 router.beforeEach((to, from, next) => {
-
   const store = useUserStore()
   const publicPages = ['/login']
   const authRequired = !publicPages.includes(to.path)
 
-  if (authRequired && !store.isAuth ) {
+  if (authRequired && !store.isAuth) {
     return next('/login')
   }
   //router.push('/')
