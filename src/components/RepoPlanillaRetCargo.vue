@@ -3,28 +3,49 @@ import { utils, writeFileXLSX } from 'xlsx'
 import { useFilterStore } from '@/stores/filterStore'
 import { useFetch } from '@/composables/useFetch'
 import RepoHeader from './RepoHeader.vue'
-import { financial, agregaTitulosExcel } from '@/utils/reportes.js'
+import { agregaTitulosExcel } from '@/utils/reportes.js'
 
 const store = useFilterStore()
 
 function useResLiqCod(getId) {
-  console.log(`${store.URL_API}/view/resumenCodLiq?${getId()}`)
-  return useFetch(() => `${store.URL_API}/view/resumenCodLiq?${getId()}`)
+  console.log(`${store.URL_API}/view/retencionesCargo?${getId()}`)
+  return useFetch(
+    () => `${store.URL_API}/view/retencionesCargo?${getId()}&sort={"IdRep":"asc","Orden":"asc"}`
+  )
 }
 
 const { data, error, isPending } = useResLiqCod(() => store.filterString)
 
-
-const props = defineProps(['fileName'])
+const props = defineProps(['title', 'subtitle', 'fileName'])
 
 const headers = [
-  { title: 'Rep', key: 'IDREP', align: 'start', sortable: false },
-  { title: 'Codigo', key: 'CODIGO', align: 'end', sortable: false },
-  { title: 'Subcodigo', key: 'SUBCODIGO', align: 'start', sortable: false },
-  { title: 'Descripción', key: 'DESCRIPCION', align: 'start', sortable: false },
-  { title: 'Cantidad', key: 'CANTIDAD', align: 'end', sortable: false },
-  { title: 'Importe', key: 'IMPORTE', align: 'end', sortable: false },
-  { title: 'Tipo total', key: 'TIPOTOTAL', align: 'end', sortable: false }
+  {
+    title: 'Rep',
+    align: 'start',
+    sortable: false,
+    key: 'IDREP'
+  },
+  {
+    title: 'Orden',
+    align: 'start',
+    sortable: false,
+    key: 'ORDEN'
+  },
+  {
+    title: 'Afiliado',
+    align: 'start',
+    sortable: false,
+    key: 'AFILIADO'
+  },
+  { title: 'Categoría', key: 'CATEGORIA', sortable: false },
+  { title: 'Sit. Rev.', key: 'SITREV', sortable: false },
+  {
+    title: 'DNI',
+    align: 'start',
+    sortable: false,
+    key: 'DOCUMENTO'
+  },
+  { title: 'Apellido y nombre', key: 'APENOM', sortable: false }
 ]
 
 function handleDownload() {
@@ -34,37 +55,38 @@ function handleDownload() {
 
 function exportFile() {
   const map1 = data.value.map((x) => {
-    return [x.IDREP, x.CODIGO, x.SUBCODIGO, x.DESCRIPCION, x.CANTIDAD, x.IMPORTE, x.TIPOTOTAL]
+    return [x.IDREP, x.ORDEN, x.AFILIADO, x.CATEGORIA, x.SITREV, x.DOCUMENTO, x.APENOM]
   })
 
   const titulosTabla = [
     'Rep',
-    'Codigo',
-    'Subcódigo',
-    'Descripción',
-    'Cantidad',
-    'Importe',
-    'TipoTotal'
+    'Orden',
+    'Afiliado',
+    'Categoría',
+    'Sit. de Rev.',
+    'Documento',
+    'Apellido y Nombre'
   ]
   const filtros = store.liqString
-  const tituloReporte = 'Resúmen de códigos por liquidación'
+  const tituloReporte = 'Retenciones de Cargo'
   agregaTitulosExcel(map1, tituloReporte, filtros, titulosTabla)
   const ws = utils.aoa_to_sheet(map1)
+
   ws['!cols'] = [
     { wch: 10 },
     { wch: 10 },
     { wch: 10 },
-    { wch: 25 },
     { wch: 10 },
-    { wch: 20 },
-    { wch: 10 }
+    { wch: 10 },
+    { wch: 15 },
+    { wch: 35 }
   ]
   /* create workbook and append worksheet */
   const wb = utils.book_new()
   utils.book_append_sheet(wb, ws, 'Data')
 
   /* export to XLSX */
-  writeFileXLSX(wb, props.fileName || `${store.liqCompactString}_ResumenCodLiq.xlsx`, {
+  writeFileXLSX(wb, props.fileName || `${store.liqCompactString}_RetencionesCargo.xlsx`, {
     compression: true
   })
 }
@@ -72,7 +94,7 @@ function exportFile() {
 
 <template>
   <v-container>
-    <RepoHeader title="Resumen de códigos de liquidación" :subtitle="store.liqString">
+    <RepoHeader title="Retenciones de Cargo" :subtitle="store.liqString">
       <v-btn color="primary" @click="handleDownload" :disabled="!data">Descargar</v-btn>
     </RepoHeader>
     <v-row>
@@ -88,12 +110,11 @@ function exportFile() {
         <template v-slot:item="{ item }">
           <tr class="pa-0 ma-0">
             <td class="text-right">{{ item.IDREP }}</td>
-            <td class="text-right ma-0 pa-0">{{ item.CODIGO }}</td>
-            <td class="text-right">{{ item.SUBCODIGO }}</td>
-            <td class="text-left">{{ item.DESCRIPCION }}</td>
-            <td class="text-right">{{ item.CANTIDAD }}</td>
-            <td class="text-right">{{ financial(item.IMPORTE) }}</td>
-            <td class="text-right">{{ item.TIPOTOTAL }}</td>
+            <td class="text-right">{{ item.ORDEN }}</td>
+            <td class="text-right">{{ item.AFILIADO }}</td>
+            <td class="text-center">{{ item.CATEGORIA }}</td>
+            <td class="text-center">{{ item.SITREV }}</td>
+            <td class="text-right">{{ item.DOCUMENTO }}</td>
           </tr>
         </template>
       </v-data-table>
