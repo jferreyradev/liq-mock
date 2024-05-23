@@ -9,7 +9,8 @@ const hojasHeaders = [
   { title: 'Tipo Liq', key: 'TIPO_LIQ' },
   { title: 'Grupo', key: 'GRUPO' },
   { title: 'Fec. Creac.', key: 'FECHA' },
-  { title: 'Estado', key: 'ESTADO' }
+  { title: 'Estado', key: 'ESTADO' },
+  { title: 'Acciones', key: 'ACCIONES' },
 ]
 
 const getVto = (vto) => {
@@ -20,6 +21,9 @@ const getVto = (vto) => {
   return null
 }
 
+function handleModif(item2) {
+  console.log(item2)
+}
 const isPending = false
 const data = hojasList
 const error = null
@@ -47,6 +51,7 @@ const error = null
           <td class="text-center m-0 p-0">{{ item.GRUPO }}</td>
           <td class="text-center m-0 p-0">{{ getVto(item.FECHA) }}</td>
           <td class="text-center m-0 p-0">{{ item.ESTADO }}</td>
+          <td class="text-center m-0 p-0"> <v-btn @click="handleModif(item)">mod</v-btn> </td>
         </tr>
       </template>
     </v-data-table>
