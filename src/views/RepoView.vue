@@ -2,8 +2,8 @@
 import RepoCod153 from '@/components/RepoCod153.vue'
 import RepoResumenLiq from '@/components/RepoResumenLiq.vue'
 import RepoResumenCod from '@/components/RepoResumenCod.vue'
-import RepoResumenLiqFDO from '@/components/RepoResumenLiqFdo.vue'
 import LiqInputPanel from '@/components/LiqInputPanel.vue'
+import RepoResumenPedidoFdo from '@/components/RepoResumenPedidoFdo.vue'
 import { ref } from 'vue'
 
 const reportes = [
@@ -41,7 +41,8 @@ const repo = ref()
 
       <RepoResumenCod v-if="repo === 4"></RepoResumenCod>
 
-      <RepoResumenLiqFDO v-if="repo == 5"></RepoResumenLiqFDO>
+      <RepoResumenPedidoFdo v-if="repo == 5" />
+
     </v-row>
   </v-container>
 </template>
