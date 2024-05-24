@@ -1,5 +1,7 @@
 <script setup>
 import { hojasList } from './hojas'
+import { ref } from 'vue'
+import HojaVista from './HojaVista.vue'
 
 const hojasHeaders = [
   { title: 'Id.', key: 'ID' },
@@ -10,7 +12,7 @@ const hojasHeaders = [
   { title: 'Grupo', key: 'GRUPO' },
   { title: 'Fec. Creac.', key: 'FECHA' },
   { title: 'Estado', key: 'ESTADO' },
-  { title: 'Acciones', key: 'ACCIONES' },
+  { title: 'Acciones', key: 'ACCIONES' }
 ]
 
 const getVto = (vto) => {
@@ -23,10 +25,29 @@ const getVto = (vto) => {
 
 function handleModif(item2) {
   console.log(item2)
+  abrirModal(item2)
 }
 const isPending = false
 const data = hojasList
 const error = null
+
+const itemMostrar = ref({
+  Nro: 0,
+  Tipo: 'Sin Tipo'
+})
+
+let muestra = ref(false)
+
+function abrirModal(item) {
+  itemMostrar.value.Nro = item.ID
+  itemMostrar.value.Tipo = item.TIPO_HOJA
+  muestra.value = true
+}
+
+function cierraForm() {
+  muestra.value = false
+  console.log('cerrando')
+}
 </script>
 
 <template>
@@ -51,10 +72,14 @@ const error = null
           <td class="text-center m-0 p-0">{{ item.GRUPO }}</td>
           <td class="text-center m-0 p-0">{{ getVto(item.FECHA) }}</td>
           <td class="text-center m-0 p-0">{{ item.ESTADO }}</td>
-          <td class="text-center m-0 p-0"> <v-btn @click="handleModif(item)">mod</v-btn> </td>
+          <td class="text-center m-0 p-0"><v-btn @click="handleModif(item)">mod</v-btn></td>
         </tr>
       </template>
     </v-data-table>
     <div v-else-if="error">No se puede obtener los datos solicitados.</div>
   </v-container>
+
+  <v-dialog v-model="muestra" max-width="600" persistent="">
+    <hoja-vista :Nro="itemMostrar.Nro" :Tipo="itemMostrar.Tipo" :cerrar="cierraForm"></hoja-vista>
+  </v-dialog>
 </template>
