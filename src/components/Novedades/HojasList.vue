@@ -39,8 +39,7 @@ const itemMostrar = ref({
 let muestra = ref(false)
 
 function abrirModal(item) {
-  itemMostrar.value.Nro = item.ID
-  itemMostrar.value.Tipo = item.TIPO_HOJA
+  itemMostrar.value = item
   muestra.value = true
 }
 
@@ -79,7 +78,7 @@ function cierraForm() {
     <div v-else-if="error">No se puede obtener los datos solicitados.</div>
   </v-container>
 
-  <v-dialog v-model="muestra" max-width="600" persistent="">
-    <hoja-vista :Nro="itemMostrar.Nro" :Tipo="itemMostrar.Tipo" :cerrar="cierraForm"></hoja-vista>
+  <v-dialog v-model="muestra" max-width="80%" persistent="">
+    <hoja-vista :Hoja="itemMostrar" :cerrar="cierraForm"></hoja-vista>
   </v-dialog>
 </template>
