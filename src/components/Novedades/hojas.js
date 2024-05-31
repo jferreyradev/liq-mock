@@ -6,7 +6,7 @@ export const hojasList = [
     TIPO_CARGA: 1,
     TIPO_LIQ: 1,
     GRUPO: 0,
-    FECHA: '2024-05-14',
+    FECHA: '2023-05-14',
     ESTADO: 1
   },
   {
@@ -22,7 +22,7 @@ export const hojasList = [
   {
     ID: 3,
     TIPO_HOJA: 3,
-    PERIODO: '2024-04-01',
+    PERIODO: '2022-04-01',
     TIPO_CARGA: 2,
     TIPO_LIQ: 1,
     GRUPO: 0,
@@ -32,7 +32,7 @@ export const hojasList = [
   {
     ID: 4,
     TIPO_HOJA: 3,
-    PERIODO: '2024-05-01',
+    PERIODO: '2021-05-01',
     TIPO_CARGA: 2,
     TIPO_LIQ: 1,
     GRUPO: 1,

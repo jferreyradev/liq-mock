@@ -1,19 +1,45 @@
 <script setup>
 import { ref } from 'vue';
 import { months, tipoCarga, tipoHoja, tipoLiq, getObjetList} from '@/utils/tipos';
+
 const props = defineProps(['Hoja', 'cerrar'])
 let hojaActual = props.Hoja
+
+
+const fechaSplit = (vto) => {
+  if (vto) {
+    const d = vto.split('-')
+    const f = {
+      dia : d[2],
+      mes : d[1],
+      anio : d[0]
+    }
+    return f
+  }
+  return null
+}
 
 
 const month = ref(months[4])
 const year = ref(2024)
 const tipoCargaSelected = ref(tipoCarga[0])
 const tipoHojaSelected = ref(tipoHoja[0])
-
 const liqSelected = ref(tipoLiq[0])
 
 if (hojaActual) {
   tipoCargaSelected.value = getObjetList(tipoCarga, hojaActual.TIPO_CARGA) 
+  liqSelected.value = getObjetList(tipoLiq, hojaActual.TIPO_LIQ)
+  tipoHojaSelected.value = getObjetList(tipoHoja, hojaActual.TIPO_HOJA)
+  let fecha = fechaSplit(hojaActual.PERIODO)
+  month.value = fecha.mes
+  year.value = fecha.anio
+} else {
+  console.log('por establecer fecha') 
+  const fechaActual = new Date()
+  month.value = months[fechaActual.getMonth()]
+  year.value = fechaActual.getFullYear()
+  hojaActual = {...hojaActual ,ID : 0, GRUPO : 0, FECHA : fechaActual, ESTADO : 0}
+  
 }
 </script>
 

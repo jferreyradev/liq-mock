@@ -61,14 +61,11 @@ export const estados = [{
 
 
 export function getName(lista, id)  {
-    
     const found = lista.find((element) => element.value === id);
     return found ? found.name : 'sin definir';
 }
 
 export function getObjetList(lista, id)  {
-    
     const found = lista.find((element) => element.value === id);
-    console.log(found)
     return found ? found : null;
 }

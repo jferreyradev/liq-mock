@@ -25,10 +25,11 @@ const getVto = (vto) => {
   return null
 }
 
+
 function handleModif(item2) {
-  console.log(item2)
   abrirModal(item2)
 }
+
 const isPending = false
 const data = hojasList
 const error = null
@@ -47,23 +48,27 @@ function abrirModal(item) {
 
 function cierraForm() {
   muestra.value = false
-  console.log('cerrando')
 }
 </script>
 
 <template>
   <v-container>
     <div v-if="isPending">loading...</div>
-
+    
+      <div v-else-if="data">
+      
+     <v-btn prepend-icon="mdi-plus" @click="handleModif(null)" color="primary" >Nueva Hoja</v-btn>
     <v-data-table
-      v-else-if="data"
+      
       class="text-caption"
       hover
       density="compact"
       :items="data"
       :headers="hojasHeaders"
     >
-      <template v-slot:item="{ item }">
+    
+    <template v-slot:item="{ item }">
+        
         <tr class="pa-0 ma-0">
           <td class="text-right m-0 p-0">{{ item.ID }}</td>
           <td class="text-left m-0 p-0">{{ getName(tipoHoja, item.TIPO_HOJA) }}</td>
@@ -71,12 +76,16 @@ function cierraForm() {
           <td class="text-center m-0 p-0">{{ getName(tipoCarga, item.TIPO_CARGA) }}</td>
           <td class="text-center m-0 p-0">{{ getName(tipoLiq, item.TIPO_LIQ) }}</td>
           <td class="text-center m-0 p-0">{{ item.GRUPO }}</td>
-          <td class="text-center m-0 p-0">{{ getVto(item.FECHA) }}</td>
+          <td class="text-center m-0 p-0">{{ item.FECHA }}</td>
           <td class="text-center m-0 p-0">{{ getName(estados, item.ESTADO) }}</td> 
-          <td class="text-center m-0 p-0"><v-btn @click="handleModif(item)">mod</v-btn></td>
+          <td class="text-center m-0 p-0">
+            <v-btn size="x-small" icon="mdi-pencil-outline" @click="handleModif(item)" color="primary" ></v-btn>
+            <v-btn size="x-small" icon="mdi-delete" @click="handleModif(item)" color="error" ></v-btn>
+          </td>
         </tr>
       </template>
     </v-data-table>
+  </div>
     <div v-else-if="error">No se puede obtener los datos solicitados.</div>
   </v-container>
 
