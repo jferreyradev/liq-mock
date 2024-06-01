@@ -1,71 +1,101 @@
 // meses
-export const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+export const months = [
+  'Enero',
+  'Febrero',
+  'Marzo',
+  'Abril',
+  'Mayo',
+  'Junio',
+  'Julio',
+  'Agosto',
+  'Septiembre',
+  'Octubre',
+  'Noviembre',
+  'Diciembre'
+]
 
 // tipo de carga
-export const tipoCarga = [{
+export const tipoCarga = [
+  {
     name: 'Manual',
     value: 1
-}, {
+  },
+  {
     name: 'Disco',
-    value: 2,
-}, {
+    value: 2
+  },
+  {
     name: 'Otro',
     value: 3
-}]
-
+  }
+]
 
 // tipo de hoja
-export const tipoHoja = [{
+export const tipoHoja = [
+  {
     name: 'Movimiento de Haberes',
     value: 1
-}, {
+  },
+  {
     name: 'Pensiones',
-    value: 2,
-}, {
+    value: 2
+  },
+  {
     name: 'Deducciones',
     value: 3
-}]
+  }
+]
 
 // tipo de liquidacion
-export const tipoLiq = [{
+export const tipoLiq = [
+  {
     name: 'Mensual',
     value: 1
-}, {
+  },
+  {
     name: 'Adicional',
-    value: 5,
-}, {
+    value: 5
+  },
+  {
     name: '1er SAC',
     value: 2
-}, {
+  },
+  {
     name: '2do SAC',
     value: 3
-}, {
+  },
+  {
     name: 'Otro tipo',
     value: 9
-}]
+  }
+]
 
 // tipo de liquidacion
-export const estados = [{
+export const estados = [
+  {
     name: 'Cargada',
     value: 1
-}, {
+  },
+  {
     name: 'Anulada',
-    value: 5,
-}, {
+    value: 5
+  },
+  {
     name: 'Verificada',
     value: 2
-}, {
+  },
+  {
     name: 'Transformada',
     value: 3
-}]
+  }
+]
 
-
-export function getName(lista, id)  {
-    const found = lista.find((element) => element.value === id);
-    return found ? found.name : 'sin definir';
+export function getName(lista, id) {
+  const found = lista.find((element) => element.value === id)
+  return found ? found.name : 'sin definir'
 }
 
-export function getObjetList(lista, id)  {
-    const found = lista.find((element) => element.value === id);
-    return found ? found : null;
+export function getObjetList(lista, id) {
+  const found = lista.find((element) => element.value === id)
+  return found ? found : null
 }
