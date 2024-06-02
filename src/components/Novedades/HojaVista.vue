@@ -18,12 +18,22 @@ const fechaSplit = (vto) => {
   return null
 }
 
-const month = ref(months[4])
-const year = ref(2024)
+const fechaActual = new Date()
+let mes = fechaActual.getMonth()
+let anio = fechaActual.getFullYear()
+let dia = fechaActual.getDate()
+let fecha =
+  anio.toString() +
+  '-' +
+  (mes + 1).toString().padStart(2, '0') +
+  '-' +
+  dia.toString().padStart(2, '0')
+const month = ref(months[fechaActual.getMonth()])
+const year = ref(fechaActual.getFullYear())
 const tipoCargaSelected = ref(tipoCarga[0])
 const tipoHojaSelected = ref(tipoHoja[0])
 const liqSelected = ref(tipoLiq[0])
-const fechaActual = new Date()
+
 if (hojaActual) {
   tipoCargaSelected.value = getObjetList(tipoCarga, hojaActual.TIPO_CARGA)
   liqSelected.value = getObjetList(tipoLiq, hojaActual.TIPO_LIQ)
@@ -32,25 +42,15 @@ if (hojaActual) {
   month.value = months[fecha.mes - 1]
   year.value = fecha.anio
 } else {
-  month.value = months[fechaActual.getMonth()]
-  year.value = fechaActual.getFullYear()
-  hojaActual = { ...hojaActual, ID: 0, GRUPO: 0, FECHA: fechaActual, ESTADO: 0 }
+  hojaActual = { ...hojaActual, ID: 0, GRUPO: 0, FECHA: fecha, ESTADO: 0 }
 }
 
 function grabaRegistro() {
   const mes = months.indexOf(month.value) + 1
   const periodo = year.value.toString() + '-' + mes.toString().padStart(2, '0') + '-01'
-  let fecha = hojaActual.FECHA
-  if (hojaActual.ID == 0) {
-    let mes = fechaActual.getMonth()
-    let anio = fechaActual.getFullYear()
-    let dia = fechaActual.getDate()
-    fecha =
-      anio.toString() +
-      '-' +
-      (mes + 1).toString().padStart(2, '0') +
-      '-' +
-      dia.toString().padStart(2, '0')
+  let fechaR = hojaActual.FECHA
+  if (hojaActual.ID != 0) {
+    fechaR = fecha
   }
 
   const registro = {
@@ -60,7 +60,7 @@ function grabaRegistro() {
     TIPO_CARGA: tipoCargaSelected.value.value,
     TIPO_LIQ: liqSelected.value.value,
     GRUPO: hojaActual.GRUPO,
-    FECHA: fecha,
+    FECHA: fechaR,
     ESTADO: 2
   }
   props.funcion(registro)

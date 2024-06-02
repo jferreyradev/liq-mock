@@ -67,10 +67,13 @@ function cierraForm() {
 
 <template>
   <v-container>
+    <v-container>
+      <v-btn color="primary" prepend-icon="mdi-plus" elevation="3" @click="handleModif(null)"
+        >Nueva Hoja</v-btn
+      >
+    </v-container>
     <div v-if="isPending">loading...</div>
-
     <div v-else-if="data">
-      <v-btn prepend-icon="mdi-plus" @click="handleModif(null)" color="primary">Nueva Hoja</v-btn>
       <v-data-table
         class="text-caption"
         hover
