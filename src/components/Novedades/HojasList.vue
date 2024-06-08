@@ -4,7 +4,7 @@ import { ref } from 'vue'
 import HojaVista from './HojaVista.vue'
 import { getName, tipoCarga, tipoHoja, tipoLiq } from '@/utils/tipos'
 import { estados } from '@/utils/tipos'
-import { leerDatos } from './llamadaAPI'
+import { leerDatos, grabarRegistro } from './llamadaAPI'
 import botonTooltip from './botonTooltip.vue'
 
 const hojasHeaders = [
@@ -30,7 +30,6 @@ const getVto = (vto) => {
 const getFechaDMY = (vto) => {
   if (vto) {
     const d = vto.substring(0,10).split('-')
-    console.log(d)
     return `${d[2]}/${d[1]}/${d[0]}`
   }
   return null
@@ -42,11 +41,15 @@ function handleModif(itemid) {
 }
 
 function grabar(item) {
+  
+  console.log(item)
+  grabarRegistro('hoja?Id='+item.ID, item, 'PUT')
   if (item.ID === 0) {
     const groups = data.value.map((item) => item.ID)
     let maxID = Math.max(...groups)
     item.ID = maxID + 1
     data.value.push(item)
+    
   } else {
     const nuevaLista = data.value.map((it) => (item.ID == it.ID ? item : it))
     data.value = nuevaLista
@@ -64,6 +67,7 @@ const itemMostrar = ref({
 
 let muestra = ref(false)
 
+
 function abrirModal(item) {
   itemMostrar.value = item
   muestra.value = true
@@ -76,7 +80,8 @@ function cierraForm() {
 
 async function leerHojas() {
   isPending.value = true
-  data.value = await leerDatos('http://www.serverburru2.duckdns.org:3005/api/hoja')
+  data.value = await leerDatos('hoja')
+  console.log(data.value)
   isPending.value = false
 }
 

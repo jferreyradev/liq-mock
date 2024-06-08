@@ -59,7 +59,7 @@ function grabaRegistro() {
     PERIODOID: periodo,
     TIPOCARGAID: tipoCargaSelected.value.value,
     TIPOLIQUIDACIONID: liqSelected.value.value,
-    GRUPOADICIONAL: hojaActual.GRUPO,
+    GRUPOADICIONAL: hojaActual.GRUPOADICIONAL,
     FECHACREACION: fechaR,
     ESTADOHOJAID: 2
   }
