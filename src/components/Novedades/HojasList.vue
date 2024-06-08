@@ -1,20 +1,21 @@
 <script setup>
-import { hojasList } from './hojas'
+
 import { ref } from 'vue'
 import HojaVista from './HojaVista.vue'
 import { getName, tipoCarga, tipoHoja, tipoLiq } from '@/utils/tipos'
 import { estados } from '@/utils/tipos'
+import { leerDatos } from './llamadaAPI'
 import botonTooltip from './botonTooltip.vue'
 
 const hojasHeaders = [
   { title: 'Id.', key: 'ID' },
-  { title: 'Tipo Hoja', key: 'TIPO_HOJA' },
-  { title: 'Período', key: 'PERIODO' },
-  { title: 'Tipo Carga', key: 'TIPO_CARGA' },
-  { title: 'Tipo Liq', key: 'TIPO_LIQ' },
-  { title: 'Grupo', key: 'GRUPO' },
-  { title: 'Fec. Creac.', key: 'FECHA' },
-  { title: 'Estado', key: 'ESTADO' },
+  { title: 'Tipo Hoja', key: 'TIPOHOJAID' },
+  { title: 'Período', key: 'PERIODOID' },
+  { title: 'Tipo Carga', key: 'TIPOCARGAID' },
+  { title: 'Tipo Liq', key: 'TIPOLIQUIDACIONID' },
+  { title: 'Grupo', key: 'GRUPOADICIONAL' },
+  { title: 'Fec. Creac.', key: 'FECHACREACION' },
+  { title: 'Estado', key: 'ESTADOHOJAID' },
   { title: 'Acciones', key: 'ACCIONES' }
 ]
 
@@ -26,6 +27,14 @@ const getVto = (vto) => {
   return null
 }
 
+const getFechaDMY = (vto) => {
+  if (vto) {
+    const d = vto.substring(0,10).split('-')
+    console.log(d)
+    return `${d[2]}/${d[1]}/${d[0]}`
+  }
+  return null
+}
 function handleModif(itemid) {
   let item = null
   if (itemid !== 0) item = data.value.find((e) => e.ID == itemid)
@@ -44,8 +53,8 @@ function grabar(item) {
   }
 }
 
-const isPending = false
-const data = ref(hojasList)
+let isPending = ref(false)
+const data = ref(null)
 const error = null
 
 const itemMostrar = ref({
@@ -63,6 +72,14 @@ function abrirModal(item) {
 function cierraForm() {
   muestra.value = false
 }
+
+
+async function leerHojas() {
+  isPending.value = true
+  data.value = await leerDatos('http://www.serverburru2.duckdns.org:3005/api/hoja')
+  isPending.value = false
+}
+
 </script>
 
 <template>
@@ -70,6 +87,9 @@ function cierraForm() {
     <v-container>
       <v-btn color="primary" prepend-icon="mdi-plus" elevation="3" @click="handleModif(null)"
         >Nueva Hoja</v-btn
+      >
+      <v-btn color="primary" prepend-icon="mdi-plus" elevation="3" @click="leerHojas()"
+        >Leer hojas</v-btn
       >
     </v-container>
     <div v-if="isPending">loading...</div>
@@ -84,13 +104,13 @@ function cierraForm() {
         <template v-slot:item="{ item }">
           <tr class="pa-0 ma-0">
             <td class="text-right m-0 p-0">{{ item.ID }}</td>
-            <td class="text-left m-0 p-0">{{ getName(tipoHoja, item.TIPO_HOJA) }}</td>
-            <td class="text-center m-0 p-0">{{ getVto(item.PERIODO) }}</td>
-            <td class="text-center m-0 p-0">{{ getName(tipoCarga, item.TIPO_CARGA) }}</td>
-            <td class="text-center m-0 p-0">{{ getName(tipoLiq, item.TIPO_LIQ) }}</td>
-            <td class="text-center m-0 p-0">{{ item.GRUPO }}</td>
-            <td class="text-center m-0 p-0">{{ item.FECHA }}</td>
-            <td class="text-center m-0 p-0">{{ getName(estados, item.ESTADO) }}</td>
+            <td class="text-left m-0 p-0">{{ getName(tipoHoja, item.TIPOHOJAID) }}</td>
+            <td class="text-center m-0 p-0">{{ getVto(item.PERIODOID) }}</td>
+            <td class="text-center m-0 p-0">{{ getName(tipoCarga, item.TIPOCARGAID) }}</td>
+            <td class="text-center m-0 p-0">{{ getName(tipoLiq, item.TIPOLIQUIDACIONID) }}</td>
+            <td class="text-center m-0 p-0">{{ item.GRUPOADICIONAL }}</td>
+            <td class="text-center m-0 p-0">{{ getFechaDMY(item.FECHACREACION) }}</td>
+            <td class="text-center m-0 p-0">{{ getName(estados, item.ESTADOHOJAID) }}</td>
             <td class="text-center m-0 p-0">
               <botonTooltip
                 :icono="'mdi-pencil'"
@@ -109,7 +129,8 @@ function cierraForm() {
         </template>
       </v-data-table>
     </div>
-    <div v-else-if="error">No se puede obtener los datos solicitados.</div>
+    <div v-else>Sin datos para mostrar</div>
+    <div v-if="error">No se puede obtener los datos solicitados.</div>
   </v-container>
 
   <v-dialog v-model="muestra" max-width="80%" persistent="">

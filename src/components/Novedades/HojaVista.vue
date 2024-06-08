@@ -35,33 +35,33 @@ const tipoHojaSelected = ref(tipoHoja[0])
 const liqSelected = ref(tipoLiq[0])
 
 if (hojaActual) {
-  tipoCargaSelected.value = getObjetList(tipoCarga, hojaActual.TIPO_CARGA)
-  liqSelected.value = getObjetList(tipoLiq, hojaActual.TIPO_LIQ)
-  tipoHojaSelected.value = getObjetList(tipoHoja, hojaActual.TIPO_HOJA)
-  let fecha = fechaSplit(hojaActual.PERIODO)
+  tipoCargaSelected.value = getObjetList(tipoCarga, hojaActual.TIPOCARGAID)
+  liqSelected.value = getObjetList(tipoLiq, hojaActual.TIPOLIQUIDACIONID)
+  tipoHojaSelected.value = getObjetList(tipoHoja, hojaActual.TIPOHOJAID)
+  let fecha = fechaSplit(hojaActual.PERIODOID)
   month.value = months[fecha.mes - 1]
   year.value = fecha.anio
 } else {
-  hojaActual = { ...hojaActual, ID: 0, GRUPO: 0, FECHA: fecha, ESTADO: 0 }
+  hojaActual = { ...hojaActual, ID: 0, GRUPOADICIONAL: 0, FECHACREACION: fecha, ESTADOHOJAID: 0 }
 }
 
 function grabaRegistro() {
   const mes = months.indexOf(month.value) + 1
   const periodo = year.value.toString() + '-' + mes.toString().padStart(2, '0') + '-01'
-  let fechaR = hojaActual.FECHA
+  let fechaR = hojaActual.FECHACREACION
   if (hojaActual.ID != 0) {
     fechaR = fecha
   }
 
   const registro = {
     ID: hojaActual.ID,
-    TIPO_HOJA: tipoHojaSelected.value.value,
-    PERIODO: periodo,
-    TIPO_CARGA: tipoCargaSelected.value.value,
-    TIPO_LIQ: liqSelected.value.value,
-    GRUPO: hojaActual.GRUPO,
-    FECHA: fechaR,
-    ESTADO: 2
+    TIPOHOJAID: tipoHojaSelected.value.value,
+    PERIODOID: periodo,
+    TIPOCARGAID: tipoCargaSelected.value.value,
+    TIPOLIQUIDACIONID: liqSelected.value.value,
+    GRUPOADICIONAL: hojaActual.GRUPO,
+    FECHACREACION: fechaR,
+    ESTADOHOJAID: 2
   }
   props.funcion(registro)
   props.cerrar()
@@ -128,7 +128,7 @@ function grabaRegistro() {
             </v-col>
             <v-col cols="4">
               <v-text-field
-                v-model="hojaActual.GRUPO"
+                v-model="hojaActual.GRUPOADICIONAL"
                 hide-details="auto"
                 label="Grupo"
               ></v-text-field>
@@ -137,14 +137,14 @@ function grabaRegistro() {
           <v-row>
             <v-col cols="4">
               <v-text-field
-                v-model="hojaActual.FECHA"
+                v-model="hojaActual.FECHACREACION"
                 hide-details="auto"
                 label="Fecha"
               ></v-text-field>
             </v-col>
             <v-col cols="4">
               <v-text-field
-                v-model="hojaActual.ESTADO"
+                v-model="hojaActual.ESTADOHOJAID"
                 hide-details="auto"
                 label="Estado"
               ></v-text-field>

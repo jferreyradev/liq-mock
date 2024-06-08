@@ -22,7 +22,7 @@ export const tipoCarga = [
   },
   {
     name: 'Disco',
-    value: 2
+    value: 0
   },
   {
     name: 'Otro',
@@ -87,6 +87,10 @@ export const estados = [
   {
     name: 'Transformada',
     value: 3
+  },
+  {
+    name: 'Otro estado',
+    value: 4
   }
 ]
 
