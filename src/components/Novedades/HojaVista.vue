@@ -47,21 +47,22 @@ if (hojaActual) {
 
 function grabaRegistro() {
   const mes = months.indexOf(month.value) + 1
-  const periodo = year.value.toString() + '-' + mes.toString().padStart(2, '0') + '-01'
+  const periodo =
+    year.value.toString() + '-' + mes.toString().padStart(2, '0') + '-01' + 'T03:00:00.000Z'
   let fechaR = hojaActual.FECHACREACION
   if (hojaActual.ID != 0) {
     fechaR = fecha
   }
 
   const registro = {
-    ID: hojaActual.ID,
-    TIPOHOJAID: tipoHojaSelected.value.value,
-    PERIODOID: periodo,
-    TIPOCARGAID: tipoCargaSelected.value.value,
-    TIPOLIQUIDACIONID: liqSelected.value.value,
-    GRUPOADICIONAL: hojaActual.GRUPOADICIONAL,
-    FECHACREACION: fechaR,
-    ESTADOHOJAID: 2
+    Id: hojaActual.ID,
+    TipoHojaId: tipoHojaSelected.value.value,
+    PeriodoId: periodo,
+    TipoCargaId: tipoCargaSelected.value.value,
+    TipoLiquidacionId: liqSelected.value.value,
+    GrupoAdicional: hojaActual.GRUPOADICIONAL,
+    FechaCreacion: fechaR,
+    EstadoHojaId: 2
   }
   props.funcion(registro)
   props.cerrar()
