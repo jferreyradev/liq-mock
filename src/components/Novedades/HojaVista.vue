@@ -19,15 +19,15 @@ const fechaSplit = (vto) => {
 }
 
 const fechaActual = new Date()
-let mes = fechaActual.getMonth()
-let anio = fechaActual.getFullYear()
-let dia = fechaActual.getDate()
-let fecha =
-  anio.toString() +
+let mesActual = fechaActual.getMonth()
+let anioActual = fechaActual.getFullYear()
+let diaActual = fechaActual.getDate()
+let fechaCreacionFormat =
+  anioActual.toString() +
   '-' +
-  (mes + 1).toString().padStart(2, '0') +
+  (mesActual + 1).toString().padStart(2, '0') +
   '-' +
-  dia.toString().padStart(2, '0')
+  diaActual.toString().padStart(2, '0')
 const month = ref(months[fechaActual.getMonth()])
 const year = ref(fechaActual.getFullYear())
 const tipoCargaSelected = ref(tipoCarga[0])
@@ -38,11 +38,19 @@ if (hojaActual) {
   tipoCargaSelected.value = getObjetList(tipoCarga, hojaActual.TIPOCARGAID)
   liqSelected.value = getObjetList(tipoLiq, hojaActual.TIPOLIQUIDACIONID)
   tipoHojaSelected.value = getObjetList(tipoHoja, hojaActual.TIPOHOJAID)
-  let fecha = fechaSplit(hojaActual.PERIODOID)
-  month.value = months[fecha.mes - 1]
-  year.value = fecha.anio
+  let periodo = fechaSplit(hojaActual.PERIODOID)
+  month.value = months[periodo.mes - 1]
+  year.value = periodo.anio
+  fechaCreacionFormat = hojaActual.FECHACREACION.substring(0, 10)
+  console.log(fechaCreacionFormat)
 } else {
-  hojaActual = { ...hojaActual, ID: 0, GRUPOADICIONAL: 0, FECHACREACION: fecha, ESTADOHOJAID: 0 }
+  hojaActual = {
+    ...hojaActual,
+    ID: 0,
+    GRUPOADICIONAL: 0,
+    FECHACREACION: fechaCreacionFormat,
+    ESTADOHOJAID: 0
+  }
 }
 
 function grabaRegistro() {
@@ -51,7 +59,7 @@ function grabaRegistro() {
     year.value.toString() + '-' + mes.toString().padStart(2, '0') + '-01' + 'T03:00:00.000Z'
   let fechaR = hojaActual.FECHACREACION
   if (hojaActual.ID != 0) {
-    fechaR = fecha
+    fechaR = fechaCreacionFormat
   }
 
   const registro = {
@@ -64,6 +72,7 @@ function grabaRegistro() {
     FechaCreacion: fechaR,
     EstadoHojaId: 2
   }
+  console.log(registro)
   props.funcion(registro)
   props.cerrar()
 }
@@ -138,9 +147,9 @@ function grabaRegistro() {
           <v-row>
             <v-col cols="4">
               <v-text-field
-                v-model="hojaActual.FECHACREACION"
+                v-model="fechaCreacionFormat"
                 hide-details="auto"
-                label="Fecha"
+                label="Fecha Creación"
               ></v-text-field>
             </v-col>
             <v-col cols="4">

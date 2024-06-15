@@ -1,18 +1,18 @@
 <script setup>
-
 import { ref } from 'vue'
 import HojaVista from './HojaVista.vue'
+import Confirmacion from './Confirmacion.vue'
 import { getName, tipoCarga, tipoHoja, tipoLiq } from '@/utils/tipos'
 import { estados } from '@/utils/tipos'
-import { leerDatos, grabarRegistro } from './llamadaAPI'
+import { leerDatos, grabarRegistro, eliminarRegistro } from './llamadaAPI'
 import botonTooltip from './botonTooltip.vue'
 
 const hojasHeaders = [
   { title: 'Id.', key: 'ID' },
-  { title: 'Tipo Hoja', key: 'TIPOHOJAID' },
+  { title: 'Tipo Hoja', key: 'TIPOHOJADESCRIPCION' },
   { title: 'Período', key: 'PERIODOID' },
   { title: 'Tipo Carga', key: 'TIPOCARGAID' },
-  { title: 'Tipo Liq', key: 'TIPOLIQUIDACIONID' },
+  { title: 'Tipo Liq', key: 'TIPOLIQUIDACIONDESCRIPCION' },
   { title: 'Grupo', key: 'GRUPOADICIONAL' },
   { title: 'Fec. Creac.', key: 'FECHACREACION' },
   { title: 'Estado', key: 'ESTADOHOJAID' },
@@ -29,31 +29,37 @@ const getVto = (vto) => {
 
 const getFechaDMY = (vto) => {
   if (vto) {
-    const d = vto.substring(0,10).split('-')
+    const d = vto.substring(0, 10).split('-')
     return `${d[2]}/${d[1]}/${d[0]}`
   }
   return null
 }
 function handleModif(itemid) {
+  mostrarAlert.value = false
   let item = null
   if (itemid !== 0) item = data.value.find((e) => e.ID == itemid)
   abrirModal(item)
 }
 
+function handleEliminar(itemid) {
+  mostrarAlert.value = false
+  itemEliminar.value = itemid
+  muestraConfirmacion.value = true
+}
+
 function grabar(item) {
-  
+  console.log('solicita grabar')
   console.log(item)
-  grabarRegistro('hoja?Id='+item.ID, item, 'PUT')
-  if (item.ID === 0) {
-    const groups = data.value.map((item) => item.ID)
-    let maxID = Math.max(...groups)
-    item.ID = maxID + 1
-    data.value.push(item)
-    
+  if (item.Id == 0) {
+    grabarRegistro('hoja', item, 'POST')
   } else {
-    const nuevaLista = data.value.map((it) => (item.ID == it.ID ? item : it))
-    data.value = nuevaLista
+    grabarRegistro('hoja?Id=' + item.ID, item, 'PUT')
   }
+  mostrarAlert.value = true
+}
+
+function eliminar(id) {
+  eliminarRegistro('hoja/' + id, 'DELETE')
 }
 
 let isPending = ref(false)
@@ -65,8 +71,10 @@ const itemMostrar = ref({
   Tipo: 'Sin Tipo'
 })
 
-let muestra = ref(false)
+const itemEliminar = ref(0)
 
+let muestra = ref(false)
+let muestraConfirmacion = ref(false)
 
 function abrirModal(item) {
   itemMostrar.value = item
@@ -77,6 +85,9 @@ function cierraForm() {
   muestra.value = false
 }
 
+function cierraConfirmacion() {
+  muestraConfirmacion.value = false
+}
 
 async function leerHojas() {
   isPending.value = true
@@ -85,6 +96,7 @@ async function leerHojas() {
   isPending.value = false
 }
 
+const mostrarAlert = ref(false)
 </script>
 
 <template>
@@ -99,6 +111,17 @@ async function leerHojas() {
     </v-container>
     <div v-if="isPending">loading...</div>
     <div v-else-if="data">
+      <v-alert
+        v-model="mostrarAlert"
+        border="start"
+        close-label="Close Alert"
+        color="success"
+        icon="$success"
+        closable
+      >
+        Los datos se grabaron satisfactoriamente
+      </v-alert>
+
       <v-data-table
         class="text-caption"
         hover
@@ -109,10 +132,10 @@ async function leerHojas() {
         <template v-slot:item="{ item }">
           <tr class="pa-0 ma-0">
             <td class="text-right m-0 p-0">{{ item.ID }}</td>
-            <td class="text-left m-0 p-0">{{ getName(tipoHoja, item.TIPOHOJAID) }}</td>
+            <td class="text-left m-0 p-0">{{ item.TIPOHOJADESCRIPCION }}</td>
             <td class="text-center m-0 p-0">{{ getVto(item.PERIODOID) }}</td>
             <td class="text-center m-0 p-0">{{ getName(tipoCarga, item.TIPOCARGAID) }}</td>
-            <td class="text-center m-0 p-0">{{ getName(tipoLiq, item.TIPOLIQUIDACIONID) }}</td>
+            <td class="text-left m-0 p-0">{{ item.TIPOLIQUIDACIONDESCRIPCION }}</td>
             <td class="text-center m-0 p-0">{{ item.GRUPOADICIONAL }}</td>
             <td class="text-center m-0 p-0">{{ getFechaDMY(item.FECHACREACION) }}</td>
             <td class="text-center m-0 p-0">{{ getName(estados, item.ESTADOHOJAID) }}</td>
@@ -126,7 +149,7 @@ async function leerHojas() {
               <botonTooltip
                 :icono="'mdi-delete'"
                 :toolMsg="'Eliminar'"
-                :funcion="handleModif"
+                :funcion="handleEliminar"
                 :itemid="item.ID"
               ></botonTooltip>
             </td>
@@ -140,5 +163,15 @@ async function leerHojas() {
 
   <v-dialog v-model="muestra" max-width="80%" persistent="">
     <hoja-vista :Hoja="itemMostrar" :cerrar="cierraForm" :funcion="grabar"></hoja-vista>
+  </v-dialog>
+
+  <v-dialog v-model="muestraConfirmacion" max-width="80%" persistent="">
+    <confirmacion
+      :titulo="'Eliminar hoja'"
+      :mensaje="'Seguro que desea eliminar le hoja?'"
+      :cerrar="cierraConfirmacion"
+      :aceptar="eliminar"
+      :parametro="itemEliminar"
+    ></confirmacion>
   </v-dialog>
 </template>
