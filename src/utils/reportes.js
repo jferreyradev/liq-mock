@@ -10,6 +10,15 @@ export const getVto = (vto) => {
   return null
 }
 
+export const getFecha = (fecha) => {
+  if (fecha) {
+    const completa = fecha.substring(0, 10)
+    const d = completa.split('-')
+    return `${d[2]}/${d[1]}/${d[0]}`
+  }
+  return null
+}
+
 export function agregaTitulosExcel(mapa, tituloReporte, filtros, titulosTabla) {
   const tituloTablaFormato = titulosTabla.map((t) => ({
     v: t,
