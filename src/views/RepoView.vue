@@ -11,6 +11,7 @@ import RepoPlanillaLey from '@/components/RepoPlanillaLey.vue'
 import RepoPlanillaResSueldo from '@/components/RepoPlanillaResSueldo.vue'
 import RepoPlanillaRetCargo from '@/components/RepoPlanillaRetCargo.vue'
 import RepoPlanillaRetencionesCPA from '@/components/RepoPlanillaRetencionesCPA.vue'
+import RepoBajasLey from '@/components/RepoBajasLey.vue'
 
 import { ref } from 'vue'
 
@@ -25,7 +26,8 @@ const reportes = [
   { title: 'Planilla de Ley', value: 9 },
   { title: 'Resumen de Sueldos', value: 10 },
   { title: 'Retenciones de CPA', value: 11 },
-  { title: 'Retenciones de Cargo', value: 12 }
+  { title: 'Retenciones de Cargo', value: 12 },
+  { title: 'Bajas de Ley', value: 13 }
 ]
 
 const repo = ref()
@@ -71,6 +73,9 @@ const repo = ref()
       <RepoPlanillaRetencionesCPA v-if="repo == 11"></RepoPlanillaRetencionesCPA>
 
       <RepoPlanillaRetCargo v-if="repo == 12"></RepoPlanillaRetCargo>
+
+      <RepoBajasLey v-if="repo == 13"></RepoBajasLey>
+      
     </v-row>
   </v-container>
 </template>

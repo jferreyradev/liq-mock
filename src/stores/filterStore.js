@@ -1,27 +1,47 @@
 import { defineStore } from 'pinia'
 
 const liqMap = new Map([
-  ['1', "Mensual"],
-  ['5', "Adicional"],
-  ['2', "1er SAC"],
-  ['3', "2Do SAC"],
-]);
+  ['1', 'Mensual'],
+  ['5', 'Adicional'],
+  ['2', '1er SAC'],
+  ['3', '2Do SAC']
+])
 
-const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+const meses = [
+  'Enero',
+  'Febrero',
+  'Marzo',
+  'Abril',
+  'Mayo',
+  'Junio',
+  'Julio',
+  'Agosto',
+  'Septiembre',
+  'Octubre',
+  'Noviembre',
+  'Diciembre'
+]
 
 export const useFilterStore = defineStore('filter', {
   state: () => ({
-    tipoliq: 1, nroadi: 0, year: 0, month: 0,
+    tipoliq: 1,
+    nroadi: 0,
+    year: 0,
+    month: 0,
     //URL_API: 'http://www.serverburru2.duckdns.org:3003/api',
     URL_API: 'https://midliq-api-grq94rhtchph.deno.dev/api',
     serverConfig: {}
   }),
   getters: {
-    filterString: (state) => `TipoLiquidacionId=${state.tipoliq}&GrupoAdicionalId=${state.nroadi}&Periodo=01/${state.month}/${state.year}`,
+    filterString: (state) =>
+      `TipoLiquidacionId=${state.tipoliq}&GrupoAdicionalId=${state.nroadi}&Periodo=01/${state.month}/${state.year}`,
+    filterPeriodoString: (state) => `Periodo=01/${state.month}/${state.year}`,
     periodoString: (state) => `${meses[state.month - 1]} - ${state.year}`,
-    liqString: (state) => `${liqMap.get(state.tipoliq.toString())}-${state.nroadi}  ${meses[state.month - 1]}-${state.year}`,
+    liqString: (state) =>
+      `${liqMap.get(state.tipoliq.toString())}-${state.nroadi}  ${meses[state.month - 1]}-${state.year}`,
     getURLAPI: (state) => `${state.URL_API}`,
-    liqCompactString: (state) => `${state.year}${meses[state.month - 1].substring(0, 3)}${liqMap.get(state.tipoliq.toString()).substring(0, 1)}${state.nroadi}`
+    liqCompactString: (state) =>
+      `${state.year}${meses[state.month - 1].substring(0, 3)}${liqMap.get(state.tipoliq.toString()).substring(0, 1)}${state.nroadi}`
   },
   actions: {
     setPer() {
@@ -45,5 +65,5 @@ export const useFilterStore = defineStore('filter', {
           console.log(err)
         })
     }
-  },
+  }
 })
