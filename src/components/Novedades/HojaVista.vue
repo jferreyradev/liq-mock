@@ -42,7 +42,6 @@ if (hojaActual) {
   month.value = months[periodo.mes - 1]
   year.value = periodo.anio
   fechaCreacionFormat = hojaActual.FECHACREACION.substring(0, 10)
-  console.log(fechaCreacionFormat)
 } else {
   hojaActual = {
     ...hojaActual,
@@ -53,7 +52,10 @@ if (hojaActual) {
   }
 }
 
-function grabaRegistro() {
+const mostrarAlert = ref(false)
+
+async function grabaRegistro() {
+  mostrarAlert.value = false
   const mes = months.indexOf(month.value) + 1
   const periodo =
     year.value.toString() + '-' + mes.toString().padStart(2, '0') + '-01' + 'T03:00:00.000Z'
@@ -72,9 +74,14 @@ function grabaRegistro() {
     FechaCreacion: fechaR,
     EstadoHojaId: 2
   }
-  console.log(registro)
-  props.funcion(registro)
-  props.cerrar()
+
+  let grabarOk = await props.funcion(registro)
+
+  if (grabarOk) {
+    props.cerrar()
+  } else {
+    mostrarAlert.value = true
+  }
 }
 </script>
 
@@ -83,6 +90,16 @@ function grabaRegistro() {
     <v-card>
       <v-card-title>Hojas</v-card-title>
       <v-card-subtitle>Agregar Nueva</v-card-subtitle>
+      <v-alert
+        v-model="mostrarAlert"
+        border="start"
+        close-label="Close Alert"
+        color="error"
+        icon="$error"
+        closable
+      >
+        No se pudieron grabar los datos
+      </v-alert>
       <v-card-text>
         <v-container>
           <v-row>

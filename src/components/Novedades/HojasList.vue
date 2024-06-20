@@ -6,6 +6,7 @@ import { getName, tipoCarga, tipoHoja, tipoLiq } from '@/utils/tipos'
 import { estados } from '@/utils/tipos'
 import { leerDatos, grabarRegistro, eliminarRegistro } from './llamadaAPI'
 import botonTooltip from './botonTooltip.vue'
+import { getVto, getFechaDMY } from '@/utils/formatos'
 
 const hojasHeaders = [
   { title: 'Id.', key: 'ID' },
@@ -19,21 +20,18 @@ const hojasHeaders = [
   { title: 'Acciones', key: 'ACCIONES' }
 ]
 
-const getVto = (vto) => {
-  if (vto) {
-    const d = vto.split('-')
-    return `${d[1]}/${d[0]}`
-  }
-  return null
-}
+// alerta de grabación o error
+const mostrarAlert = ref(false)
+const alertMensaje = ref(null)
+const alertTipo = ref(null)
 
-const getFechaDMY = (vto) => {
-  if (vto) {
-    const d = vto.substring(0, 10).split('-')
-    return `${d[2]}/${d[1]}/${d[0]}`
-  }
-  return null
-}
+// manejadores de altas, bajas y modificaciones
+
+const itemMostrar = ref({
+  Nro: 0,
+  Tipo: 'Sin Tipo'
+})
+
 function handleModif(itemid) {
   mostrarAlert.value = false
   let item = null
@@ -41,62 +39,76 @@ function handleModif(itemid) {
   abrirModal(item)
 }
 
+const itemEliminar = ref(0)
+let muestraConfirmacion = ref(false)
+
 function handleEliminar(itemid) {
   mostrarAlert.value = false
   itemEliminar.value = itemid
   muestraConfirmacion.value = true
 }
-
-function grabar(item) {
-  console.log('solicita grabar')
-  console.log(item)
-  if (item.Id == 0) {
-    grabarRegistro('hoja', item, 'POST')
-  } else {
-    grabarRegistro('hoja?Id=' + item.ID, item, 'PUT')
-  }
-  mostrarAlert.value = true
-}
-
-function eliminar(id) {
-  eliminarRegistro('hoja/' + id, 'DELETE')
-}
-
-let isPending = ref(false)
-const data = ref(null)
-const error = null
-
-const itemMostrar = ref({
-  Nro: 0,
-  Tipo: 'Sin Tipo'
-})
-
-const itemEliminar = ref(0)
-
-let muestra = ref(false)
-let muestraConfirmacion = ref(false)
-
-function abrirModal(item) {
-  itemMostrar.value = item
-  muestra.value = true
-}
-
-function cierraForm() {
-  muestra.value = false
-}
-
 function cierraConfirmacion() {
   muestraConfirmacion.value = false
 }
 
-async function leerHojas() {
-  isPending.value = true
-  data.value = await leerDatos('hoja')
-  console.log(data.value)
-  isPending.value = false
+// apertura y cierre del formulario modal
+let muestraRegistro = ref(false)
+
+function abrirModal(item) {
+  itemMostrar.value = item
+  muestraRegistro.value = true
 }
 
-const mostrarAlert = ref(false)
+function cierraForm() {
+  muestraRegistro.value = false
+}
+
+// llamadas a API de grabación y eliminación
+async function grabar(item) {
+  let resultado = false
+  if (item.Id == 0) {
+    resultado = await grabarRegistro('hoja', item, 'POST')
+  } else {
+    resultado = await grabarRegistro('hoja?Id=' + item.ID, item, 'PUT')
+  }
+  if (resultado.operacionOk) {
+    await leerHojas()
+    alertMensaje.value = 'Los datos se grabaron satisfactoriamente'
+    alertTipo.value = 'success'
+    mostrarAlert.value = true
+    return true
+  }
+  return false
+}
+async function eliminar(id) {
+  const resultado = await eliminarRegistro('hoja/' + id, 'DELETE')
+  if (resultado.operacionOk) {
+    await leerHojas()
+    alertMensaje.value = 'Los datos se grabaron satisfactoriamente'
+    alertTipo.value = 'success'
+    mostrarAlert.value = true
+  } else {
+    alertMensaje.value = 'No se pudo eliminar el registro'
+    alertTipo.value = 'error'
+    mostrarAlert.value = true
+  }
+  muestraConfirmacion.value = false
+}
+
+// lectura de registros
+let isPending = ref(false)
+const data = ref(null)
+const error = null
+
+const lecturaHojas = ref(true)
+
+async function leerHojas() {
+  isPending.value = true
+  const { datos, operacionOk } = await leerDatos('hoja')
+  data.value = datos
+  lecturaHojas.value = operacionOk
+  isPending.value = false
+}
 </script>
 
 <template>
@@ -110,16 +122,17 @@ const mostrarAlert = ref(false)
       >
     </v-container>
     <div v-if="isPending">loading...</div>
+    <div v-else-if="!lecturaHojas">Error al intentar recibir los datos</div>
     <div v-else-if="data">
       <v-alert
         v-model="mostrarAlert"
         border="start"
         close-label="Close Alert"
-        color="success"
-        icon="$success"
+        :color="alertTipo"
+        :icon="'$' + alertTipo"
         closable
       >
-        Los datos se grabaron satisfactoriamente
+        {{ alertMensaje }}
       </v-alert>
 
       <v-data-table
@@ -161,7 +174,7 @@ const mostrarAlert = ref(false)
     <div v-if="error">No se puede obtener los datos solicitados.</div>
   </v-container>
 
-  <v-dialog v-model="muestra" max-width="80%" persistent="">
+  <v-dialog v-model="muestraRegistro" max-width="80%" persistent="">
     <hoja-vista :Hoja="itemMostrar" :cerrar="cierraForm" :funcion="grabar"></hoja-vista>
   </v-dialog>
 
