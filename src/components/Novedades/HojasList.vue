@@ -8,6 +8,8 @@ import { leerDatos, grabarRegistro, eliminarRegistro } from './llamadaAPI'
 import botonTooltip from './botonTooltip.vue'
 import { getVto, getFechaDMY } from '@/utils/formatos'
 
+const props = defineProps(['setHojaEdicion'])
+
 const hojasHeaders = [
   { title: 'Id.', key: 'ID' },
   { title: 'Tipo Hoja', key: 'TIPOHOJADESCRIPCION' },
@@ -109,6 +111,12 @@ async function leerHojas() {
   lecturaHojas.value = operacionOk
   isPending.value = false
 }
+
+// editar registros de Hoja
+function handleEditarRegistros(itemid) {
+  let item = data.value.find((e) => e.ID == itemid)
+  props.setHojaEdicion(item)
+}
 </script>
 
 <template>
@@ -163,6 +171,12 @@ async function leerHojas() {
                 :icono="'mdi-delete'"
                 :toolMsg="'Eliminar'"
                 :funcion="handleEliminar"
+                :itemid="item.ID"
+              ></botonTooltip>
+              <botonTooltip
+                :icono="'mdi-list-box-outline'"
+                :toolMsg="'Editar Registros'"
+                :funcion="handleEditarRegistros"
                 :itemid="item.ID"
               ></botonTooltip>
             </td>
