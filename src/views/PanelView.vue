@@ -15,7 +15,7 @@ const idliqitem = ref(null)
 
 function handleSelect(id, objElement) {
     idliqitem.value = id
-    text.value = 'Orden:' + objElement.orden + ' DNI:' + objElement.dni + ' Nombre:' + objElement.apellido + objElement.nombre
+    text.value = 'Orden:' + objElement.orden + ' DNI:' + objElement.dni + ' Nombre:' + objElement.apellido + ' ' + objElement.nombre
 }
 
 </script>
