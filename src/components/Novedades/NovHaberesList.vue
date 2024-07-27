@@ -2,8 +2,6 @@
 import { ref } from 'vue'
 import HojaVista from './HojaVista.vue'
 import Confirmacion from './Confirmacion.vue'
-import { getName, tipoCarga, tipoHoja, tipoLiq } from '@/utils/tipos'
-import { estados } from '@/utils/tipos'
 import { leerDatos, grabarRegistro, eliminarRegistro } from './llamadaAPI'
 import botonTooltip from './botonTooltip.vue'
 import { getVto, getFechaDMY, financial } from '@/utils/formatos'
@@ -64,8 +62,8 @@ const alertTipo = ref(null)
 // manejadores de altas, bajas y modificaciones
 
 const itemMostrar = ref({
-  Nro: 0,
-  Tipo: 'Sin Tipo'
+  HojaId: 0,
+  Id: 0
 })
 
 function handleModif(itemid) {
@@ -98,6 +96,26 @@ function abrirModal(item) {
 function cierraForm() {
   muestraRegistro.value = false
 }
+
+// funciones de agregado, modificación y eliminación
+async function grabar(item) {
+  let resultado = false
+  if (item.Id == 0) {
+    resultado = await grabarRegistro('novhaberes', item, 'POST')
+  } else {
+    resultado = await grabarRegistro('novhaberes?Id=' + item.ID, item, 'PUT')
+  }
+  if (resultado.operacionOk) {
+    await leerListaRegs()
+    alertMensaje.value = 'Los datos se grabaron satisfactoriamente'
+    alertTipo.value = 'success'
+    mostrarAlert.value = true
+    return true
+  }
+  return false
+}
+
+// -------------------------------------------------
 </script>
 
 <template>
@@ -183,8 +201,8 @@ function cierraForm() {
 
   <v-dialog v-model="muestraConfirmacion" max-width="80%" persistent="">
     <confirmacion
-      :titulo="'Eliminar hoja'"
-      :mensaje="'Seguro que desea eliminar le hoja?'"
+      :titulo="'Eliminar registro'"
+      :mensaje="'Seguro que desea eliminar el registro?'"
       :cerrar="cierraConfirmacion"
       :aceptar="eliminar"
       :parametro="itemEliminar"
