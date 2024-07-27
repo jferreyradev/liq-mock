@@ -5,6 +5,7 @@ import Confirmacion from './Confirmacion.vue'
 import { leerDatos, grabarRegistro, eliminarRegistro } from './llamadaAPI'
 import botonTooltip from './botonTooltip.vue'
 import { getVto, getFechaDMY, financial } from '@/utils/formatos'
+import NovHaberesVista from './NovHaberesVista.vue'
 
 const props = defineProps(['setHojaEdicion', 'hojaEditar'])
 
@@ -16,6 +17,7 @@ function handleCerrarEdicion() {
 }
 
 const listaHeaders = [
+{ title: 'Acciones', key: '', fixed: true },
   { title: 'Nro Rep.', key: 'NROREPARTICION' },
   { title: 'Boleta', key: 'NROBOLETA' },
   { title: 'Afiliado', key: 'NROAFILIADO' },
@@ -33,8 +35,8 @@ const listaHeaders = [
   { title: 'Sit. Rev.', key: 'SITUACIONREVISTAID' },
   { title: 'Tipo OS', key: 'TIPOOBRASOCIALID' },
   { title: 'PPP', key: 'PPP' },
-  { title: 'Fec. Grab.', key: 'FECHAGRABACION' },
-  { title: 'Acciones', key: '' }
+  { title: 'Fec. Grab.', key: 'FECHAGRABACION' }
+  
 ]
 
 // lectura de registros
@@ -154,9 +156,24 @@ async function grabar(item) {
         density="compact"
         :items="data"
         :headers="listaHeaders"
+        fixed-header
       >
-        <template v-slot:item="{ item }">
+        <template v-slot:item="{ item } " >
           <tr class="pa-0 ma-0">
+            <td class="text-center m-0 p-0" >
+              <botonTooltip
+                :icono="'mdi-pencil'"
+                :toolMsg="'Editar'"
+                :funcion="handleModif"
+                :itemid="item.ID"
+              ></botonTooltip>
+              <botonTooltip
+                :icono="'mdi-delete'"
+                :toolMsg="'Eliminar'"
+                :funcion="handleEliminar"
+                :itemid="item.ID"
+              ></botonTooltip>
+            </td>
             <td class="text-right m-0 p-0">{{ item.NROREPARTICION }}</td>
             <td class="text-right m-0 p-0">{{ item.NROBOLETA }}</td>
             <td class="text-right m-0 p-0">{{ item.NROAFILIADO }}</td>
@@ -174,20 +191,7 @@ async function grabar(item) {
             <td class="text-center m-0 p-0">{{ item.TIPOOBRASOCIALID }}</td>
             <td class="text-center m-0 p-0">{{ item.PPP }}</td>
             <td class="text-center m-0 p-0">{{ getFechaDMY(item.FECHAGRABACION) }}</td>
-            <td class="text-center m-0 p-0">
-              <botonTooltip
-                :icono="'mdi-pencil'"
-                :toolMsg="'Editar'"
-                :funcion="handleModif"
-                :itemid="item.ID"
-              ></botonTooltip>
-              <botonTooltip
-                :icono="'mdi-delete'"
-                :toolMsg="'Eliminar'"
-                :funcion="handleEliminar"
-                :itemid="item.ID"
-              ></botonTooltip>
-            </td>
+
           </tr>
         </template>
       </v-data-table>
@@ -196,7 +200,7 @@ async function grabar(item) {
   </v-container>
 
   <v-dialog v-model="muestraRegistro" max-width="80%" persistent="">
-    <hoja-vista :Hoja="itemMostrar" :cerrar="cierraForm" :funcion="grabar"></hoja-vista>
+    <NovHaberesVista :Registro="itemMostrar" :cerrar="cierraForm" :funcion="grabar"></NovHaberesVista>
   </v-dialog>
 
   <v-dialog v-model="muestraConfirmacion" max-width="80%" persistent="">

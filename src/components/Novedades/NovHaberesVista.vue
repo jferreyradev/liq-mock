@@ -1,78 +1,84 @@
 <script setup>
 import { ref } from 'vue'
-import { months, tipoCarga, tipoHoja, tipoLiq, getObjetList } from '@/utils/tipos'
+import {  tipoCarga, tipoHoja, tipoLiq, getObjetList } from '@/utils/tipos'
 
 const props = defineProps(['Registro', 'cerrar', 'funcion'])
 let registroActual = props.Registro
 
-const fechaSplit = (vto) => {
-  if (vto) {
-    const d = vto.split('-')
-    const f = {
-      dia: d[2],
-      mes: d[1],
-      anio: d[0]
-    }
-    return f
-  }
-  return null
-}
+//const fechaSplit = (vto) => {
+//  if (vto) {
+//    const d = vto.split('-')
+//    const f = {
+//      dia: d[2],
+//      mes: d[1],
+//      anio: d[0]
+//    }
+//    return f
+//  }
+//  return null
+//}
 
-const fechaActual = new Date()
-let mesActual = fechaActual.getMonth()
-let anioActual = fechaActual.getFullYear()
-let diaActual = fechaActual.getDate()
-let fechaCreacionFormat =
-  anioActual.toString() +
-  '-' +
-  (mesActual + 1).toString().padStart(2, '0') +
-  '-' +
-  diaActual.toString().padStart(2, '0')
-const month = ref(months[fechaActual.getMonth()])
-const year = ref(fechaActual.getFullYear())
+//const fechaActual = new Date()
+//let mesActual = fechaActual.getMonth()
+//let anioActual = fechaActual.getFullYear()
+//let diaActual = fechaActual.getDate()
+//let fechaCreacionFormat =
+//  anioActual.toString() +
+//  '-' +
+//  (mesActual + 1).toString().padStart(2, '0') +
+//  '-' +
+//  diaActual.toString().padStart(2, '0')
+//const month = ref(months[fechaActual.getMonth()])
+//const year = ref(fechaActual.getFullYear())
 const tipoCargaSelected = ref(tipoCarga[0])
 const tipoHojaSelected = ref(tipoHoja[0])
 const liqSelected = ref(tipoLiq[0])
 
 const registroVacio = {
-  NroRepararticion: 0,
-  NroBoleta: 0,
-  NroAfiliado: 0,
-  Codigo: 0,
-  SubCodigo: 0,
-  Clase: 0,
-  Dias: 0,
-  Vencimiento: null,
-  Importe: 0,
-  Documento: 0,
-  Apellido: '',
-  Nombre: '',
-  TE: 0,
-  SituacionRevistaId: 0,
-  TipoObraSocialId: 0,
+  NROREPARTICION: 0,
+  NROBOLETA: 0,
+  NROAFILIADO: 0,
+  CODIGO: 0,
+  SUBCODIGO: 0,
+  CLASE: 0,
+  DIAS: 0,
+  VENCIMIENTO: null,
+  IMPORTE: 0,
+  DOCUMENTO: 0,
+  APELLIDO: '',
+  NOMBRE: '',
+  TIPOEMPLEOID: 0,
+  SITUACIONREVISTAID: 0,
+  TIPOOBRASOCIALID: 0,
   PPP: 0,
-  FechaGrabacion: null,
-  EstadoRegistro: 0,
-  HojaId: 0,
-  Id: 0
+  FECHAGRABACION: null,
+  ESTADOREGISTRO: 0,
+  HOJAID: 0,
+  ID: 0
 }
 
 if (registroActual) {
   tipoCargaSelected.value = getObjetList(tipoCarga, registroActual.TIPOCARGAID)
   liqSelected.value = getObjetList(tipoLiq, registroActual.TIPOLIQUIDACIONID)
   tipoHojaSelected.value = getObjetList(tipoHoja, registroActual.TIPOHOJAID)
-  let periodo = fechaSplit(registroActual.PERIODOID)
-  month.value = months[periodo.mes - 1]
-  year.value = periodo.anio
-  fechaCreacionFormat = registroActual.FECHAGRABACION.substring(0, 10)
+  //let periodo = fechaSplit(registroActual.PERIODOID)
+  //month.value = months[periodo.mes - 1]
+  //year.value = periodo.anio
+  //fechaCreacionFormat = registroActual.FECHAGRABACION.substring(0, 10)
 } else {
   registroActual = registroVacio
 }
 
 const mostrarAlert = ref(false)
 
+let mensajeError=ref('')
 async function grabaRegistro() {
   mostrarAlert.value = false
+  if (!validarRegistro()) {
+    console.log('error')
+    mostrarAlert.value = true
+    return
+  }
   //let fechaR = registroActual.FECHACREACION
   //if (registroActual.ID != 0) {
   //  fechaR = fechaCreacionFormat
@@ -106,16 +112,31 @@ async function grabaRegistro() {
   if (grabarOk) {
     props.cerrar()
   } else {
+    mensajeError.value="No se pudieron grabar los datos"
     mostrarAlert.value = true
   }
+} 
+
+function validarRegistro(){
+  console.log(typeof registroActual.CLASE)
+  if ( isNaN(parseInt(registroActual.CLASE)) ) {
+    mensajeError.value="Debe especificar un valor entre 0 y 999 para Claseaaa"
+    return false;
+  }
+  registroActual.CLASE = parseInt(registroActual.CLASE)
+  if (registroActual.CLASE < 0 || registroActual.CLASE>999 || !Number.isInteger(registroActual.CLASE)) {
+    mensajeError.value="Debe especificar un valor entre 0 y 999 para Clase"
+    return false;
+  }
+  return true
 }
 </script>
 
 <template>
   <v-container>
     <v-card>
-      <v-card-title>Hojas</v-card-title>
-      <v-card-subtitle>Agregar Nueva</v-card-subtitle>
+      <v-card-title>Novedades de Haberes</v-card-title>
+      <v-card-subtitle>Agregar</v-card-subtitle>
       <v-alert
         v-model="mostrarAlert"
         border="start"
@@ -124,82 +145,164 @@ async function grabaRegistro() {
         icon="$error"
         closable
       >
-        No se pudieron grabar los datos
+        {{mensajeError}}
       </v-alert>
       <v-card-text>
         <v-container>
           <v-row>
             <v-col cols="2">
               <v-text-field
-                v-model="hojaActual.ID"
+                v-model="registroActual.NROREPARTICION"
                 hide-details="auto"
-                label="Id"
+                label="Repartición"
                 readonly=""
               ></v-text-field>
             </v-col>
-            <v-col cols="6">
-              <v-select
-                label="Tipo Hoja"
-                :items="tipoHoja"
-                item-title="name"
-                item-value="value"
-                v-model="tipoHojaSelected"
-                return-object
-              >
-              </v-select>
+            <v-col cols="3">
+              <v-text-field
+                v-model="registroActual.NROBOLETA"
+                hide-details="auto"
+                label="Nro. Boleta"
+                readonly=""
+              ></v-text-field>
+            </v-col>
+            <v-col cols="3">
+              <v-text-field
+                v-model="registroActual.NROAFILIADO"
+                hide-details="auto"
+                label="Afiliado"
+                readonly=""
+              ></v-text-field>
+            </v-col>
+            <v-col cols="2">
+              <v-text-field
+                v-model="registroActual.CODIGO"
+                hide-details="auto"
+                label="Código"
+                readonly=""
+              ></v-text-field>
+            </v-col>
+            <v-col cols="2">
+              <v-text-field
+                v-model="registroActual.SUBCODIGO"
+                hide-details="auto"
+                label="Sub. Cód."
+                readonly=""
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col cols="3">
+              <v-text-field
+                v-model="registroActual.CLASE"
+                hide-details="auto"
+                label="Clase"
+                
+              ></v-text-field>
+            </v-col>
+            <v-col cols="3">
+              <v-text-field
+                v-model="registroActual.DIAS"
+                hide-details="auto"
+                label="Días"
+                readonly=""
+              ></v-text-field>
+            </v-col>
+            <v-col cols="3">
+              <v-text-field
+                v-model="registroActual.VENCIMIENTO"
+                hide-details="auto"
+                label="Vencimiento"
+                readonly=""
+              ></v-text-field>
+            </v-col>
+            <v-col cols="3">
+              <v-text-field
+                v-model="registroActual.IMPORTE"
+                hide-details="auto"
+                label="Importe"
+                readonly=""
+              ></v-text-field>
             </v-col>
 
-            <v-col cols="2">
-              <v-select label="Mes" :items="months" v-model="month"></v-select>
-            </v-col>
-            <v-col cols="2">
-              <v-text-field label="Año" v-model="year" required type="number"></v-text-field>
-            </v-col>
           </v-row>
+
           <v-row>
-            <v-col cols="4">
-              <v-select
-                label="Tipo Carga"
-                :items="tipoCarga"
-                item-title="name"
-                item-value="value"
-                v-model="tipoCargaSelected"
-                return-object
-              >
-              </v-select>
-            </v-col>
-            <v-col cols="4">
-              <v-select
-                label="Tipo Liq"
-                :items="tipoLiq"
-                item-title="name"
-                item-value="value"
-                v-model="liqSelected"
-                return-object
-              >
-              </v-select>
-            </v-col>
-            <v-col cols="4">
+            <v-col cols="2">
               <v-text-field
-                v-model="hojaActual.GRUPOADICIONAL"
+                v-model="registroActual.DOCUMENTO"
                 hide-details="auto"
-                label="Grupo"
+                label="Documento"
+                readonly=""
+              ></v-text-field>
+            </v-col>
+            <v-col cols="5">
+              <v-text-field
+                v-model="registroActual.APELLIDO"
+                hide-details="auto"
+                label="Apellido"
+                readonly=""
+              ></v-text-field>
+            </v-col>
+            <v-col cols="5">
+              <v-text-field
+                v-model="registroActual.NOMBRE"
+                hide-details="auto"
+                label="Nombre"
+                readonly=""
               ></v-text-field>
             </v-col>
           </v-row>
           <v-row>
-            <v-col cols="4">
+            <v-col cols="3">
               <v-text-field
-                v-model="fechaCreacionFormat"
+                v-model="registroActual.TIPOEMPLEOID"
                 hide-details="auto"
-                label="Fecha Creación"
+                label="Tipo Empleo"
+                readonly=""
               ></v-text-field>
             </v-col>
-            <v-col cols="4">
+            <v-col cols="3">
               <v-text-field
-                v-model="hojaActual.ESTADOHOJAID"
+                v-model="registroActual.SITUACIONREVISTAID"
+                hide-details="auto"
+                label="Sit. Rev."
+                readonly=""
+              ></v-text-field>
+            </v-col>
+            <v-col cols="3">
+              <v-text-field
+                v-model="registroActual.TIPOOBRASOCIALID"
+                hide-details="auto"
+                label="Tipo OS"
+                readonly=""
+              ></v-text-field>
+            </v-col>
+            <v-col cols="3">
+              <v-text-field
+                v-model="registroActual.PPP"
+                hide-details="auto"
+                label="PPP"
+                readonly=""
+              ></v-text-field>
+            </v-col>
+
+          </v-row>
+          <v-row>
+            <v-col cols="3">
+              <v-text-field
+                v-model="registroActual.FECHAGRABACION"
+                hide-details="auto"
+                label="Grabación"
+                readonly=""
+              ></v-text-field>
+            </v-col>
+            <v-col cols="3">
+              <v-text-field
+                v-model="registroActual.ESTADOREGISTRO"
                 hide-details="auto"
                 label="Estado"
+                readonly=""
               ></v-text-field>
             </v-col>
           </v-row>
