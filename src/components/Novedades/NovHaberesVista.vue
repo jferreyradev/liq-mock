@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import {  tipoCarga, tipoHoja, tipoLiq, getObjetList } from '@/utils/tipos'
+import { tipoCarga, tipoHoja, tipoLiq, getObjetList } from '@/utils/tipos'
 
 const props = defineProps(['Registro', 'cerrar', 'funcion'])
 let registroActual = props.Registro
@@ -71,7 +71,7 @@ if (registroActual) {
 
 const mostrarAlert = ref(false)
 
-let mensajeError=ref('')
+let mensajeError = ref('')
 async function grabaRegistro() {
   mostrarAlert.value = false
   if (!validarRegistro()) {
@@ -97,7 +97,7 @@ async function grabaRegistro() {
     Documento: registroActual.DOCUMENTO,
     Apellido: registroActual.APELLIDO,
     Nombre: registroActual.NOMBRE,
-    TipoEmplpeoId: registroActual.TIPOEMPLEOID,
+    TipoEmpleoId: registroActual.TIPOEMPLEOID,
     SituacionRevistaId: registroActual.SITUACIONREVISTAID,
     TipoObraSocialId: registroActual.TIPOOBRASOCIALID,
     PPP: registroActual.PPP,
@@ -106,28 +106,50 @@ async function grabaRegistro() {
     HojaId: registroActual.HOJAID,
     Id: registroActual.ID
   }
-
+  console.log(registroGrabar)
   let grabarOk = await props.funcion(registroGrabar)
 
   if (grabarOk) {
     props.cerrar()
   } else {
-    mensajeError.value="No se pudieron grabar los datos"
+    mensajeError.value = 'No se pudieron grabar los datos'
     mostrarAlert.value = true
   }
-} 
+}
 
-function validarRegistro(){
-  console.log(typeof registroActual.CLASE)
-  if ( isNaN(parseInt(registroActual.CLASE)) ) {
-    mensajeError.value="Debe especificar un valor entre 0 y 999 para Claseaaa"
-    return false;
+function validaRangoNumerico(valor, min, max) {
+  console.log(Number.isInteger(valor), valor)
+  if (Number.isNaN(parseInt(valor))) {
+    return false
   }
-  registroActual.CLASE = parseInt(registroActual.CLASE)
-  if (registroActual.CLASE < 0 || registroActual.CLASE>999 || !Number.isInteger(registroActual.CLASE)) {
-    mensajeError.value="Debe especificar un valor entre 0 y 999 para Clase"
-    return false;
+  let valorNumerico = parseInt(valor)
+  if (valorNumerico < min || valorNumerico > max) return false
+
+  return true
+}
+
+function validarRegistro() {
+  if (!validaRangoNumerico(registroActual.CLASE, 0, 999)) {
+    mensajeError.value = 'Debe especificar un valor entre 0 y 999 para Clase'
+    return false
   }
+  if (!validaRangoNumerico(registroActual.DIAS, 0, 30)) {
+    mensajeError.value = 'Debe especificar un valor entre 0 y 30 para Dias'
+    return false
+  }
+  if (!validaRangoNumerico(registroActual.TIPOEMPLEOID, 1, 9)) {
+    mensajeError.value = 'Debe especificar un valor entre 1 y 9 para Tipo de Empleo'
+    return false
+  }
+  if (!validaRangoNumerico(registroActual.SITUACIONREVISTAID, 1, 9)) {
+    mensajeError.value = 'Debe especificar un valor entre 1 y 9 para Situación de Revista'
+    return false
+  }
+  if (!validaRangoNumerico(registroActual.TIPOOBRASOCIALID, 1, 9)) {
+    mensajeError.value = 'Debe especificar un valor entre 1 y 9 para Tipo de Obra Social'
+    return false
+  }
+
   return true
 }
 </script>
@@ -145,7 +167,7 @@ function validarRegistro(){
         icon="$error"
         closable
       >
-        {{mensajeError}}
+        {{ mensajeError }}
       </v-alert>
       <v-card-text>
         <v-container>
@@ -155,7 +177,6 @@ function validarRegistro(){
                 v-model="registroActual.NROREPARTICION"
                 hide-details="auto"
                 label="Repartición"
-                readonly=""
               ></v-text-field>
             </v-col>
             <v-col cols="3">
@@ -163,7 +184,6 @@ function validarRegistro(){
                 v-model="registroActual.NROBOLETA"
                 hide-details="auto"
                 label="Nro. Boleta"
-                readonly=""
               ></v-text-field>
             </v-col>
             <v-col cols="3">
@@ -171,7 +191,6 @@ function validarRegistro(){
                 v-model="registroActual.NROAFILIADO"
                 hide-details="auto"
                 label="Afiliado"
-                readonly=""
               ></v-text-field>
             </v-col>
             <v-col cols="2">
@@ -179,7 +198,6 @@ function validarRegistro(){
                 v-model="registroActual.CODIGO"
                 hide-details="auto"
                 label="Código"
-                readonly=""
               ></v-text-field>
             </v-col>
             <v-col cols="2">
@@ -187,7 +205,6 @@ function validarRegistro(){
                 v-model="registroActual.SUBCODIGO"
                 hide-details="auto"
                 label="Sub. Cód."
-                readonly=""
               ></v-text-field>
             </v-col>
           </v-row>
@@ -197,7 +214,6 @@ function validarRegistro(){
                 v-model="registroActual.CLASE"
                 hide-details="auto"
                 label="Clase"
-                
               ></v-text-field>
             </v-col>
             <v-col cols="3">
@@ -205,7 +221,6 @@ function validarRegistro(){
                 v-model="registroActual.DIAS"
                 hide-details="auto"
                 label="Días"
-                readonly=""
               ></v-text-field>
             </v-col>
             <v-col cols="3">
@@ -213,7 +228,6 @@ function validarRegistro(){
                 v-model="registroActual.VENCIMIENTO"
                 hide-details="auto"
                 label="Vencimiento"
-                readonly=""
               ></v-text-field>
             </v-col>
             <v-col cols="3">
@@ -221,10 +235,8 @@ function validarRegistro(){
                 v-model="registroActual.IMPORTE"
                 hide-details="auto"
                 label="Importe"
-                readonly=""
               ></v-text-field>
             </v-col>
-
           </v-row>
 
           <v-row>
@@ -233,7 +245,6 @@ function validarRegistro(){
                 v-model="registroActual.DOCUMENTO"
                 hide-details="auto"
                 label="Documento"
-                readonly=""
               ></v-text-field>
             </v-col>
             <v-col cols="5">
@@ -241,7 +252,6 @@ function validarRegistro(){
                 v-model="registroActual.APELLIDO"
                 hide-details="auto"
                 label="Apellido"
-                readonly=""
               ></v-text-field>
             </v-col>
             <v-col cols="5">
@@ -249,7 +259,6 @@ function validarRegistro(){
                 v-model="registroActual.NOMBRE"
                 hide-details="auto"
                 label="Nombre"
-                readonly=""
               ></v-text-field>
             </v-col>
           </v-row>
@@ -259,7 +268,6 @@ function validarRegistro(){
                 v-model="registroActual.TIPOEMPLEOID"
                 hide-details="auto"
                 label="Tipo Empleo"
-                readonly=""
               ></v-text-field>
             </v-col>
             <v-col cols="3">
@@ -267,7 +275,6 @@ function validarRegistro(){
                 v-model="registroActual.SITUACIONREVISTAID"
                 hide-details="auto"
                 label="Sit. Rev."
-                readonly=""
               ></v-text-field>
             </v-col>
             <v-col cols="3">
@@ -275,7 +282,6 @@ function validarRegistro(){
                 v-model="registroActual.TIPOOBRASOCIALID"
                 hide-details="auto"
                 label="Tipo OS"
-                readonly=""
               ></v-text-field>
             </v-col>
             <v-col cols="3">
@@ -283,10 +289,8 @@ function validarRegistro(){
                 v-model="registroActual.PPP"
                 hide-details="auto"
                 label="PPP"
-                readonly=""
               ></v-text-field>
             </v-col>
-
           </v-row>
           <v-row>
             <v-col cols="3">
@@ -294,7 +298,6 @@ function validarRegistro(){
                 v-model="registroActual.FECHAGRABACION"
                 hide-details="auto"
                 label="Grabación"
-                readonly=""
               ></v-text-field>
             </v-col>
             <v-col cols="3">
@@ -302,7 +305,6 @@ function validarRegistro(){
                 v-model="registroActual.ESTADOREGISTRO"
                 hide-details="auto"
                 label="Estado"
-                readonly=""
               ></v-text-field>
             </v-col>
           </v-row>
