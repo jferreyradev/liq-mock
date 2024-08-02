@@ -113,7 +113,8 @@ const res = computed(() => {
               'bg-orange-lighten-3': item.TIPOCONCEPTOID === 6,
               'bg-orange-lighten-4': item.TIPOCONCEPTOID === 3,
               'bg-orange-lighten-5': item.TIPOCONCEPTOID === 4,
-              'bg-blue-lighten-5': item.TIPOCONCEPTOID === 1
+              'bg-blue-lighten-5': item.TIPOCONCEPTOID === 1,
+              'bg-blue-lighten-3': item.TIPOCONCEPTOID === 7
             }"
           >
             <td class="text-right m-0 p-0">{{ item.CODIGO * 1000 + item.SUBCODIGO }}</td>
@@ -131,7 +132,7 @@ const res = computed(() => {
           </tr>
            <tr>
             <td>
-              {{ getNumberFormat(res.hcap + res.hsap + res.asigfam) }}
+              {{ getNumberFormat(res.hcap + res.hsap + res.asigfam + res.ticket) }}
             </td>
             <td>
               {{ getNumberFormat(res.desc + res.descley) }}
