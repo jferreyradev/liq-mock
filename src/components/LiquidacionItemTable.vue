@@ -138,7 +138,7 @@ const res = computed(() => {
               {{ getNumberFormat(res.desc + res.descley) }}
             </td>
             <td>
-              {{ getNumberFormat(res.hcap + res.hsap + res.asigfam - res.desc - res.descley) }}
+              {{ getNumberFormat(res.hcap + res.hsap + res.asigfam + res.ticket - res.desc - res.descley) }}
             </td>
           </tr>
         </tfoot>
