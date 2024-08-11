@@ -17,7 +17,7 @@ function handleCerrarEdicion() {
 }
 
 const listaHeaders = [
-{ title: 'Acciones', key: '', fixed: true },
+  { title: 'Acciones', key: '', fixed: true },
   { title: 'Nro Rep.', key: 'NROREPARTICION' },
   { title: 'Boleta', key: 'NROBOLETA' },
   { title: 'Afiliado', key: 'NROAFILIADO' },
@@ -36,7 +36,6 @@ const listaHeaders = [
   { title: 'Tipo OS', key: 'TIPOOBRASOCIALID' },
   { title: 'PPP', key: 'PPP' },
   { title: 'Fec. Grab.', key: 'FECHAGRABACION' }
-  
 ]
 
 // lectura de registros
@@ -158,9 +157,9 @@ async function grabar(item) {
         :headers="listaHeaders"
         fixed-header
       >
-        <template v-slot:item="{ item } " >
+        <template v-slot:item="{ item }">
           <tr class="pa-0 ma-0">
-            <td class="text-center m-0 p-0" >
+            <td class="text-center m-0 p-0">
               <botonTooltip
                 :icono="'mdi-pencil'"
                 :toolMsg="'Editar'"
@@ -191,7 +190,6 @@ async function grabar(item) {
             <td class="text-center m-0 p-0">{{ item.TIPOOBRASOCIALID }}</td>
             <td class="text-center m-0 p-0">{{ item.PPP }}</td>
             <td class="text-center m-0 p-0">{{ getFechaDMY(item.FECHAGRABACION) }}</td>
-
           </tr>
         </template>
       </v-data-table>
@@ -200,7 +198,12 @@ async function grabar(item) {
   </v-container>
 
   <v-dialog v-model="muestraRegistro" max-width="80%" persistent="">
-    <NovHaberesVista :Registro="itemMostrar" :cerrar="cierraForm" :funcion="grabar"></NovHaberesVista>
+    <NovHaberesVista
+      :Registro="itemMostrar"
+      :cerrar="cierraForm"
+      :funcion="grabar"
+      :hojaId="hojaEditar.ID"
+    ></NovHaberesVista>
   </v-dialog>
 
   <v-dialog v-model="muestraConfirmacion" max-width="80%" persistent="">

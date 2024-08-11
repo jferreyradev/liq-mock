@@ -78,13 +78,17 @@ export async function leerDatos(url) {
   let operacionOk = false
   let errmsg = ''
   let datos = null
+  //console.log(urlAPI + url)
+  let response = null
   try {
-    const response = await fetch(urlAPI + url)
+    response = await fetch(urlAPI + url)
     estado = response.status
-    operacionOk = response.ok
+
     if (response.ok) {
       datos = await response.json()
     }
+    operacionOk = response.ok
+    if (response.status == 404) operacionOk = true
   } catch (error) {
     estado = 999
     operacionOk = false

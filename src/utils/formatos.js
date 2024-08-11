@@ -17,3 +17,21 @@ export const getFechaDMY = (vto) => {
   }
   return null
 }
+
+export const validaMMYYYY = (vto) => {
+  if (vto.length < 6 || vto.length > 7) return 'Formato inválido'
+  const d = vto.split('/')
+  console.log(d)
+  if (d.length < 2) return 'Formato inválido'
+  if (d[0] < 1 || d[0] > 12) return 'Formato de Mes inválido'
+  console.log(d[0])
+  if (d[1] < 2020 || d[1] > 2060) return 'Formato de Año inválido'
+  console.log(d[1])
+  return null
+}
+
+export const getPeriodoFromMMYYYY = (periodo) => {
+  const d = periodo.split('/')
+  let fecha = '01/' + d[0] + '/' + d[1]
+  return fecha
+}

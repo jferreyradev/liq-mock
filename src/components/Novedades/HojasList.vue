@@ -7,6 +7,7 @@ import { estados } from '@/utils/tipos'
 import { leerDatos, grabarRegistro, eliminarRegistro } from './llamadaAPI'
 import botonTooltip from './botonTooltip.vue'
 import { getVto, getFechaDMY } from '@/utils/formatos'
+import HojasListFilter from './HojasListFilter.vue'
 
 const props = defineProps(['setHojaEdicion'])
 
@@ -104,9 +105,12 @@ const error = null
 
 const lecturaHojas = ref(true)
 
-async function leerHojas() {
+async function leerHojas(filtro = null) {
+  let url = 'hoja'
+  if (filtro !== null) url = url + '?' + filtro
+
   isPending.value = true
-  const { datos, operacionOk } = await leerDatos('hoja')
+  const { datos, operacionOk } = await leerDatos(url)
   data.value = datos
   lecturaHojas.value = operacionOk
   isPending.value = false
@@ -122,11 +126,10 @@ function handleEditarRegistros(itemid) {
 <template>
   <v-container>
     <v-container>
+      <HojasListFilter :filtrar="leerHojas"></HojasListFilter>
+
       <v-btn color="primary" prepend-icon="mdi-plus" elevation="3" @click="handleModif(null)"
         >Nueva Hoja</v-btn
-      >
-      <v-btn color="primary" prepend-icon="mdi-plus" elevation="3" @click="leerHojas()"
-        >Leer hojas</v-btn
       >
     </v-container>
     <div v-if="isPending">loading...</div>
