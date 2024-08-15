@@ -54,6 +54,8 @@ const headers = [
   { title: 'SubCod.', key: 'SUBCODIGO', sortable: false },
   { title: 'Descripción', key: 'DESCRIPCION', sortable: false },
   { title: 'Vto', key: 'VTO', sortable: false },
+  {title:'Clase', key: 'CLASE', sortable:false},
+  {title:'Dias', key: 'DIAS', sortable:false},
   { title: 'Importe', key: 'IMPORTE', sortable: false }
 ]
 
@@ -73,6 +75,8 @@ function exportFile() {
       x.SUBCODIGO,
       x.DESCRIPCION,
       getVto(x.VTO),
+      x.CLASE,
+      x.DIAS,
       x.IMPORTE
     ]
   })
@@ -86,9 +90,11 @@ function exportFile() {
     'Subcódigo',
     'Descripción',
     'Vencimiento',
+    'Clase',
+    'Dias',
     'Importe'
   ]
-  const totalesTabla = [null, null, null, null, null, null, null, null, totImporte.value.totImp]
+  const totalesTabla = [null, null, null, null, null, null, null,null,null, null, totImporte.value.totImp]
   map1.push(totalesTabla)
   const filtros = store.liqString
   const tituloReporte = 'Planilla Retenciones'
@@ -104,6 +110,8 @@ function exportFile() {
     { wch: 10 },
     { wch: 20 },
     { wch: 10 },
+    { wch: 5 },
+    { wch: 5 },
     { wch: 15 }
   ]
   /* create workbook and append worksheet */
@@ -142,11 +150,15 @@ function exportFile() {
             <td class="text-right">{{ item.SUBCODIGO }}</td>
             <td class="text-left">{{ item.DESCRIPCION }}</td>
             <td class="text-left">{{ getVto(item.VTO) }}</td>
+            <td class="text-right">{{ item.CLASE}}</td>
+            <td class="text-right">{{ item.DIAS }}</td>
             <td class="text-right">{{ financial(item.IMPORTE) }}</td>
           </tr>
         </template>
-        <template v-slot:body.append>
+        <template v-slot:body>
           <tr>
+            <th></th>
+            <th></th>
             <th></th>
             <th></th>
             <th></th>
