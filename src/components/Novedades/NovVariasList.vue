@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import Confirmacion from './Confirmacion.vue'
-import { leerDatos, grabarRegistro } from './llamadaAPI'
+import { leerDatos, grabarRegistro} from './llamadaAPI'
 import botonTooltip from './botonTooltip.vue'
 import { getVto, getFechaDMY, financial } from '@/utils/formatos'
 import NovHaberesVista from './NovHaberesVista.vue'
@@ -19,11 +19,10 @@ const listaHeaders = [
   { title: 'Acciones', key: '', fixed: true },
   { title: 'Nro Rep.', key: 'NROREPARTICION' },
   { title: 'Boleta', key: 'NROBOLETA' },
-  { title: 'Afiliado', key: 'NROAFILIADO' },
   { title: 'Cód.', key: 'CODIGO' },
   { title: 'Subcód.', key: 'SUBCODIGO' },
-  { title: 'Clase', key: 'CLASE' },
-  { title: 'Días', key: 'DIAS' },
+  { title: 'P 1', key: 'CLASE' },
+  { title: 'P 2', key: 'DIAS' },
   { title: 'Vencimiento', key: 'VENCIMIENTO' },
   { title: 'Importe', key: 'IMPORTE' },
   { title: 'Documento', key: 'DOCUMENTO' },
