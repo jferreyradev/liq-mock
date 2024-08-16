@@ -191,10 +191,5 @@ function exportFile() {
       </v-data-table>
       <div v-else-if="error">No se puede obtener los datos solicitados.</div>
     </v-row>
-    <v-row>
-      <div>
-        {{ data }}
-      </div>
-    </v-row>
   </v-container>
 </template>
