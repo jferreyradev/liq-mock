@@ -173,7 +173,7 @@ function exportFile() {
             <td class="text-left">{{ getVto(item.FECHADEV) }}</td>
           </tr>
         </template>
-        <template v-slot:body>
+        <template v-slot:body.append>
           <tr>
             <th></th>
             <th></th>
@@ -190,6 +190,11 @@ function exportFile() {
         </template>
       </v-data-table>
       <div v-else-if="error">No se puede obtener los datos solicitados.</div>
+    </v-row>
+    <v-row>
+      <div>
+        {{ data }}
+      </div>
     </v-row>
   </v-container>
 </template>

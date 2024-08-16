@@ -42,7 +42,8 @@ export const useFilterStore = defineStore('filter', {
       `${liqMap.get(state.tipoliq.toString())}-${state.nroadi}  ${meses[state.month - 1]}-${state.year}`,
     getURLAPI: (state) => `${state.URL_API}`,
     liqCompactString: (state) =>
-      `${state.year}${meses[state.month - 1].substring(0, 3)}${liqMap.get(state.tipoliq.toString()).substring(0, 1)}${state.nroadi}`
+      `${state.year}${meses[state.month - 1].substring(0, 3)}${liqMap.get(state.tipoliq.toString()).substring(0, 1)}${state.nroadi}`,
+    server: (state)=> `${state.serverConfig.AMBIENTE}`
   },
   actions: {
     setPer() {
@@ -61,6 +62,7 @@ export const useFilterStore = defineStore('filter', {
         .then((res) => res.json())
         .then((_data) => {
           this.serverConfig = _data[0]
+          console.log(this.serverConfig)
         })
         .catch((err) => {
           console.log(err)
