@@ -17,7 +17,7 @@ const tipoLiqFilter = [
 const tipoHojaFilter = [
   {
     name: 'Todas',
-    value: 1
+    value: -1
   },
   ...tipoHoja
 ]

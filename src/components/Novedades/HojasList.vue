@@ -129,7 +129,7 @@ const lecturaHojas = ref(true)
 async function leerHojas(filtro = null) {
   let url = 'hoja'
   if (filtro !== null) url = url + '?' + filtro
-
+  console.log(url)
   isPending.value = true
   const { datos, operacionOk } = await leerDatos(url)
   data.value = datos

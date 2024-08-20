@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import Confirmacion from './Confirmacion.vue'
-import { leerDatos, grabarRegistro} from './llamadaAPI'
+import { leerDatos, grabarRegistro } from './llamadaAPI'
 import botonTooltip from './botonTooltip.vue'
 import { getVto, getFechaDMY, financial } from '@/utils/formatos'
 import NovHaberesVista from './NovHaberesVista.vue'
@@ -17,23 +17,17 @@ function handleCerrarEdicion() {
 
 const listaHeaders = [
   { title: 'Acciones', key: '', fixed: true },
-  { title: 'Nro Rep.', key: 'NROREPARTICION' },
-  { title: 'Boleta', key: 'NROBOLETA' },
+  { title: 'Nro Rep.', key: 'IDREP' },
+  { title: 'Boleta', key: 'ORDEN' },
   { title: 'Cód.', key: 'CODIGO' },
   { title: 'Subcód.', key: 'SUBCODIGO' },
-  { title: 'P 1', key: 'CLASE' },
-  { title: 'P 2', key: 'DIAS' },
+  { title: 'P1', key: 'PARAM1' },
+  { title: 'P2', key: 'PARAM2' },
   { title: 'Vencimiento', key: 'VENCIMIENTO' },
   { title: 'Importe', key: 'IMPORTE' },
-  { title: 'Documento', key: 'DOCUMENTO' },
-  { title: 'Apellido', key: 'APELLIDO' },
-  { title: 'Nombre', key: 'NOMBRE' },
-  { title: '', key: 'NOMBRE' },
-  { title: 'Tipo Empleo', key: 'TIPOEMPLEOID' },
-  { title: 'Sit. Rev.', key: 'SITUACIONREVISTAID' },
-  { title: 'Tipo OS', key: 'TIPOOBRASOCIALID' },
-  { title: 'PPP', key: 'PPP' },
-  { title: 'Fec. Grab.', key: 'FECHAGRABACION' }
+  { title: 'Periodo', key: 'PERIODO' },
+  { title: 'Fec. Grab.', key: 'FECHAGRABACION' },
+  { title: 'Estado Reg.', key: 'ESTADOREGISTRO' }
 ]
 
 // lectura de registros
@@ -45,13 +39,14 @@ const lecturaListaRegs = ref(true)
 
 async function leerListaRegs() {
   isPending.value = true
-  const { datos, operacionOk } = await leerDatos('novhaberes?HojaId=' + hojaEditar.ID)
+  const { datos, operacionOk } = await leerDatos('view/novVarias?HojaId=' + hojaEditar.ID)
   data.value = datos
   lecturaListaRegs.value = operacionOk
   isPending.value = false
 }
 
 leerListaRegs()
+console.log('Leyendo en NovVarias')
 
 // alerta de grabación o error
 const mostrarAlert = ref(false)
@@ -120,8 +115,9 @@ async function grabar(item) {
 <template>
   <v-container>
     <v-row>
-      <p>Hoja Nro: {{ hojaEditar.ID }}</p>
-      <p>Tipo: {{ hojaEditar.TIPOHOJADESCRIPCION }}</p>
+      <p>
+        <b>Hoja Nro:</b> {{ hojaEditar.ID }} - <b>Tipo:</b> {{ hojaEditar.TIPOHOJADESCRIPCION }}
+      </p>
     </v-row>
   </v-container>
   <v-container>
@@ -171,23 +167,17 @@ async function grabar(item) {
                 :itemid="item.ID"
               ></botonTooltip>
             </td>
-            <td class="text-right m-0 p-0">{{ item.NROREPARTICION }}</td>
-            <td class="text-right m-0 p-0">{{ item.NROBOLETA }}</td>
-            <td class="text-right m-0 p-0">{{ item.NROAFILIADO }}</td>
+            <td class="text-right m-0 p-0">{{ item.IDREP }}</td>
+            <td class="text-right m-0 p-0">{{ item.ORDEN }}</td>
             <td class="text-right m-0 p-0">{{ item.CODIGO }}</td>
             <td class="text-right m-0 p-0">{{ item.SUBCODIGO }}</td>
-            <td class="text-right m-0 p-0">{{ item.CLASE }}</td>
-            <td class="text-right m-0 p-0">{{ item.DIAS }}</td>
+            <td class="text-right m-0 p-0">{{ item.PARAM1 }}</td>
+            <td class="text-right m-0 p-0">{{ item.PARAM2 }}</td>
             <td class="text-center m-0 p-0">{{ getVto(item.VENCIMIENTO) }}</td>
             <td class="text-center m-0 p-0">{{ financial(item.IMPORTE) }}</td>
-            <td class="text-right m-0 p-0">{{ item.DOCUMENTO }}</td>
-            <td class="text-left">{{ item.APELLIDO }}</td>
-            <td class="text-left" colspan="2">{{ item.NOMBRE }}</td>
-            <td class="text-center m-0 p-0">{{ item.TIPOEMPLEOID }}</td>
-            <td class="text-center m-0 p-0">{{ item.SITUACIONREVISTAID }}</td>
-            <td class="text-center m-0 p-0">{{ item.TIPOOBRASOCIALID }}</td>
-            <td class="text-center m-0 p-0">{{ item.PPP }}</td>
+            <td class="text-center m-0 p-0">{{ getVto(item.PERIODO) }}</td>
             <td class="text-center m-0 p-0">{{ getFechaDMY(item.FECHAGRABACION) }}</td>
+            <td class="text-center m-0 p-0">{{ item.ESTADOREGISTRO }}</td>
           </tr>
         </template>
       </v-data-table>
