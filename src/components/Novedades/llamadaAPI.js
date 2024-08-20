@@ -97,3 +97,41 @@ export async function leerDatos(url) {
   }
   return { estado, operacionOk, errmsg, datos }
 }
+
+export async function ejecutarSP(url = '', data = {}, metodo = 'POST') {
+  let estado = 0
+  let operacionOk = false
+  let errmsg = ''
+  let valorError = -1
+  let valorSalida = 0
+
+  try {
+    const response = await fetch(urlAPI + url, {
+      method: metodo, // *GET, POST, PUT, DELETE, etc.
+      mode: 'cors', // no-cors, *cors, same-origin
+      cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: 'same-origin', // include, *same-origin, omit
+      headers: {
+        'Content-Type': 'application/json'
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      redirect: 'follow', // manual, *follow, error
+      referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+      body: JSON.stringify(data) // body data type must match "Content-Type" header
+    })
+    estado = response.status
+    operacionOk = response.ok
+    if (response.ok) {
+      let datos = await response.json()
+      valorError = datos.out.ValorError
+      valorSalida = datos.out.ValorSalida
+    } else {
+      errmsg = 'Error al intentar grabar el registro'
+    }
+  } catch (error) {
+    estado = 999
+    operacionOk = false
+    errmsg = 'Error en la Red'
+  }
+  return { estado, operacionOk, errmsg, valorError, valorSalida }
+}

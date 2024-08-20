@@ -64,16 +64,15 @@ async function grabaRegistro() {
     fechaR = fechaCreacionFormat
   }
 
-  const registro = {
-    Id: hojaActual.ID,
-    TipoHojaId: tipoHojaSelected.value.value,
-    PeriodoId: periodo,
-    TipoCargaId: tipoCargaSelected.value.value,
-    TipoLiquidacionId: liqSelected.value.value,
-    GrupoAdicional: hojaActual.GRUPOADICIONAL,
-    FechaCreacion: fechaR,
-    EstadoHojaId: 2
+  let registro = {
+    vIDTIPOHOJA: tipoHojaSelected.value.value,
+    vPERIODO: periodo,
+    vIDTIPOLIQ: liqSelected.value.value,
+    vIDGRUPOADI: hojaActual.GRUPOADICIONAL,
+    vIDESTADOHOJA: hojaActual.ESTADOHOJAID,
+    vIDTIPOCARGA: tipoCargaSelected.value.value
   }
+  if (hojaActual.ID !== 0) registro = { vIDHOJANOV: hojaActual.ID, ...registro }
 
   let grabarOk = await props.funcion(registro)
 

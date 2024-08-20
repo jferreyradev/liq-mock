@@ -4,7 +4,7 @@ import HojaVista from './HojaVista.vue'
 import Confirmacion from './Confirmacion.vue'
 import { getName, tipoCarga, tipoHoja, tipoLiq } from '@/utils/tipos'
 import { estados } from '@/utils/tipos'
-import { leerDatos, grabarRegistro, eliminarRegistro } from './llamadaAPI'
+import { leerDatos, grabarRegistro, eliminarRegistro, ejecutarSP } from './llamadaAPI'
 import botonTooltip from './botonTooltip.vue'
 import { getVto, getFechaDMY } from '@/utils/formatos'
 import HojasListFilter from './HojasListFilter.vue'
@@ -36,9 +36,10 @@ const itemMostrar = ref({
 })
 
 function handleModif(itemid) {
+  console.log(itemid)
   mostrarAlert.value = false
   let item = null
-  if (itemid !== 0) item = data.value.find((e) => e.ID == itemid)
+  if (itemid !== null) item = data.value.find((e) => e.ID == itemid)
   abrirModal(item)
 }
 
@@ -83,6 +84,26 @@ async function grabar(item) {
   }
   return false
 }
+
+async function grabarSP(item) {
+  let url = ''
+  if (item.Id == 0) {
+    url = 'sp/HojaIns'
+  } else {
+    url = 'sp/HojaIns'
+  }
+  const { valorError, valorSalida } = await ejecutarSP(url, item)
+  console.log(item)
+  if (valorError == 0) {
+    await leerHojas()
+    alertMensaje.value = 'Se grabó la hoja Nº ' + valorSalida
+    alertTipo.value = 'success'
+    mostrarAlert.value = true
+    return true
+  }
+  return false
+}
+
 async function eliminar(id) {
   const resultado = await eliminarRegistro('hoja/' + id, 'DELETE')
   if (resultado.operacionOk) {
@@ -121,6 +142,30 @@ function handleEditarRegistros(itemid) {
   let item = data.value.find((e) => e.ID == itemid)
   props.setHojaEdicion(item)
 }
+
+///////////////////////////
+//  AGREGADO PARA PROBAR USO DE SP
+
+async function agregarNovVarias() {
+  let url = 'sp/NovVariasIns2'
+  const registro = {
+    vIDREP: 555,
+    vORDEN: 999,
+    vCOD: 123,
+    vSUBCOD: 321,
+    vP1: 0,
+    vP2: 30,
+    vVTO: '2024-09-30',
+    vIMP: 555.33,
+    vIDHOJANOV: 270,
+    vPERIODO: '2024-08-01'
+  }
+  const { valorError, valorSalida } = await ejecutarSP(url, registro)
+  console.log('El valor de error es: ' + valorError)
+  console.log('El valor de salida es: ' + valorSalida)
+}
+
+//// FIN DE PRUEBA DE SP
 </script>
 
 <template>
@@ -130,6 +175,9 @@ function handleEditarRegistros(itemid) {
 
       <v-btn color="primary" prepend-icon="mdi-plus" elevation="3" @click="handleModif(null)"
         >Nueva Hoja</v-btn
+      >
+      <v-btn color="primary" prepend-icon="mdi-plus" elevation="3" @click="agregarNovVarias()"
+        >Nueva Nov Varia</v-btn
       >
     </v-container>
     <div v-if="isPending">loading...</div>
@@ -192,7 +240,7 @@ function handleEditarRegistros(itemid) {
   </v-container>
 
   <v-dialog v-model="muestraRegistro" max-width="80%" persistent="">
-    <hoja-vista :Hoja="itemMostrar" :cerrar="cierraForm" :funcion="grabar"></hoja-vista>
+    <hoja-vista :Hoja="itemMostrar" :cerrar="cierraForm" :funcion="grabarSP"></hoja-vista>
   </v-dialog>
 
   <v-dialog v-model="muestraConfirmacion" max-width="80%" persistent="">
