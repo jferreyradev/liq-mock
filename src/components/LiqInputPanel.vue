@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { onBeforeMount, ref } from 'vue';
 import { useFilterStore } from '@/stores/filterStore.js'
 
 const store = useFilterStore();
@@ -32,8 +32,18 @@ const nroAdi = ref(0)
 
 const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 
+/*
 const month = ref(months[store.month-1])
 const year = ref(store.year)
+*/
+
+const month = ref('')
+const year = ref('')
+
+onBeforeMount(()=>{
+    month.value = months[store.month-1]
+    year.value = store.year
+})
 
 const handleClick = () => {
 
