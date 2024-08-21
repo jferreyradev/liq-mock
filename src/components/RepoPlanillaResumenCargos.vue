@@ -148,7 +148,7 @@ function exportFile() {
             <td class="text-right">{{ item.IDREP }}</td>
             <td class="text-right">{{ item.ORDEN }}</td>
             <td class="text-right">{{ item.DOCUMENTO }}</td>
-            <td class="text-right">{{ item.CUIL }}</td>
+            <td class="text-right">{{ item.PERSONACUIL }}</td>
             <td class="text-left">{{ item.APELLIDO }}</td>
             <td class="text-left">{{ item.NOMBRE }}</td>
             <td class="text-right">{{ getFecha(item.FECHANAC) }}</td>

@@ -155,7 +155,7 @@ function exportFile() {
             <td class="text-right">{{ financial(item.IMPORTE) }}</td>
           </tr>
         </template>
-        <template v-slot:body>
+        <template v-slot:body.append>
           <tr>
             <th></th>
             <th></th>
