@@ -1,9 +1,11 @@
 <script setup>
 import { ref } from 'vue'
 import { months, tipoCarga, tipoHoja, tipoLiq, getObjetList } from '@/utils/tipos'
+import { rules } from '@/utils/reglasValidacion'
 
 const props = defineProps(['Hoja', 'cerrar', 'funcion'])
-let hojaActual = props.Hoja
+let hoja = props.Hoja
+let hojaActual = ref(hoja)
 
 const fechaSplit = (vto) => {
   if (vto) {
@@ -31,19 +33,19 @@ let fechaCreacionFormat =
 const month = ref(months[fechaActual.getMonth()])
 const year = ref(fechaActual.getFullYear())
 const tipoCargaSelected = ref(tipoCarga[0])
-const tipoHojaSelected = ref(tipoHoja[0])
+const tipoHojaSelected = ref(tipoHoja[3])
 const liqSelected = ref(tipoLiq[0])
 
-if (hojaActual) {
-  tipoCargaSelected.value = getObjetList(tipoCarga, hojaActual.TIPOCARGAID)
-  liqSelected.value = getObjetList(tipoLiq, hojaActual.TIPOLIQUIDACIONID)
-  tipoHojaSelected.value = getObjetList(tipoHoja, hojaActual.TIPOHOJAID)
-  let periodo = fechaSplit(hojaActual.PERIODOID)
+if (hojaActual.value) {
+  tipoCargaSelected.value = getObjetList(tipoCarga, hojaActual.value.TIPOCARGAID)
+  liqSelected.value = getObjetList(tipoLiq, hojaActual.value.TIPOLIQUIDACIONID)
+  tipoHojaSelected.value = getObjetList(tipoHoja, hojaActual.value.TIPOHOJAID)
+  let periodo = fechaSplit(hojaActual.value.PERIODOID)
   month.value = months[periodo.mes - 1]
   year.value = periodo.anio
-  fechaCreacionFormat = hojaActual.FECHACREACION.substring(0, 10)
+  fechaCreacionFormat = hojaActual.value.FECHACREACION.substring(0, 10)
 } else {
-  hojaActual = {
+  hojaActual.value = {
     ...hojaActual,
     ID: 0,
     GRUPOADICIONAL: 0,
@@ -59,20 +61,16 @@ async function grabaRegistro() {
   const mes = months.indexOf(month.value) + 1
   const periodo =
     year.value.toString() + '-' + mes.toString().padStart(2, '0') + '-01' + 'T03:00:00.000Z'
-  let fechaR = hojaActual.FECHACREACION
-  if (hojaActual.ID != 0) {
-    fechaR = fechaCreacionFormat
-  }
 
   let registro = {
     vIDTIPOHOJA: tipoHojaSelected.value.value,
     vPERIODO: periodo,
     vIDTIPOLIQ: liqSelected.value.value,
-    vIDGRUPOADI: hojaActual.GRUPOADICIONAL,
-    vIDESTADOHOJA: hojaActual.ESTADOHOJAID,
+    vIDGRUPOADI: hojaActual.value.GRUPOADICIONAL,
+    vIDESTADOHOJA: hojaActual.value.ESTADOHOJAID,
     vIDTIPOCARGA: tipoCargaSelected.value.value
   }
-  if (hojaActual.ID !== 0) registro = { vIDHOJANOV: hojaActual.ID, ...registro }
+  if (hojaActual.value.ID !== 0) registro = { vIDHOJANOV: hojaActual.value.ID, ...registro }
 
   let grabarOk = await props.funcion(registro)
 
@@ -126,7 +124,17 @@ async function grabaRegistro() {
               <v-select label="Mes" :items="months" v-model="month"></v-select>
             </v-col>
             <v-col cols="2">
-              <v-text-field label="Año" v-model="year" required type="number"></v-text-field>
+              <v-text-field
+                label="Año"
+                v-model="year"
+                required
+                type="number"
+                :rules="[
+                  ...rules.number,
+                  (val) => rules.longitudEntre(val, 4, 4),
+                  (val) => rules.rango(val, 1990, 2200)
+                ]"
+              ></v-text-field>
             </v-col>
           </v-row>
           <v-row>
@@ -157,6 +165,11 @@ async function grabaRegistro() {
                 v-model="hojaActual.GRUPOADICIONAL"
                 hide-details="auto"
                 label="Grupo"
+                :rules="[
+                  ...rules.number,
+                  (val) => rules.longitudEntre(val, 1, 2),
+                  (val) => rules.rango(val, 0, 99)
+                ]"
               ></v-text-field>
             </v-col>
           </v-row>

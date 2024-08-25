@@ -68,22 +68,6 @@ function cierraForm() {
 }
 
 // llamadas a API de grabación y eliminación
-async function grabar(item) {
-  let resultado = false
-  if (item.Id == 0) {
-    resultado = await grabarRegistro('hoja', item, 'POST')
-  } else {
-    resultado = await grabarRegistro('hoja?Id=' + item.ID, item, 'PUT')
-  }
-  if (resultado.operacionOk) {
-    await leerHojas()
-    alertMensaje.value = 'Los datos se grabaron satisfactoriamente'
-    alertTipo.value = 'success'
-    mostrarAlert.value = true
-    return true
-  }
-  return false
-}
 
 async function grabarSP(item) {
   let url = ''
@@ -93,7 +77,6 @@ async function grabarSP(item) {
     url = 'sp/HojaIns'
   }
   const { valorError, valorSalida } = await ejecutarSP(url, item)
-  console.log(item)
   if (valorError == 0) {
     await leerHojas()
     alertMensaje.value = 'Se grabó la hoja Nº ' + valorSalida
@@ -104,7 +87,25 @@ async function grabarSP(item) {
   return false
 }
 
-async function eliminar(id) {
+async function CambiarEstadoHojaSP(id) {
+  let item = {
+    vIDHOJANOV: id,
+    vIDESTADOHOJA: 7
+  }
+  let url = 'sp/HojaCambiaEstado'
+
+  const { valorError } = await ejecutarSP(url, item)
+  if (valorError == 0) {
+    await leerHojas()
+    alertMensaje.value = 'Se actualizó el estado de la hoja Nº' + id
+    alertTipo.value = 'success'
+    mostrarAlert.value = true
+    return true
+  }
+  return false
+}
+
+/*async function eliminar(id) {
   const resultado = await eliminarRegistro('hoja/' + id, 'DELETE')
   if (resultado.operacionOk) {
     await leerHojas()
@@ -118,7 +119,7 @@ async function eliminar(id) {
   }
   muestraConfirmacion.value = false
 }
-
+*/
 // lectura de registros
 let isPending = ref(false)
 const data = ref(null)
@@ -147,7 +148,7 @@ function handleEditarRegistros(itemid) {
 //  AGREGADO PARA PROBAR USO DE SP
 
 async function agregarNovVarias() {
-  let url = 'sp/NovVariasIns2'
+  let url = 'sp/NovVariasIns'
   const registro = {
     vIDREP: 555,
     vORDEN: 999,
@@ -245,10 +246,10 @@ async function agregarNovVarias() {
 
   <v-dialog v-model="muestraConfirmacion" max-width="80%" persistent="">
     <confirmacion
-      :titulo="'Eliminar hoja'"
-      :mensaje="'Seguro que desea eliminar le hoja?'"
+      :titulo="'Anular Hoja'"
+      :mensaje="'Seguro que desea anular la hoja?'"
       :cerrar="cierraConfirmacion"
-      :aceptar="eliminar"
+      :aceptar="CambiarEstadoHojaSP"
       :parametro="itemEliminar"
     ></confirmacion>
   </v-dialog>

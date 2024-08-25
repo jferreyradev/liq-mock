@@ -18,6 +18,15 @@ export const getFechaDMY = (vto) => {
   return null
 }
 
+export const getVtoActual = () => {
+  const fecha = Date.now()
+  const mes = fecha.getMonth + 1
+  const anio = fecha.getFullYear
+  let resultado = mes + '/' + anio
+  if (mes < 10) resultado = '0' + resultado
+  return resultado
+}
+
 export const validaMMYYYY = (vto) => {
   if (vto.length < 6 || vto.length > 7) return 'Formato inválido'
   const d = vto.split('/')
@@ -33,5 +42,12 @@ export const validaMMYYYY = (vto) => {
 export const getPeriodoFromMMYYYY = (periodo) => {
   const d = periodo.split('/')
   let fecha = '01/' + d[0] + '/' + d[1]
+  return fecha
+}
+
+export const getFechaToAPIFromMMYYYY = (periodo) => {
+  console.log(periodo)
+  const d = periodo.split('/')
+  let fecha = d[1] + '-' + d[0] + '-01'
   return fecha
 }

@@ -1,10 +1,10 @@
 <script setup>
 import { ref } from 'vue'
 import Confirmacion from './Confirmacion.vue'
-import { leerDatos, grabarRegistro } from './llamadaAPI'
+import { leerDatos, ejecutarSP } from './llamadaAPI'
 import botonTooltip from './botonTooltip.vue'
 import { getVto, getFechaDMY, financial } from '@/utils/formatos'
-import NovHaberesVista from './NovHaberesVista.vue'
+import NovVariasVista from './NovVariasVista.vue'
 
 const props = defineProps(['setHojaEdicion', 'hojaEditar'])
 
@@ -92,16 +92,18 @@ function cierraForm() {
 }
 
 // funciones de agregado, modificación y eliminación
-async function grabar(item) {
-  let resultado = false
-  if (item.Id == 0) {
-    resultado = await grabarRegistro('novhaberes', item, 'POST')
+async function grabarSP(item) {
+  let url = ''
+  console.log(item)
+  if (item.vIDNOV == 0) {
+    url = 'sp/NovVariasIns'
   } else {
-    resultado = await grabarRegistro('novhaberes?Id=' + item.ID, item, 'PUT')
+    url = 'sp/NovVariasUpd'
   }
-  if (resultado.operacionOk) {
+  const { valorError, valorSalida } = await ejecutarSP(url, item)
+  if (valorError == 0) {
     await leerListaRegs()
-    alertMensaje.value = 'Los datos se grabaron satisfactoriamente'
+    alertMensaje.value = 'Se grabó la novedad Nº ' + valorSalida
     alertTipo.value = 'success'
     mostrarAlert.value = true
     return true
@@ -109,6 +111,23 @@ async function grabar(item) {
   return false
 }
 
+async function eliminar(id) {
+  let item = {
+    vIDHOJANOV: id,
+    vIDESTADOHOJA: 7
+  }
+  let url = 'sp/HojaDel'
+
+  const { valorError } = await ejecutarSP(url, item)
+  if (valorError == 0) {
+    await leerListaRegs()
+    alertMensaje.value = 'Se eliminó la novedad Nº' + id
+    alertTipo.value = 'success'
+    mostrarAlert.value = true
+    return true
+  }
+  return false
+}
 // -------------------------------------------------
 </script>
 
@@ -186,12 +205,12 @@ async function grabar(item) {
   </v-container>
 
   <v-dialog v-model="muestraRegistro" max-width="80%" persistent="">
-    <NovHaberesVista
+    <NovVariasVista
       :Registro="itemMostrar"
       :cerrar="cierraForm"
-      :funcion="grabar"
+      :funcion="grabarSP"
       :hojaId="hojaEditar.ID"
-    ></NovHaberesVista>
+    ></NovVariasVista>
   </v-dialog>
 
   <v-dialog v-model="muestraConfirmacion" max-width="80%" persistent="">

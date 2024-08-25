@@ -43,6 +43,10 @@ export const tipoHoja = [
   {
     name: 'Deducciones',
     value: 3
+  },
+  {
+    name: 'Nov. varias',
+    value: 4
   }
 ]
 
@@ -63,10 +67,6 @@ export const tipoLiq = [
   {
     name: '2do SAC',
     value: 3
-  },
-  {
-    name: 'Otro tipo',
-    value: 9
   }
 ]
 
