@@ -21,7 +21,7 @@ const registroVacio = ref({
   PARAM1: 0,
   PARAM2: 0,
   VENCIMIENTO: vencimiento,
-  IMPORTE: 0,
+  IMPORTE: 1,
   PERIODO: periodo,
   FECHAGRABACION: null,
   ESTADOREGISTRO: 0,
@@ -63,13 +63,20 @@ async function grabaRegistro() {
     vIDHOJANOV: hojaId,
     vPERIODO: getFechaToAPIFromMMYYYY(periodo.value)
   }
-  if (registroActual.value.ID !== 0)
+  if (registroActual.value.ID !== 0) {
     registroGrabar = {
       vIDNOV: registroActual.value.ID,
       ...registroGrabar,
       vIDESTADOREG: registroActual.value.ESTADOREGISTRO,
       vFECHAGRAB: registroActual.value.FECHAGRABACION
     }
+  } else {
+    registroGrabar = {
+      vIDNOV: 0,
+      ...registroGrabar,
+      vIDESTADOREG: 0
+    }
+  }
   console.log(registroGrabar)
   let grabarOk = await props.funcion(registroGrabar)
 

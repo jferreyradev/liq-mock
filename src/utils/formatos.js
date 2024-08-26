@@ -19,9 +19,9 @@ export const getFechaDMY = (vto) => {
 }
 
 export const getVtoActual = () => {
-  const fecha = Date.now()
-  const mes = fecha.getMonth + 1
-  const anio = fecha.getFullYear
+  const fecha = new Date()
+  const mes = fecha.getMonth() + 1
+  const anio = fecha.getFullYear()
   let resultado = mes + '/' + anio
   if (mes < 10) resultado = '0' + resultado
   return resultado

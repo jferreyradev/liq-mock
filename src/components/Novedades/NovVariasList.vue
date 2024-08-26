@@ -46,7 +46,6 @@ async function leerListaRegs() {
 }
 
 leerListaRegs()
-console.log('Leyendo en NovVarias')
 
 // alerta de grabación o error
 const mostrarAlert = ref(false)
@@ -100,14 +99,17 @@ async function grabarSP(item) {
   } else {
     url = 'sp/NovVariasUpd'
   }
-  const { valorError, valorSalida } = await ejecutarSP(url, item)
-  if (valorError == 0) {
-    await leerListaRegs()
-    alertMensaje.value = 'Se grabó la novedad Nº ' + valorSalida
-    alertTipo.value = 'success'
-    mostrarAlert.value = true
-    return true
-  }
+  console.log(url, item)
+  // SACAR ESTOS COMENTARIOS PARA QUE MODIFIQUE Y AGREGUE
+  //const { valorError, valorSalida } = await ejecutarSP(url, item)
+  //if (valorError == 0) {
+  //  await leerListaRegs()
+  //  alertMensaje.value = 'Se grabó la novedad Nº ' + valorSalida
+  //  alertTipo.value = 'success'
+  //  mostrarAlert.value = true
+  //  return true
+  //}
+
   return false
 }
 
