@@ -28,6 +28,17 @@ const mostrarAlert = ref(false)
 const alertMensaje = ref(null)
 const alertTipo = ref(null)
 
+// manejadores de búsqueda
+const filtroBusqueda = ref(null)
+const buscar = ref(false)
+
+function establecerFiltrar(filtro) {
+  filtroBusqueda.value = filtro
+  buscar.value = 1
+}
+
+if (buscar.value == 1) leerHojas(filtroBusqueda.value)
+
 // manejadores de altas, bajas y modificaciones
 
 const itemMostrar = ref({
@@ -36,7 +47,6 @@ const itemMostrar = ref({
 })
 
 function handleModif(itemid) {
-  console.log(itemid)
   mostrarAlert.value = false
   let item = null
   if (itemid !== null) item = data.value.find((e) => e.ID == itemid)
@@ -69,12 +79,12 @@ function cierraForm() {
 
 // llamadas a API de grabación y eliminación
 
-async function grabarSP(item) {
+async function grabarSP(item, id) {
   let url = ''
-  if (item.Id == 0) {
+  if (id == 0) {
     url = 'sp/HojaIns'
   } else {
-    url = 'sp/HojaIns'
+    url = 'sp/HojaUpd'
   }
   const { valorError, valorSalida } = await ejecutarSP(url, item)
   if (valorError == 0) {
@@ -105,21 +115,6 @@ async function CambiarEstadoHojaSP(id) {
   return false
 }
 
-/*async function eliminar(id) {
-  const resultado = await eliminarRegistro('hoja/' + id, 'DELETE')
-  if (resultado.operacionOk) {
-    await leerHojas()
-    alertMensaje.value = 'Los datos se grabaron satisfactoriamente'
-    alertTipo.value = 'success'
-    mostrarAlert.value = true
-  } else {
-    alertMensaje.value = 'No se pudo eliminar el registro'
-    alertTipo.value = 'error'
-    mostrarAlert.value = true
-  }
-  muestraConfirmacion.value = false
-}
-*/
 // lectura de registros
 let isPending = ref(false)
 const data = ref(null)
@@ -130,7 +125,6 @@ const lecturaHojas = ref(true)
 async function leerHojas(filtro = null) {
   let url = 'hoja'
   if (filtro !== null) url = url + '?' + filtro
-  console.log(url)
   isPending.value = true
   const { datos, operacionOk } = await leerDatos(url)
   data.value = datos
@@ -143,42 +137,18 @@ function handleEditarRegistros(itemid) {
   let item = data.value.find((e) => e.ID == itemid)
   props.setHojaEdicion(item)
 }
-
-///////////////////////////
-//  AGREGADO PARA PROBAR USO DE SP
-
-async function agregarNovVarias() {
-  let url = 'sp/NovVariasIns'
-  const registro = {
-    vIDREP: 555,
-    vORDEN: 999,
-    vCOD: 123,
-    vSUBCOD: 321,
-    vP1: 0,
-    vP2: 30,
-    vVTO: '2024-09-30',
-    vIMP: 555.33,
-    vIDHOJANOV: 270,
-    vPERIODO: '2024-08-01'
-  }
-  const { valorError, valorSalida } = await ejecutarSP(url, registro)
-  console.log('El valor de error es: ' + valorError)
-  console.log('El valor de salida es: ' + valorSalida)
-}
-
-//// FIN DE PRUEBA DE SP
 </script>
 
 <template>
   <v-container>
     <v-container>
-      <HojasListFilter :filtrar="leerHojas"></HojasListFilter>
+      <HojasListFilter
+        :filtrar="leerHojas"
+        :establecerFiltrar="establecerFiltrar"
+      ></HojasListFilter>
 
       <v-btn color="primary" prepend-icon="mdi-plus" elevation="3" @click="handleModif(null)"
         >Nueva Hoja</v-btn
-      >
-      <v-btn color="primary" prepend-icon="mdi-plus" elevation="3" @click="agregarNovVarias()"
-        >Nueva Nov Varia</v-btn
       >
     </v-container>
     <div v-if="isPending">loading...</div>

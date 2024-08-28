@@ -70,15 +70,9 @@ async function grabaRegistro() {
       vIDESTADOREG: registroActual.value.ESTADOREGISTRO,
       vFECHAGRAB: registroActual.value.FECHAGRABACION
     }
-  } else {
-    registroGrabar = {
-      vIDNOV: 0,
-      ...registroGrabar,
-      vIDESTADOREG: 0
-    }
   }
   console.log(registroGrabar)
-  let grabarOk = await props.funcion(registroGrabar)
+  let grabarOk = await props.funcion(registroGrabar, registroActual.value.ID)
 
   if (grabarOk) {
     props.cerrar()

@@ -4,12 +4,18 @@ import NovHaberesList from '@/components/Novedades/NovHaberesList.vue'
 import NovVariasList from '@/components/Novedades/NovVariasList.vue'
 import { ref } from 'vue'
 const hojaEdicion = ref(null)
-const titulo = ref('Hojas')
+const titulo = ref('Listado de hojas')
+const tipoHoja = ref(-1)
 
 function setHojaEdicion(hoja) {
   hojaEdicion.value = hoja
-  titulo.value = hoja ? 'Editar registros de Hoja: ' + hoja.ID : 'Hojas'
-  console.log(hoja.TIPOHOJAID)
+  if (hoja !== null) {
+    titulo.value = 'Editar registros de Hoja: ' + hoja.ID
+    tipoHoja.value = hoja.TIPOHOJAID
+  } else {
+    titulo.value = 'Listado de hojas'
+    tipoHoja.value = -1
+  }
 }
 console.log(hojaEdicion)
 </script>
@@ -21,14 +27,14 @@ console.log(hojaEdicion)
     </v-row>
 
     <v-row>
-      <HojasList v-if="hojaEdicion == null" :setHojaEdicion="setHojaEdicion"></HojasList>
+      <HojasList v-if="tipoHoja == -1" :setHojaEdicion="setHojaEdicion"></HojasList>
       <NovHaberesList
-        v-else-if="hojaEdicion.TIPOHOJAID == 1"
+        v-else-if="tipoHoja == 1"
         :setHojaEdicion="setHojaEdicion"
         :hojaEditar="hojaEdicion"
       ></NovHaberesList>
       <NovVariasList
-        v-else-if="hojaEdicion.TIPOHOJAID == 4"
+        v-else-if="tipoHoja == 4"
         :setHojaEdicion="setHojaEdicion"
         :hojaEditar="hojaEdicion"
       ></NovVariasList>

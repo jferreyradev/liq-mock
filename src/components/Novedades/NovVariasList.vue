@@ -91,34 +91,34 @@ function cierraForm() {
 }
 
 // funciones de agregado, modificación y eliminación
-async function grabarSP(item) {
+async function grabarSP(item, id) {
   let url = ''
   console.log(item)
-  if (item.vIDNOV == 0) {
+  if (id == 0) {
     url = 'sp/NovVariasIns'
   } else {
     url = 'sp/NovVariasUpd'
   }
-  console.log(url, item)
-  // SACAR ESTOS COMENTARIOS PARA QUE MODIFIQUE Y AGREGUE
-  //const { valorError, valorSalida } = await ejecutarSP(url, item)
-  //if (valorError == 0) {
-  //  await leerListaRegs()
-  //  alertMensaje.value = 'Se grabó la novedad Nº ' + valorSalida
-  //  alertTipo.value = 'success'
-  //  mostrarAlert.value = true
-  //  return true
-  //}
+  //console.log(url, item)
+
+  const { valorError, valorSalida } = await ejecutarSP(url, item)
+  if (valorError == 0) {
+    await leerListaRegs()
+    alertMensaje.value = 'Se grabó la novedad Nº ' + valorSalida
+    alertTipo.value = 'success'
+    mostrarAlert.value = true
+    return true
+  }
 
   return false
 }
 
 async function eliminar(id) {
+  muestraConfirmacion.value = false
   let item = {
-    vIDHOJANOV: id,
-    vIDESTADOHOJA: 7
+    vIDNOV: id
   }
-  let url = 'sp/HojaDel'
+  let url = 'sp/NovVariasDel'
 
   const { valorError } = await ejecutarSP(url, item)
   if (valorError == 0) {

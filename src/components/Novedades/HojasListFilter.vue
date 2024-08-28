@@ -4,7 +4,7 @@ import { months, tipoCarga, tipoHoja, tipoLiq, getObjetList } from '@/utils/tipo
 import { getPeriodoFromMMYYYY } from '@/utils/formatos'
 import { rules } from '@/utils/reglasValidacion'
 
-const props = defineProps(['filtrar'])
+const props = defineProps(['filtrar', 'establecerFiltrar'])
 
 const tipoLiqFilter = [
   {
@@ -34,7 +34,7 @@ const tipoCargaSelected = ref(tipoCargaFilter[0])
 const tipoHojaSelected = ref(tipoHojaFilter[0])
 const liqSelected = ref(tipoLiqFilter[0])
 
-function ObtieneDatos() {
+function ObtieneFiltro() {
   let filtro = ''
   let expresion = ''
   if (formOK.value === false) return
@@ -53,6 +53,13 @@ function ObtieneDatos() {
     expresion = `TipoHojaId=${tipoHojaSelected.value.value}`
     filtro = filtro.length == 0 ? expresion : filtro + '&' + expresion
   }
+  console.log(filtro)
+  return filtro
+}
+
+function filtar() {
+  let filtro = ObtieneFiltro()
+  props.establecerFiltrar(filtro)
   props.filtrar(filtro)
 }
 const formOK = ref(null)
@@ -106,7 +113,7 @@ const periodo = ref(null)
         </v-col>
 
         <v-col cols="2">
-          <v-btn color="primary" elevation="3" outlined value="filtrar" @click="ObtieneDatos()"
+          <v-btn color="primary" elevation="3" outlined value="filtrar" @click="filtar()"
             >Buscar</v-btn
           >
         </v-col>

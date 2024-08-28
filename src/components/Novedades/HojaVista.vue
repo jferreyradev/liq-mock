@@ -70,9 +70,14 @@ async function grabaRegistro() {
     vIDESTADOHOJA: hojaActual.value.ESTADOHOJAID,
     vIDTIPOCARGA: tipoCargaSelected.value.value
   }
-  if (hojaActual.value.ID !== 0) registro = { vIDHOJANOV: hojaActual.value.ID, ...registro }
+  if (hojaActual.value.ID !== 0)
+    registro = {
+      vIDHOJANOV: hojaActual.value.ID,
+      vFECHAALTA: hojaActual.value.FECHACREACION,
+      ...registro
+    }
 
-  let grabarOk = await props.funcion(registro)
+  let grabarOk = await props.funcion(registro, hojaActual.value.ID)
 
   if (grabarOk) {
     props.cerrar()
