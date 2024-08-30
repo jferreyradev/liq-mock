@@ -72,6 +72,7 @@ const items = [
         <v-list-item title="Panel de control de liquidaciones" @click="() => router.push('/panel')" />
         <v-list-item title="Reportes" @click="() => router.push('/repo')" />
         <v-list-item title="Boletas" @click="() => router.push('/boletas')" />
+        <v-list-item title="Panel de usuarios" @click="() => router.push('/users')" />
         <v-list-item title="Salir" @click="handleLogout()" />
       </v-list>
     </v-navigation-drawer>
