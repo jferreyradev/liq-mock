@@ -34,7 +34,6 @@ const items = [
   { text: 'Boletas', disabled: false, href: '/boletas' },
   { text: 'About', disabled: false, href: '/about' }
 ]
-
 </script>
 
 <template>
@@ -99,23 +98,24 @@ const items = [
   <v-container>
     <v-layout>
       <v-app-bar color="primary" prominent>
-        <v-toolbar-title>Sistema de consultas de liquidaciones></v-toolbar-title>        
+        <v-toolbar-title>Sistema de consultas de liquidaciones></v-toolbar-title>
         <v-spacer></v-spacer>
-       <div>
-            <nav v-if="store.isAuth">
-              <RouterLink class="text-body-1" to="/">Home</RouterLink>
-              <RouterLink class="text-body-1" to="/panel">Panel</RouterLink>
-              <RouterLink class="text-body-1" to="/repo">Reportes</RouterLink>
-              <RouterLink class="text-body-1" to="/boletas">Boletas</RouterLink>
-            </nav>         
-        </div> 
+        <div>
+          <nav v-if="store.isAuth">
+            <RouterLink class="text-body-1" to="/">Home</RouterLink>
+            <RouterLink class="text-body-1" to="/panel">Panel</RouterLink>
+            <RouterLink class="text-body-1" to="/repo">Reportes</RouterLink>
+            <RouterLink class="text-body-1" to="/boletas">Boletas</RouterLink>
+            <RouterLink class="text-body-1" to="/hojas">Hojas</RouterLink>
+          </nav>
+        </div>
         <v-spacer></v-spacer>
         <span>{{ store.getUser }}</span>
         <v-btn icon="mdi-logout" @click="handleLogout"></v-btn>
 
         <v-btn @click="toggleTheme">Cambiar tema</v-btn>
       </v-app-bar>
-      
+
       <v-main class="d-flex align-center justify-center" style="min-height: 300px">
         <Suspense>
           <RouterView />
