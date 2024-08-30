@@ -1,9 +1,7 @@
 <script setup>
-import LiqInputPanel from '@/components/LiqInputPanel.vue';
 import { ref } from 'vue';
 import { useFilterStore } from '@/stores/filterStore.js'
-import LiquidacionTable from '@/components/LiquidacionTable.vue';
-import LiquidacionItemTable from '@/components/LiquidacionItemTable.vue';
+import PanelUsers from '@/components/PanelUsers.vue';
 
 const store = useFilterStore();
 
@@ -23,10 +21,10 @@ function handleSelect(id, objElement) {
 <template>
     <v-container >
         <v-row justify="space-around" class="bg-primary">
-            <h3>Panel principal</h3>
+            <h3>Administrador de usuarios</h3>
         </v-row>
         <v-row>
-            <LiqInputPanel></LiqInputPanel>
+            
         </v-row>
 
         <v-dialog v-model="dialog" width="auto">
@@ -40,13 +38,7 @@ function handleSelect(id, objElement) {
             </v-card>
         </v-dialog>
         <v-row>
-            <v-col class="px-0">
-                <LiquidacionTable @select="handleSelect" title="Liquidaciones" :subtitle="store.liqString"></LiquidacionTable>
-            </v-col>
-            <v-col class="px-0" >
-                <LiquidacionItemTable v-if="idliqitem" :id="idliqitem" :subtitle="text">
-                </LiquidacionItemTable>
-            </v-col>            
+               <PanelUsers></PanelUsers>
         </v-row>
 
     </v-container>

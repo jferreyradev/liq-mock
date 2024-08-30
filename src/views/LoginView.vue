@@ -50,13 +50,15 @@ const submit = () => {
           @click:append="showPassword = !showPassword"
           v-model="userInput.password"
         />
+        <div class="d-flex justify-end">
+            <v-btn type="submit" class="mt-4 align-right" color="primary" value="log in">Ingresar</v-btn>
+        </div>
+        
       </v-form>
     </v-card-text>
     <v-divider></v-divider>
     <v-card-actions>
-      <v-btn color="success">Registrar</v-btn>
-      <v-spacer></v-spacer>
-      <v-btn type="submit" @click="submit" color="info">Ingresar</v-btn>
+
     </v-card-actions>
   </v-card>
 </template>
