@@ -8,6 +8,7 @@ let registroOrigen = props.Registro
 let hojaId = props.hojaId
 let registroActual = ref({})
 
+const form = ref(null)
 const formOK = ref(false)
 
 const vencimiento = ref(getVtoActual())
@@ -21,7 +22,7 @@ const registroVacio = ref({
   PARAM1: 0,
   PARAM2: 0,
   VENCIMIENTO: vencimiento,
-  IMPORTE: 1,
+  IMPORTE: null,
   PERIODO: periodo,
   FECHAGRABACION: null,
   ESTADOREGISTRO: 0,
@@ -42,6 +43,11 @@ const mostrarAlert = ref(false)
 let mensajeError = ref('')
 
 async function grabaRegistro() {
+  const isValid = await form.value.validate()
+
+  if (!isValid) {
+    return
+  }
   if (formOK.value === false) {
     return
   }
@@ -111,7 +117,7 @@ function validarRegistro() {
                   v-model="registroActual.IDREP"
                   hide-details="auto"
                   label="Repartición"
-                  :rules="[...rules.number, (val) => rules.longitudEntre(val, 1, 3)]"
+                  :rules="[...rules.number, (val) => rules.longitudEntre(val, 1, 7)]"
                 ></v-text-field>
               </v-col>
               <v-col cols="3">
@@ -184,7 +190,7 @@ function validarRegistro() {
               <v-col cols="3">
                 <v-text-field v-model="periodo" hide-details="auto" label="Período"></v-text-field>
               </v-col>
-              <v-col cols="3">
+              <v-col cols="3" v-if="registroActual.ID != 0">
                 <v-text-field
                   v-model="registroActual.ESTADOREGISTRO"
                   hide-details="auto"

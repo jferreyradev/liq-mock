@@ -6,6 +6,7 @@ import { rules } from '@/utils/reglasValidacion'
 
 const props = defineProps(['filtrar', 'establecerFiltrar'])
 
+const form = ref(null)
 const tipoLiqFilter = [
   {
     name: 'Todas',
@@ -33,13 +34,25 @@ const tipoCargaFilter = [
 const tipoCargaSelected = ref(tipoCargaFilter[0])
 const tipoHojaSelected = ref(tipoHojaFilter[0])
 const liqSelected = ref(tipoLiqFilter[0])
+const idHoja = ref(null)
+const periodo = ref('')
 
 function ObtieneFiltro() {
   let filtro = ''
   let expresion = ''
-  if (formOK.value === false) return
+
+  if (formOK.value === false) {
+    return 'error'
+  }
   if (periodo.value !== null)
     if (periodo.value.length > 0) filtro = 'PeriodoId=' + getPeriodoFromMMYYYY(periodo.value)
+
+  if (idHoja.value !== null) {
+    if (idHoja.value.length > 0) {
+      expresion = `Id=${idHoja.value}`
+      filtro = filtro.length == 0 ? expresion : filtro + '&' + expresion
+    }
+  }
 
   if (liqSelected.value.value !== -1) {
     expresion = `TipoLiquidacionId=${liqSelected.value.value}`
@@ -53,23 +66,39 @@ function ObtieneFiltro() {
     expresion = `TipoHojaId=${tipoHojaSelected.value.value}`
     filtro = filtro.length == 0 ? expresion : filtro + '&' + expresion
   }
-  console.log(filtro)
+  console.log('filtro: ' + filtro)
   return filtro
 }
 
-function filtar() {
+async function filtar() {
+  // Forzar la validación del formulario y esperar a que se complete
+  const isValid = await form.value.validate()
+
+  if (!isValid) {
+    return
+  }
   let filtro = ObtieneFiltro()
+  if (filtro == 'error') {
+    return
+  }
   props.establecerFiltrar(filtro)
   props.filtrar(filtro)
 }
 const formOK = ref(null)
-const periodo = ref(null)
 </script>
 
 <template>
   <v-container>
-    <v-form v-model="formOK">
+    <v-form ref="form" v-model="formOK">
       <v-row>
+        <v-col cols="2">
+          <v-text-field
+            v-model="idHoja"
+            hide-details="auto"
+            label="Nro Hoja"
+            :rules="rules.number"
+          ></v-text-field>
+        </v-col>
         <v-col cols="2">
           <v-text-field
             v-model="periodo"
