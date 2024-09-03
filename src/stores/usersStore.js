@@ -66,6 +66,31 @@ export const usersStore = defineStore('usersStore', {
             } finally {
                 this.isPending = false
             }
-        }
+        },
+        async changePassword(idus, newPass) {
+            this.loading = true
+            this.error = null
+      
+            console.log(idus, newPass)
+            try {
+              const bodyIn = {
+                'IdUsuario': idus,
+                'Clave': btoa(newPass)
+              }
+              const requestOptions = {
+                method: `POST`, // POST, etc
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(bodyIn)
+              }
+              await fetch(`${this.url}/claveUsuario`, requestOptions)
+              this.result = 'ok'
+            } catch (err) {
+              this.error = err
+              console.log(err)
+            } finally {
+              this.loading = false
+            }
+          }
     },
 })
