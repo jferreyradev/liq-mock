@@ -16,7 +16,7 @@ function handleCerrarEdicion() {
 }
 
 const listaHeaders = [
-  { title: 'Acciones', key: '', fixed: true },
+  { title: 'Acciones', key: '' },
   { title: 'Nro Rep.', key: 'NROREPARTICION' },
   { title: 'Boleta', key: 'NROBOLETA' },
   { title: 'Afiliado', key: 'NROAFILIADO' },

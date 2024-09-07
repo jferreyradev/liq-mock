@@ -9,9 +9,10 @@ import botonTooltip from './botonTooltip.vue'
 import { getVto, getFechaDMY } from '@/utils/formatos'
 import HojasListFilter from './HojasListFilter.vue'
 
-const props = defineProps(['setHojaEdicion'])
+const props = defineProps(['setHojaEdicion', 'filtros'])
 
 const hojasHeaders = [
+  { title: 'Acciones', key: 'ACCIONES' },
   { title: 'Id.', key: 'ID' },
   { title: 'Tipo Hoja', key: 'TIPOHOJADESCRIPCION' },
   { title: 'Período', key: 'PERIODOID' },
@@ -19,8 +20,7 @@ const hojasHeaders = [
   { title: 'Tipo Liq', key: 'TIPOLIQUIDACIONDESCRIPCION' },
   { title: 'Grupo', key: 'GRUPOADICIONAL' },
   { title: 'Fec. Creac.', key: 'FECHACREACION' },
-  { title: 'Estado', key: 'ESTADOHOJAID' },
-  { title: 'Acciones', key: 'ACCIONES' }
+  { title: 'Estado', key: 'ESTADOHOJAID' }
 ]
 
 // alerta de grabación o error
@@ -29,15 +29,13 @@ const alertMensaje = ref(null)
 const alertTipo = ref(null)
 
 // manejadores de búsqueda
-const filtroBusqueda = ref(null)
-const buscar = ref(false)
+//const filtroBusqueda = ref(null)
+//const buscar = ref(false)
 
-function establecerFiltrar(filtro) {
-  filtroBusqueda.value = filtro
-  buscar.value = 1
-}
-
-if (buscar.value == 1) leerHojas(filtroBusqueda.value)
+//function establecerFiltrar(filtro) {
+//  filtroBusqueda.value = filtro
+//  buscar.value = 1
+//}
 
 // manejadores de altas, bajas y modificaciones
 
@@ -137,15 +135,14 @@ function handleEditarRegistros(itemid) {
   let item = data.value.find((e) => e.ID == itemid)
   props.setHojaEdicion(item)
 }
+
+if (props.filtros.getFiltroString() != null) leerHojas(props.filtros.getFiltroString())
 </script>
 
 <template>
   <v-container>
     <v-container>
-      <HojasListFilter
-        :filtrar="leerHojas"
-        :establecerFiltrar="establecerFiltrar"
-      ></HojasListFilter>
+      <HojasListFilter :filtrar="leerHojas" :filtros="props.filtros"></HojasListFilter>
 
       <v-btn color="primary" prepend-icon="mdi-plus" elevation="3" @click="handleModif(null)"
         >Nueva Hoja</v-btn
@@ -174,14 +171,6 @@ function handleEditarRegistros(itemid) {
       >
         <template v-slot:item="{ item }">
           <tr class="pa-0 ma-0">
-            <td class="text-right m-0 p-0">{{ item.ID }}</td>
-            <td class="text-left m-0 p-0">{{ item.TIPOHOJADESCRIPCION }}</td>
-            <td class="text-center m-0 p-0">{{ getVto(item.PERIODOID) }}</td>
-            <td class="text-center m-0 p-0">{{ getName(tipoCarga, item.TIPOCARGAID) }}</td>
-            <td class="text-left m-0 p-0">{{ item.TIPOLIQUIDACIONDESCRIPCION }}</td>
-            <td class="text-center m-0 p-0">{{ item.GRUPOADICIONAL }}</td>
-            <td class="text-center m-0 p-0">{{ getFechaDMY(item.FECHACREACION) }}</td>
-            <td class="text-center m-0 p-0">{{ getName(estados, item.ESTADOHOJAID) }}</td>
             <td class="text-center m-0 p-0">
               <botonTooltip
                 :icono="'mdi-pencil'"
@@ -202,6 +191,15 @@ function handleEditarRegistros(itemid) {
                 :itemid="item.ID"
               ></botonTooltip>
             </td>
+
+            <td class="text-right m-0 p-0">{{ item.ID }}</td>
+            <td class="text-left m-0 p-0">{{ item.TIPOHOJADESCRIPCION }}</td>
+            <td class="text-center m-0 p-0">{{ getVto(item.PERIODOID) }}</td>
+            <td class="text-center m-0 p-0">{{ getName(tipoCarga, item.TIPOCARGAID) }}</td>
+            <td class="text-left m-0 p-0">{{ item.TIPOLIQUIDACIONDESCRIPCION }}</td>
+            <td class="text-center m-0 p-0">{{ item.GRUPOADICIONAL }}</td>
+            <td class="text-center m-0 p-0">{{ getFechaDMY(item.FECHACREACION) }}</td>
+            <td class="text-center m-0 p-0">{{ getName(estados, item.ESTADOHOJAID) }}</td>
           </tr>
         </template>
       </v-data-table>

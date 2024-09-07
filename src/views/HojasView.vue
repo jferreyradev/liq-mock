@@ -17,7 +17,17 @@ function setHojaEdicion(hoja) {
     tipoHoja.value = -1
   }
 }
-console.log(hojaEdicion)
+
+let filtroString = null
+let filtroCampos = null
+let filtros = {
+  setFiltrosCampos: (pFiltroString, pFiltroCampos) => {
+    filtroString = pFiltroString
+    filtroCampos = pFiltroCampos
+  },
+  getFiltroString: () => filtroString,
+  getFiltroCampos: () => filtroCampos
+}
 </script>
 
 <template>
@@ -27,7 +37,11 @@ console.log(hojaEdicion)
     </v-row>
 
     <v-row>
-      <HojasList v-if="tipoHoja == -1" :setHojaEdicion="setHojaEdicion"></HojasList>
+      <HojasList
+        v-if="tipoHoja == -1"
+        :setHojaEdicion="setHojaEdicion"
+        :filtros="filtros"
+      ></HojasList>
       <NovHaberesList
         v-else-if="tipoHoja == 1"
         :setHojaEdicion="setHojaEdicion"

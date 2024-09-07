@@ -16,7 +16,7 @@ function handleCerrarEdicion() {
 }
 
 const listaHeaders = [
-  { title: 'Acciones', key: '', fixed: true },
+  { title: 'Acciones', key: '' },
   { title: 'Nro Rep.', key: 'IDREP' },
   { title: 'Boleta', key: 'ORDEN' },
   { title: 'Cód.', key: 'CODIGO' },

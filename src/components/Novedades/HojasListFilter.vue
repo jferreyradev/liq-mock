@@ -4,7 +4,7 @@ import { months, tipoCarga, tipoHoja, tipoLiq, getObjetList } from '@/utils/tipo
 import { getPeriodoFromMMYYYY } from '@/utils/formatos'
 import { rules } from '@/utils/reglasValidacion'
 
-const props = defineProps(['filtrar', 'establecerFiltrar'])
+const props = defineProps(['filtrar', 'filtros'])
 
 const form = ref(null)
 const tipoLiqFilter = [
@@ -66,8 +66,19 @@ function ObtieneFiltro() {
     expresion = `TipoHojaId=${tipoHojaSelected.value.value}`
     filtro = filtro.length == 0 ? expresion : filtro + '&' + expresion
   }
-  console.log('filtro: ' + filtro)
+
   return filtro
+}
+
+function setCamposFiltros() {
+  let campos = {
+    idHoja: idHoja.value,
+    periodo: periodo.value,
+    liqSelected: liqSelected.value,
+    tipoCargaSelected: tipoCargaSelected.value,
+    tipoHojaSelected: tipoHojaSelected.value
+  }
+  return campos
 }
 
 async function filtar() {
@@ -81,9 +92,20 @@ async function filtar() {
   if (filtro == 'error') {
     return
   }
-  props.establecerFiltrar(filtro)
+  props.filtros.setFiltrosCampos(filtro, setCamposFiltros())
   props.filtrar(filtro)
 }
+
+let camposFiltros = props.filtros.getFiltroCampos()
+
+if (camposFiltros != null) {
+  idHoja.value = camposFiltros.idHoja
+  periodo.value = camposFiltros.periodo
+  liqSelected.value = camposFiltros.liqSelected
+  tipoCargaSelected.value = camposFiltros.tipoCargaSelected
+  tipoHojaSelected.value = camposFiltros.tipoHojaSelected
+}
+
 const formOK = ref(null)
 </script>
 
