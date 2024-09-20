@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import { useUserStore } from '@/stores/user'
+//import { useUserStore } from '@/stores/user'
+
+import { useUserStore } from '@/stores/userStore'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -74,7 +76,7 @@ router.beforeEach((to, from, next) => {
   const publicPages = ['/login']
   const authRequired = !publicPages.includes(to.path)
 
-  if (authRequired && !store.isAuth) {
+  if (authRequired && !store.auth ) {
     return next('/login')
   }
   //router.push('/')

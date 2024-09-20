@@ -35,7 +35,7 @@ export function useApiConfig() {
   const apiBoletas = ref('https://api-boletas.deno.dev')
   const apiBoletasDev = ref('https://api-boletas-9jn3t0ca7a3j.deno.dev')
   //const baseUrlSp = 'https://midliq-api-we3b884fccey.deno.dev'
-  const apiBaseDev = ref('https://midliq-api-ntkqw5163wgn.deno.dev')
+  const apiBaseDev = ref('https://midliq-api-7g0abd0mn8x4.deno.dev')
   const apiBase = ref('https://midliq-api.deno.dev')
 
   return {

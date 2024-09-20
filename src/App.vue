@@ -1,7 +1,7 @@
 <script setup>
 import { useTheme } from 'vuetify'
 import { useRouter } from 'vue-router'
-import { useUserStore } from '@/stores/user'
+import { useUserStore } from '@/stores/userStore'
 import { useFilterStore } from '@/stores/filterStore.js'
 
 const filterStore = useFilterStore();
@@ -41,7 +41,7 @@ const items = [
 
   <v-layout class="rounded rounded-md d-flex flex-column mb-6 ">
     <v-app-bar color="primary" prominent>
-      <v-app-bar-nav-icon v-if="store.isAuth" variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon v-if="store.auth" variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-app-bar-title>Consultas - Municipalidad de Concepción</v-app-bar-title>
       <v-spacer></v-spacer>
        <v-btn @click="toggleTheme" icon="mdi mdi-theme-light-dark">
@@ -53,7 +53,7 @@ const items = [
         <v-icon icon="mdi-logout"></v-icon>
       </v-btn>
      
-      <div v-if="store.isAuth">
+      <div v-if="store.auth">
         <v-menu>
           <template v-slot:activator="{ props }">
             <v-btn icon="mdi-dots-vertical" prepend-icon="mdi-account" title="User Profile" v-bind="props"></v-btn> 

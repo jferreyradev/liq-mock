@@ -80,8 +80,8 @@ export const useUserStore = defineStore('userStore', {
             this.user = null
             this.auth = false
             try {
-                console.log(`${apiBaseDev.value}/users?UserName=${userName}`)
-                const response = await fetch(`${apiBaseDev.value}/users?UserName=${userName}`) // Cambia la URL a la de tu API
+                console.log(`${apiBaseDev.value}/api/view/users?UserName=${userName}`)
+                const response = await fetch(`${apiBaseDev.value}/api/view/users?UserName=${userName}`) // Cambia la URL a la de tu API
                 if (!response.ok) {
                     throw new Error('Error fetching user')
                 }

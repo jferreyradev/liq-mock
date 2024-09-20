@@ -24,22 +24,25 @@ const overlay = ref(false)
 const attempts = ref(0)
 
 const login = async () => {
-  overlay.value = true
+  //overlay.value = true
   console.log(userInput.value.username , userInput.value.password )
   await user.loginUserName(userInput.value.username , userInput.value.password )
-  overlay.value = false
+  //overlay.value = false
+  console.log(user.auth )
+  if (user.auth){
+    router.push('/')
+  }
   attempts.value++
   if (!user.auth) {
     text.value = 'El usuario o la contraseña ingresada es incorrecta.'
     dialog.value = true
   } else {
-    overlay.value = true
-    filterStore.setPer()
-    overlay.value = false
+    //overlay.value = true
+    await filterStore.setPer()
+    //overlay.value = false
     router.push('/')
   }
-
-
+  
 }
 
 </script>
