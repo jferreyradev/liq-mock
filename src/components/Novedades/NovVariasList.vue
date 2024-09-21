@@ -19,7 +19,7 @@ function handleCerrarEdicion() {
 }
 
 const listaHeaders = [
-  { title: 'Acciones', key: '' },
+  { title: '', key: '' },
   { title: 'Nro Rep.', key: 'IDREP' },
   { title: 'Boleta', key: 'ORDEN' },
   { title: 'Cód.', key: 'CODIGO' },
@@ -224,6 +224,15 @@ function exportFile() {
 // --- fin de funciones de exportacion
 </script>
 
+<style>
+.sticky {
+  position: sticky !important;
+  left: 0 !important;
+  min-width: 100px !important;
+  z-index: 10 !important;
+}
+</style>
+
 <template>
   <v-container>
     <v-row>
@@ -262,11 +271,10 @@ function exportFile() {
         density="compact"
         :items="data"
         :headers="listaHeaders"
-        fixed-header
       >
         <template v-slot:item="{ item }">
           <tr class="pa-0 ma-0">
-            <td class="text-center m-0 p-0">
+            <td class="text-center m-0 p-0 sticky">
               <botonTooltip
                 :icono="'mdi-pencil'"
                 :toolMsg="'Editar'"

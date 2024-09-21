@@ -12,6 +12,7 @@ const show = ref(false)
         size="x-small"
         :icon="prop.icono"
         @click="prop.funcion(prop.itemid)"
+        color="primary"
       ></v-btn>
     </template>
     <span>{{ prop.toolMsg }}</span>

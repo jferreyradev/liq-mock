@@ -12,7 +12,7 @@ import HojasListFilter from './HojasListFilter.vue'
 const props = defineProps(['setHojaEdicion', 'filtros'])
 
 const hojasHeaders = [
-  { title: 'Acciones', key: 'ACCIONES' },
+  { title: '', key: 'ACCIONES' },
   { title: 'Id.', key: 'ID' },
   { title: 'Tipo Hoja', key: 'TIPOHOJADESCRIPCION' },
   { title: 'Período', key: 'PERIODOID' },
@@ -100,17 +100,25 @@ async function CambiarEstadoHojaSP(id) {
     vIDHOJANOV: id,
     vIDESTADOHOJA: 7
   }
-  let url = 'sp/HojaCambiaEstado'
+  let url = 'sp/HojaUpdEstado'
 
-  const { valorError } = await ejecutarSP(url, item)
+  const { valorError, errorMsg } = await ejecutarSP(url, item)
   if (valorError == 0) {
     await leerHojas()
     alertMensaje.value = 'Se actualizó el estado de la hoja Nº' + id
     alertTipo.value = 'success'
     mostrarAlert.value = true
-    return true
+  } else if (valorError <= 100) {
+    alertMensaje.value = errorMsg
+    alertTipo.value = 'error'
+    mostrarAlert.value = true
+  } else {
+    console.log(errorMsg)
+    alertMensaje.value = 'No se pudieron grabar los datos'
+    alertTipo.value = 'error'
+    mostrarAlert.value = true
   }
-  return false
+  cierraConfirmacion()
 }
 
 // lectura de registros
@@ -138,6 +146,15 @@ function handleEditarRegistros(itemid) {
 
 if (props.filtros.getFiltroString() != null) leerHojas(props.filtros.getFiltroString())
 </script>
+
+<style>
+.sticky {
+  position: sticky !important;
+  left: 0 !important;
+  min-width: 130px !important;
+  z-index: 10 !important;
+}
+</style>
 
 <template>
   <v-container>
@@ -171,7 +188,7 @@ if (props.filtros.getFiltroString() != null) leerHojas(props.filtros.getFiltroSt
       >
         <template v-slot:item="{ item }">
           <tr class="pa-0 ma-0">
-            <td class="text-center m-0 p-0">
+            <td class="text-center m-0 p-0 sticky">
               <botonTooltip
                 :icono="'mdi-pencil'"
                 :toolMsg="'Editar'"
