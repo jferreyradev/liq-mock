@@ -2,6 +2,7 @@
 import HojasList from '@/components/Novedades/HojasList.vue'
 import NovHaberesList from '@/components/Novedades/NovHaberesList.vue'
 import NovVariasList from '@/components/Novedades/NovVariasList.vue'
+import TablaEditable from '@/components/Novedades/TablaEditable.vue'
 import { ref } from 'vue'
 const hojaEdicion = ref(null)
 const titulo = ref('Listado de hojas')
@@ -35,7 +36,6 @@ let filtros = {
     <v-row justify="space-around" class="bg-primary">
       <h3>{{ titulo }}</h3>
     </v-row>
-
     <v-row>
       <HojasList
         v-if="tipoHoja == -1"
