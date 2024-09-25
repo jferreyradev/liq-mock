@@ -18,8 +18,7 @@ function toggleTheme() {
 }
 
 function handleLogout() {
-  store.logout()
-  //store.user.value=''
+  store.$reset()
   router.push('/login')
 }
 
@@ -56,11 +55,20 @@ const items = [
       <div v-if="store.auth">
         <v-menu>
           <template v-slot:activator="{ props }">
-            <v-btn icon="mdi-dots-vertical" prepend-icon="mdi-account" title="User Profile" v-bind="props"></v-btn> 
+            <v-btn icon="mdi-dots-vertical" prepend-icon="mdi-account" title="User Profile" v-bind="props">
+            </v-btn> 
           </template>
 
           <v-list>
-             <v-list-item title="Salir" @click="handleLogout()" />
+            <v-list-item
+            :subtitle="store.user.EMAIL"
+            :title="store.user.USERNAME"
+          >
+          </v-list-item>
+          
+          <v-divider></v-divider>
+            <v-list-item title="Cambio de contraseña" @click="() => router.push('/passchange')" />
+            <v-list-item title="Salir" @click="handleLogout()" />
           </v-list>
         </v-menu>
       </div>

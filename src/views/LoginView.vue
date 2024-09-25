@@ -24,11 +24,11 @@ const overlay = ref(false)
 const attempts = ref(0)
 
 const login = async () => {
-  //overlay.value = true
+  overlay.value = true
   console.log(userInput.value.username , userInput.value.password )
   await user.loginUserName(userInput.value.username , userInput.value.password )
-  //overlay.value = false
-  console.log(user.auth )
+  overlay.value = false
+  console.log(user.user)
   if (user.auth){
     router.push('/')
   }
@@ -37,9 +37,9 @@ const login = async () => {
     text.value = 'El usuario o la contraseña ingresada es incorrecta.'
     dialog.value = true
   } else {
-    //overlay.value = true
+    overlay.value = true
     await filterStore.setPer()
-    //overlay.value = false
+    overlay.value = false
     router.push('/')
   }
   
@@ -79,7 +79,7 @@ const login = async () => {
   </v-dialog>
 
   <v-overlay :model-value="overlay" persistent class="align-center justify-center">
-    <v-progress-circular color="primary" size="64" indeterminate :active="loading"></v-progress-circular>
+    <v-progress-circular color="primary" size="64" indeterminate ></v-progress-circular>
   </v-overlay>
 </template>
 

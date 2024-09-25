@@ -82,7 +82,7 @@ function handleDownload(idliq) {
           </template>
 
           <template v-slot:item.LIQUIDACIONID="{ value }">
-            <a :href="store.URL_API + '/boleta?IdLiq=' + value">descargar</a>
+            <a :href="store.URL_API + '/boleta?IdLiq=' + value" target="_blank" >descargar</a>
           </template>
         </v-data-table>
       </v-card>
