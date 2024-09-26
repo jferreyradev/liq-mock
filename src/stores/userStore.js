@@ -94,6 +94,26 @@ export const useUserStore = defineStore('userStore', {
                 this.loading = false
             }
         },
+        async fetchUserEmail(email) {
+            this.loading = true
+            this.error = null
+            this.success = false
+            this.user = null
+            this.auth = false
+            try {
+                const response = await fetch(`${apiBaseDev.value}/api/view/users?email=${email}`) // Cambia la URL a la de tu API
+                if (!response.ok) {
+                    throw new Error('Error fetching user')
+                }
+                const data = await response.json()
+                this.user = data[0]
+                this.success = true
+            } catch (error) {
+                this.error = error.message
+            } finally {
+                this.loading = false
+            }
+        },
         async fetchRol() {
             this.loading = true
             this.error = null

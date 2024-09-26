@@ -13,7 +13,8 @@ const filterStore = useFilterStore()
 const showPassword = ref(false)
 const userInput = ref({
   username: '',
-  password: ''
+  password: '',
+  email:''
 })
 
 const dialog = ref(false)
@@ -22,6 +23,8 @@ const text = ref('')
 const overlay = ref(false)
 
 const attempts = ref(0)
+
+const forgot = ref(false)
 
 const login = async () => {
   overlay.value = true
@@ -45,6 +48,14 @@ const login = async () => {
   
 }
 
+async function sendEmail() {
+  console.log(userInput.value.email)
+  overlay.value = true
+  await user.fetchUserEmail(userInput.value.email)
+  console.log(user.user)
+  forgot.value=false
+  overlay.value = false
+}
 </script>
 
 <template>
@@ -53,7 +64,7 @@ const login = async () => {
       <h2 class="display-1 ma-5">Acceso al sistema</h2>
     </v-card-title>
     <v-card-text class="ma-5">
-      <v-form @submit.prevent="login">
+      <v-form @submit.prevent="login" v-if="!forgot">
         <v-text-field label="Username" prepend-icon="mdi-account-circle" v-model="userInput.username" />
         <v-text-field :type="showPassword ? 'text' : 'password'" label="Password" prepend-icon="mdi-lock"
           :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" @click:append="showPassword = !showPassword"
@@ -61,12 +72,21 @@ const login = async () => {
         <div class="d-flex justify-end">
           <v-btn type="submit" class="mt-4 align-right" color="primary" value="log in">Ingresar</v-btn>
         </div>
-
+      </v-form>
+      <v-form @submit.prevent="sendEmail" v-if="forgot">
+        <v-text-field label="email" prepend-icon="mdi-account-circle" v-model="userInput.email" type="email" />
+        <div class="d-flex justify-end">
+          <v-btn type="submit" class="mt-4 align-right" color="primary" value="send" >Enviar</v-btn>
+        </div>
       </v-form>
     </v-card-text>
     <v-divider></v-divider>
-    <v-card-actions>
-
+    <v-card-actions class="d-flex justify-end">
+      <div >
+        <v-btn color="primary" @click="forgot=true" v-if="!forgot">Recuperar contraseña</v-btn>
+        <v-btn color="primary" @click="forgot=false" v-if="forgot">Cancelar</v-btn>
+      </div>
+      
     </v-card-actions>
   </v-card>
 
