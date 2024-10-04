@@ -104,6 +104,7 @@ export async function ejecutarSP(url = '', data = {}, metodo = 'POST') {
   let errmsg = ''
   let valorError = -1
   let valorSalida = 0
+  let errorMsg = ''
 
   try {
     const response = await fetch(urlAPI + url, {
@@ -125,6 +126,7 @@ export async function ejecutarSP(url = '', data = {}, metodo = 'POST') {
       let datos = await response.json()
       valorError = datos.out.ValorError
       valorSalida = datos.out.ValorSalida
+      errorMsg = datos.out.vErrorMsg
     } else {
       errmsg = 'Error al intentar grabar el registro'
     }
@@ -133,5 +135,6 @@ export async function ejecutarSP(url = '', data = {}, metodo = 'POST') {
     operacionOk = false
     errmsg = 'Error en la Red'
   }
-  return { estado, operacionOk, errmsg, valorError, valorSalida }
+
+  return { estado, operacionOk, errmsg, valorError, valorSalida, errorMsg }
 }

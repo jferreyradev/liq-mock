@@ -5,6 +5,9 @@ import { leerDatos, ejecutarSP } from './llamadaAPI'
 import botonTooltip from './botonTooltip.vue'
 import { getVto, getFechaDMY, financial } from '@/utils/formatos'
 import NovVariasVista from './NovVariasVista.vue'
+import { utils, writeFileXLSX } from 'xlsx'
+import { agregaTitulosExcel } from '@/utils/reportes.js'
+import { computed } from 'vue'
 
 const props = defineProps(['setHojaEdicion', 'hojaEditar'])
 
@@ -16,7 +19,7 @@ function handleCerrarEdicion() {
 }
 
 const listaHeaders = [
-  { title: 'Acciones', key: '', fixed: true },
+  { title: '', key: '' },
   { title: 'Nro Rep.', key: 'IDREP' },
   { title: 'Boleta', key: 'ORDEN' },
   { title: 'Cód.', key: 'CODIGO' },
@@ -62,7 +65,8 @@ const itemMostrar = ref({
 function handleModif(itemid) {
   mostrarAlert.value = false
   let item = null
-  if (itemid !== 0) item = data.value.find((e) => e.ID == itemid)
+  console.log(itemid)
+  if (itemid != null) if (itemid !== 0) item = data.value.find((e) => e.ID == itemid)
   abrirModal(item)
 }
 
@@ -131,7 +135,103 @@ async function eliminar(id) {
   return false
 }
 // -------------------------------------------------
+// funciones de exportación a archivo excel
+
+const totImporte = computed(() => {
+  var totImp = 0
+  if (data.value) {
+    data.value.forEach((x) => {
+      totImp += x.IMPORTE
+    })
+  }
+
+  return { totImp }
+})
+
+function handleDownload() {
+  console.log('download')
+  exportFile()
+}
+
+function exportFile() {
+  const map1 = data.value.map((x) => {
+    return [
+      x.IDREP,
+      x.ORDEN,
+      x.CODIGO,
+      x.SUBCODIGO,
+      x.PARAM1,
+      x.PARAM2,
+      getVto(x.VENCIMIENTO),
+      x.IMPORTE,
+      getVto(x.PERIODO),
+      getFechaDMY(x.FECHAGRABACION)
+    ]
+  })
+
+  const titulosTabla = [
+    'Rep',
+    'Orden',
+    'Código',
+    'Subcódigo',
+    'Parámetro 1',
+    'Parámetro 2',
+    'Vencimiento',
+    'Importe',
+    'Período',
+    'Fecha. de Grab.'
+  ]
+  const totalesTabla = [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    totImporte.value.totImp,
+    null,
+    null
+  ]
+  map1.push(totalesTabla)
+  const filtros = ''
+  const tituloReporte = 'Detalle de Hoja Nº: ' + hojaEditar.ID
+  agregaTitulosExcel(map1, tituloReporte, filtros, titulosTabla)
+  const ws = utils.aoa_to_sheet(map1)
+
+  ws['!cols'] = [
+    { wch: 10 },
+    { wch: 10 },
+    { wch: 10 },
+    { wch: 10 },
+    { wch: 10 },
+    { wch: 10 },
+    { wch: 15 },
+    { wch: 20 },
+    { wch: 15 },
+    { wch: 20 }
+  ]
+  /* create workbook and append worksheet */
+  const wb = utils.book_new()
+  utils.book_append_sheet(wb, ws, 'Data')
+
+  /* export to XLSX */
+  writeFileXLSX(wb, 'DetalleHoja_' + `${hojaEditar.ID}.xlsx`, {
+    compression: true
+  })
+}
+
+// --- fin de funciones de exportacion
 </script>
+
+<style>
+.sticky {
+  position: sticky !important;
+  left: 0 !important;
+  min-width: 100px !important;
+  z-index: 10 !important;
+}
+</style>
 
 <template>
   <v-container>
@@ -146,6 +246,7 @@ async function eliminar(id) {
       <v-btn color="primary" prepend-icon="mdi-plus" elevation="3" @click="handleModif(null)"
         >Nuevo registro</v-btn
       >
+      <v-btn color="primary" @click="handleDownload" :disabled="!data">Descargar</v-btn>
       <v-btn color="primary" prepend-icon="mdi-close" elevation="3" @click="handleCerrarEdicion()"
         >Volver</v-btn
       >
@@ -170,11 +271,10 @@ async function eliminar(id) {
         density="compact"
         :items="data"
         :headers="listaHeaders"
-        fixed-header
       >
         <template v-slot:item="{ item }">
           <tr class="pa-0 ma-0">
-            <td class="text-center m-0 p-0">
+            <td class="text-center m-0 p-0 sticky">
               <botonTooltip
                 :icono="'mdi-pencil'"
                 :toolMsg="'Editar'"
