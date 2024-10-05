@@ -18,6 +18,7 @@ export const useUserStore = defineStore('user', {
       if (user === 'demo' && pass === 'test') {
         this.isAuth = true
         this.username = user
+        console.log('autorizando')
       }
     },
     logout() {
