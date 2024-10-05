@@ -47,6 +47,10 @@ export const tipoHoja = [
   {
     name: 'Nov. varias',
     value: 4
+  },
+  {
+    name: 'Nov. altas',
+    value: 5
   }
 ]
 
@@ -91,6 +95,21 @@ export const estados = [
   {
     name: 'Otro estado',
     value: 4
+  }
+]
+
+export const sexos = [
+  {
+    name: 'Femenino',
+    value: 'F'
+  },
+  {
+    name: 'Masculino',
+    value: 'M'
+  },
+  {
+    name: 'No declarado',
+    value: 'X'
   }
 ]
 

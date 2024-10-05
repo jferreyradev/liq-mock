@@ -2,6 +2,7 @@
 import HojasList from '@/components/Novedades/HojasList.vue'
 import NovHaberesList from '@/components/Novedades/NovHaberesList.vue'
 import NovVariasList from '@/components/Novedades/NovVariasList.vue'
+import NovAltasList from '@/components/Novedades/NovAltasList.vue'
 import TablaEditable from '@/components/Novedades/TablaEditable.vue'
 import { ref } from 'vue'
 const hojaEdicion = ref(null)
@@ -52,6 +53,11 @@ let filtros = {
         :setHojaEdicion="setHojaEdicion"
         :hojaEditar="hojaEdicion"
       ></NovVariasList>
+      <NovAltasList
+        v-else-if="tipoHoja == 5"
+        :setHojaEdicion="setHojaEdicion"
+        :hojaEditar="hojaEdicion"
+      ></NovAltasList>
     </v-row>
   </v-container>
 </template>

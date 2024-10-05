@@ -4,7 +4,7 @@ import Confirmacion from './Confirmacion.vue'
 import { leerDatos, ejecutarSP } from './llamadaAPI'
 import botonTooltip from './botonTooltip.vue'
 import { getVto, getFechaDMY } from '@/utils/formatos'
-import NovVariasVista from './NovVariasVista.vue'
+import NovAltasVista from './NovAltasVista.vue'
 import { utils, writeFileXLSX } from 'xlsx'
 import { agregaTitulosExcel } from '@/utils/reportes.js'
 
@@ -33,8 +33,8 @@ const listaHeaders = [
   { title: 'Antig.', key: 'ANTIG' },
   { title: 'Vto.', key: 'VTO' },
   { title: 'Titulo', key: 'TITULO' },
-  { title: 'Dif. Cat.', key: 'DIFCAT' },
-  { title: 'Ap. Jub.', key: 'APJUB' },
+  { title: 'Dif. Cat.', key: 'DIF_CAT' },
+  { title: 'Ap. Jub.', key: 'AJUB' },
   { title: 'Periodo', key: 'PERIODO' },
   { title: 'Fecha Grab.', key: 'FECHAGRABACION' },
   { title: 'Estado Reg.', key: 'ESTADOREGISTRO' }
@@ -166,8 +166,8 @@ function exportFile() {
       x.ANTIG,
       getVto(x.VTO),
       x.TITULO,
-      x.DIFCAT,
-      x.APJUB,
+      x.DIF_CAT,
+      x.AJUB,
       getVto(x.PERIODO),
       getFechaDMY(x.FECHAGRABACION)
     ]
@@ -309,8 +309,8 @@ function exportFile() {
             <td class="text-right m-0 p-0">{{ item.ANTIG }}</td>
             <td class="text-center m-0 p-0">{{ getVto(item.VTO) }}</td>
             <td class="text-right m-0 p-0">{{ item.TITULO }}</td>
-            <td class="text-right m-0 p-0">{{ item.DIFCAT }}</td>
-            <td class="text-center m-0 p-0">{{ item.APJUB ? 'SI' : 'NO' }}</td>
+            <td class="text-right m-0 p-0">{{ item.DIF_CAT }}</td>
+            <td class="text-center m-0 p-0">{{ item.AJUB ? 'SI' : 'NO' }}</td>
             <td class="text-center m-0 p-0">{{ getVto(item.PERIODO) }}</td>
             <td class="text-center m-0 p-0">{{ getFechaDMY(item.FECHAGRABACION) }}</td>
             <td class="text-center m-0 p-0">{{ item.ESTADOREGISTRO }}</td>
@@ -322,12 +322,12 @@ function exportFile() {
   </v-container>
 
   <v-dialog v-model="muestraRegistro" max-width="80%" persistent="">
-    <NovVariasVista
+    <NovAltasVista
       :Registro="itemMostrar"
       :cerrar="cierraForm"
       :funcion="grabarSP"
       :hojaId="hojaEditar.ID"
-    ></NovVariasVista>
+    ></NovAltasVista>
   </v-dialog>
 
   <v-dialog v-model="muestraConfirmacion" max-width="80%" persistent="">

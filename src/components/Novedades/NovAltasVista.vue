@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { getVto, getVtoActual, getFechaToAPIFromMMYYYY } from '@/utils/formatos'
 import { rules } from '@/utils/reglasValidacion'
+import { sexos, getObjetList } from '@/utils/tipos'
 
 const props = defineProps(['Registro', 'cerrar', 'funcion', 'hojaId'])
 let registroOrigen = props.Registro
@@ -13,6 +14,8 @@ const formOK = ref(false)
 
 const vencimiento = ref(getVtoActual())
 const periodo = ref(getVtoActual())
+
+const sexoSelected = ref(sexos[0])
 
 const registroVacio = ref({
   IDREP: 0,
@@ -29,8 +32,8 @@ const registroVacio = ref({
   ANTIG: 0,
   VTO: vencimiento,
   TITULO: 0,
-  DIFCAT: 0,
-  APJUB: 0,
+  DIF_CAT: 0,
+  AJUB: false,
   PERIODO: periodo,
   FECHAGRABACION: null,
   ESTADOREGISTRO: 0,
@@ -40,8 +43,10 @@ const registroVacio = ref({
 
 if (registroOrigen) {
   registroActual.value = { ...registroOrigen }
+  registroActual.value.AJUB = registroOrigen.AJUB == 1
   vencimiento.value = getVto(registroOrigen.VTO)
   periodo.value = getVto(registroOrigen.PERIODO)
+  sexoSelected.value = getObjetList(sexos, registroOrigen.SEXO)
 } else {
   registroActual.value = registroVacio.value
 }
@@ -73,15 +78,15 @@ async function grabaRegistro() {
     vCUIL: registroActual.value.CUIL,
     vAPE: registroActual.value.APELLIDO,
     vNOM: registroActual.value.NOMBRE,
-    vSEXO: registroActual.value.SEXO,
+    vSEXO: sexoSelected.value.value,
     vTE: registroActual.value.TE,
     vCC: registroActual.value.CC,
     vCAT: registroActual.value.CAT,
     vANTIG: registroActual.value.ANTIG,
     vVTO: getFechaToAPIFromMMYYYY(vencimiento.value),
     vTITULO: registroActual.value.TITULO,
-    vDIFCAT: registroActual.value.DIFCAT,
-    vAPJUB: registroActual.value.APJUB,
+    vDIF_CAT: registroActual.value.DIF_CAT,
+    vAJUB: registroActual.value.AJUB ? 1 : 0,
     vIDHOJANOV: hojaId,
     vPERIODO: getFechaToAPIFromMMYYYY(periodo.value)
   }
@@ -197,13 +202,15 @@ function validarRegistro() {
             </v-row>
             <v-row>
               <v-col cols="3">
-                <v-text-field
-                  v-model="registroActual.SEXO"
-                  hide-details="auto"
-                  label="Sexo"
-                  lazy-validation
-                  :rules="[(val) => rules.longitudEntre(val, 1, 1)]"
-                ></v-text-field>
+                <v-select
+                  label="Tipo Liq"
+                  :items="sexos"
+                  item-title="name"
+                  item-value="value"
+                  v-model="sexoSelected"
+                  return-object
+                >
+                </v-select>
               </v-col>
               <v-col cols="3">
                 <v-text-field
@@ -265,7 +272,7 @@ function validarRegistro() {
             <v-row>
               <v-col cols="4">
                 <v-text-field
-                  v-model="registroActual.DIFCAT"
+                  v-model="registroActual.DIF_CAT"
                   hide-details="auto"
                   label="Dif. Cat."
                   lazy-validation
@@ -273,13 +280,13 @@ function validarRegistro() {
                 ></v-text-field>
               </v-col>
               <v-col cols="4">
-                <v-text-field
-                  v-model="registroActual.APJUB"
-                  hide-details="auto"
-                  label="Ap. Jub."
-                  lazy-validation
-                  :rules="[...rules.number, (val) => rules.longitudEntre(val, 1, 2)]"
-                ></v-text-field>
+                <v-checkbox
+                  v-model="registroActual.AJUB"
+                  color="primary"
+                  label="Ap. Jub"
+                  value="primary"
+                  hide-details
+                ></v-checkbox>
               </v-col>
               <v-col cols="4">
                 <v-text-field v-model="periodo" hide-details="auto" label="Período"></v-text-field>
