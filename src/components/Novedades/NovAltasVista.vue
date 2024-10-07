@@ -88,7 +88,6 @@ async function grabaRegistro() {
     vTITULO: registroActual.value.TITULO,
     vDIF_CAT: registroActual.value.DIFCAT,
     vAJUB: registroActual.value.AJUB ? 1 : 0,
-    vIDHOJANOV: hojaId,
     vPERIODO: getFechaToAPIFromMMYYYY(periodo.value)
   }
   if (registroActual.value.ID !== 0) {
@@ -98,7 +97,12 @@ async function grabaRegistro() {
       vIDESTADOREG: registroActual.value.ESTADOREGISTRO,
       vFECHAGRAB: registroActual.value.FECHAGRABACION
     }
+  } else {
+    registroGrabar = {
+      ...registroGrabar,
+      vIDHOJANOV: hojaId
   }
+}
   console.log(registroGrabar)
   let grabarOk = await props.funcion(registroGrabar, registroActual.value.ID)
 
