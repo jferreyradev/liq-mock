@@ -1,4 +1,7 @@
 import { defineStore } from 'pinia'
+import { useApiConfig } from '@/composables/useUrls'
+
+const { apiBaseDev } = useApiConfig()
 
 const liqMap = new Map([
   ['1', 'Mensual'],
@@ -30,7 +33,7 @@ export const useFilterStore = defineStore('filter', {
     month: 0,
     //URL_API: 'http://www.serverburru2.duckdns.org:3003/api',
     //URL_API: 'https://midliq-api-grq94rhtchph.deno.dev/api',
-    URL_API: 'https://midliq-api-jr2sc3ef7gnx.deno.dev/api',
+    URL_API: apiBaseDev.value + '/api' ,
     serverConfig: {}
   }),
   getters: {
