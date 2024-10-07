@@ -1,5 +1,12 @@
 // Ejemplo implementando el metodo POST:
-const urlAPI = 'http://www.serverburru2.duckdns.org:3005/api/'
+
+import { useApiConfig } from '@/composables/useUrls'
+
+const { apiBaseDev } = useApiConfig()
+
+// const urlAPI = 'http://www.serverburru2.duckdns.org:3005/api/'
+
+const urlAPI = apiBaseDev.value + '/api/';
 
 export async function grabarRegistro(url = '', data = {}, metodo = 'POST') {
   let estado = 0
@@ -10,9 +17,9 @@ export async function grabarRegistro(url = '', data = {}, metodo = 'POST') {
   try {
     const response = await fetch(urlAPI + url, {
       method: metodo, // *GET, POST, PUT, DELETE, etc.
-      mode: 'cors', // no-cors, *cors, same-origin
+      mode: 'no-cors', // no-cors, *cors, same-origin
       cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: 'same-origin', // include, *same-origin, omit
+      //credentials: 'same-origin', // include, *same-origin, omit
       headers: {
         'Content-Type': 'application/json'
         // 'Content-Type': 'application/x-www-form-urlencoded',
@@ -46,9 +53,9 @@ export async function eliminarRegistro(url = '', metodo = 'DELETE') {
   try {
     const response = await fetch(urlAPI + url, {
       method: metodo, // *GET, POST, PUT, DELETE, etc.
-      //mode: 'cors', // no-cors, *cors, same-origin
+      mode: 'no-cors', // no-cors, *cors, same-origin
       //cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: 'same-origin' // include, *same-origin, omit
+      //credentials: 'same-origin' // include, *same-origin, omit
       //headers: {
       //  'Content-Type': 'application/json'
       // 'Content-Type': 'application/x-www-form-urlencoded',
@@ -109,9 +116,9 @@ export async function ejecutarSP(url = '', data = {}, metodo = 'POST') {
   try {
     const response = await fetch(urlAPI + url, {
       method: metodo, // *GET, POST, PUT, DELETE, etc.
-      mode: 'cors', // no-cors, *cors, same-origin
+      mode: 'no-cors', // no-cors, *cors, same-origin
       cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-      credentials: 'same-origin', // include, *same-origin, omit
+      //credentials: 'same-origin', // include, *same-origin, omit
       headers: {
         'Content-Type': 'application/json'
         // 'Content-Type': 'application/x-www-form-urlencoded',

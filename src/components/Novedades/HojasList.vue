@@ -129,7 +129,7 @@ const error = null
 const lecturaHojas = ref(true)
 
 async function leerHojas(filtro = null) {
-  let url = 'hoja'
+  let url = 'view/hojaNov'
   if (filtro !== null) url = url + '?' + filtro
   isPending.value = true
   const { datos, operacionOk } = await leerDatos(url)
