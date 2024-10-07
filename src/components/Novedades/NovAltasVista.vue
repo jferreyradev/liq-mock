@@ -32,7 +32,7 @@ const registroVacio = ref({
   ANTIG: 0,
   VTO: vencimiento,
   TITULO: 0,
-  DIF_CAT: 0,
+  DIFCAT: 0,
   AJUB: false,
   PERIODO: periodo,
   FECHAGRABACION: null,
@@ -47,6 +47,7 @@ if (registroOrigen) {
   vencimiento.value = getVto(registroOrigen.VTO)
   periodo.value = getVto(registroOrigen.PERIODO)
   sexoSelected.value = getObjetList(sexos, registroOrigen.SEXO)
+  
 } else {
   registroActual.value = registroVacio.value
 }
@@ -85,7 +86,7 @@ async function grabaRegistro() {
     vANTIG: registroActual.value.ANTIG,
     vVTO: getFechaToAPIFromMMYYYY(vencimiento.value),
     vTITULO: registroActual.value.TITULO,
-    vDIF_CAT: registroActual.value.DIF_CAT,
+    vDIF_CAT: registroActual.value.DIFCAT,
     vAJUB: registroActual.value.AJUB ? 1 : 0,
     vIDHOJANOV: hojaId,
     vPERIODO: getFechaToAPIFromMMYYYY(periodo.value)
@@ -272,7 +273,7 @@ function validarRegistro() {
             <v-row>
               <v-col cols="4">
                 <v-text-field
-                  v-model="registroActual.DIF_CAT"
+                  v-model="registroActual.DIFCAT"
                   hide-details="auto"
                   label="Dif. Cat."
                   lazy-validation

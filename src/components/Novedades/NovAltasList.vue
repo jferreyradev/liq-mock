@@ -33,7 +33,7 @@ const listaHeaders = [
   { title: 'Antig.', key: 'ANTIG' },
   { title: 'Vto.', key: 'VTO' },
   { title: 'Titulo', key: 'TITULO' },
-  { title: 'Dif. Cat.', key: 'DIF_CAT' },
+  { title: 'Dif. Cat.', key: 'DIFCAT' },
   { title: 'Ap. Jub.', key: 'AJUB' },
   { title: 'Periodo', key: 'PERIODO' },
   { title: 'Fecha Grab.', key: 'FECHAGRABACION' },
@@ -166,7 +166,7 @@ function exportFile() {
       x.ANTIG,
       getVto(x.VTO),
       x.TITULO,
-      x.DIF_CAT,
+      x.DIFCAT,
       x.AJUB,
       getVto(x.PERIODO),
       getFechaDMY(x.FECHAGRABACION)
@@ -309,7 +309,7 @@ function exportFile() {
             <td class="text-right m-0 p-0">{{ item.ANTIG }}</td>
             <td class="text-center m-0 p-0">{{ getVto(item.VTO) }}</td>
             <td class="text-right m-0 p-0">{{ item.TITULO }}</td>
-            <td class="text-right m-0 p-0">{{ item.DIF_CAT }}</td>
+            <td class="text-right m-0 p-0">{{ item.DIFCAT }}</td>
             <td class="text-center m-0 p-0">{{ item.AJUB ? 'SI' : 'NO' }}</td>
             <td class="text-center m-0 p-0">{{ getVto(item.PERIODO) }}</td>
             <td class="text-center m-0 p-0">{{ getFechaDMY(item.FECHAGRABACION) }}</td>
