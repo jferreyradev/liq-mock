@@ -4,13 +4,16 @@ import { useFilterStore } from '@/stores/filterStore.js'
 import { useFetch } from '@/composables/useFetch'
 import RepoHeader from './RepoHeader.vue'
 import { useLiqStore } from '@/stores/liqStore.js'
+import { useEndPoints } from '@/composables/useEndPoints'
+
+const { apiBase } = useEndPoints()
 
 const store = useFilterStore()
 
 const liqStore = useLiqStore()
 
 function useLiqBoletas(getId) {
-  return useFetch(() => `${store.URL_API}/view/boletas?${getId()}`)
+  return useFetch(() => `${apiBase.value}/api/view/boletas?${getId()}`)
 }
 
 const { data, error, isPending } = useLiqBoletas(() => store.filterString)

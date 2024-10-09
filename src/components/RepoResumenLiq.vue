@@ -3,11 +3,14 @@ import { utils, writeFileXLSX } from 'xlsx'
 import { useFetch } from '@/composables/useFetch'
 import { useFilterStore } from '@/stores/filterStore'
 import RepoHeader from './RepoHeader.vue';
+import { useEndPoints } from '@/composables/useEndPoints'
+
+const { apiBase } = useEndPoints()
 
 const store = useFilterStore()
 
 function useResLiq(getId) {
-  return useFetch(() => `${store.URL_API}/repo/resumenLiq?${getId()}`)
+  return useFetch(() => `${apiBase.value}/api/repo/resumenLiq?${getId()}`)
 }
 
 const { data, error, isPending } = useResLiq(() => store.filterString)

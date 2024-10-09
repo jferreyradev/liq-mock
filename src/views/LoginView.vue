@@ -45,7 +45,6 @@ const login = async () => {
     overlay.value = false
     router.push('/')
   }
-  
 }
 
 async function sendEmail() {

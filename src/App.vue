@@ -2,9 +2,13 @@
 import { useTheme } from 'vuetify'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/userStore'
-import { useFilterStore } from '@/stores/filterStore.js'
+import { useEndPoints } from '@/composables/useEndPoints'
 
-const filterStore = useFilterStore();
+//const { apiBaseDev } = useApiConfig()
+
+const { setDesa, env } = useEndPoints()
+
+setDesa()
 
 // access the `store` variable anywhere in the component ✨
 const store = useUserStore()
@@ -96,6 +100,7 @@ const items = [
       <v-row justify="center" no-gutters>
         <v-col class="text-center ma-1" cols="6">
           {{ new Date().getFullYear() }} — <strong>Concepción - Tucumán</strong>
+          {{ env.value }}
         </v-col>
       </v-row>
     </v-footer>

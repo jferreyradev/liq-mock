@@ -2,11 +2,14 @@
 import { ref } from 'vue'
 import { useFilterStore } from '@/stores/filterStore.js'
 import { useFetch } from '@/composables/useFetch';
+import { useEndPoints } from '@/composables/useEndPoints'
+
+const { apiBase} = useEndPoints()
 
 const store = useFilterStore()
 
 function useLiq(getId) {
-  return useFetch(() => `${store.URL_API}/view/liq?${getId()}&sort={"Orden":"asc"}`)
+  return useFetch(() => `${apiBase.value}/api/view/liq?${getId()}&sort={"Orden":"asc"}`)
 }
 
 const { data, error, isPending } = useLiq(() => store.filterString)

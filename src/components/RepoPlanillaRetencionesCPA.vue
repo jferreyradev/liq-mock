@@ -5,13 +5,16 @@ import { useFetch } from '@/composables/useFetch'
 import RepoHeader from './RepoHeader.vue'
 import { financial, getVto, agregaTitulosExcel } from '@/utils/reportes.js'
 import { computed } from 'vue'
+import { useEndPoints } from '@/composables/useEndPoints'
+
+const { apiBase } = useEndPoints()
 
 const store = useFilterStore()
 
 function useResLiqCod(getId) {
   return useFetch(
     () =>
-      `${store.URL_API}/view/planillaRetCPA?${getId()}&sort={"IdRep":"asc","Orden":"asc","Periodo":"asc"}`
+      `${apiBase.value}/api/view/planillaRetCPA?${getId()}&sort={"IdRep":"asc","Orden":"asc","Periodo":"asc"}`
   )
 }
 

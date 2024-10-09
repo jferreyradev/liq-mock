@@ -12,11 +12,11 @@ const endpoints = {
   }
 }
 
-const apiBoletas = ref(endpoints.prod.base)
-const apiBase = ref(endpoints.prod.boletas)
+const apiBoletas = ref(endpoints.prod.boletas)
+const apiBase = ref(endpoints.prod.base)
 const env = ref('Prod')
 
-export function useApiConfig() {
+export function useEndPoints() {
 
   function setProd() {
     apiBase.value = endpoints.prod.base

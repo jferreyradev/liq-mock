@@ -7,10 +7,14 @@ import { financial, getVto, agregaTitulosExcel } from '@/utils/reportes.js'
 import { computed } from 'vue'
 const store = useFilterStore()
 
+import { useEndPoints } from '@/composables/useEndPoints'
+
+const { apiBase } = useEndPoints()
+
 function useResLiqCod(getId) {
   return useFetch(
     () =>
-      `${store.URL_API}/view/planillaLey?${getId()}&sort={"IdRep":"asc","Orden":"asc","FechaDev":"asc"}`
+      `${apiBase.value}/api/view/planillaLey?${getId()}&sort={"IdRep":"asc","Orden":"asc","FechaDev":"asc"}`
   )
 }
 

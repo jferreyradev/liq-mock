@@ -1,8 +1,13 @@
 // stores/userStore.js o stores/userStore.ts
 import { defineStore } from 'pinia'
-import { useApiConfig } from '@/composables/useUrls'
+//import { useApiConfig } from '@/composables/useUrls'
+import { useEndPoints } from '@/composables/useEndPoints'
 
-const { apiBase, apiBaseDev, apiBoletas, apiBoletasDev } = useApiConfig()
+//const { apiBaseDev } = useApiConfig()
+
+const { apiBase, apiBoletas} = useEndPoints()
+
+//const { apiBase, apiBaseDev, apiBoletas, apiBoletasDev } = useApiConfig()
 
 export const useUserStore = defineStore('userStore', {
     state: () => ({
@@ -58,9 +63,9 @@ export const useUserStore = defineStore('userStore', {
             this.user = null
             this.auth = false
             try {
-                console.log('try user', dni, `${apiBoletasDev.value}/user/${dni}`)
+                console.log('try user', dni, `${apiBoletas.value}/user/${dni}`)
 
-                const response = await fetch(`${apiBoletasDev.value}/user/${dni}`) // Cambia la URL a la de tu API
+                const response = await fetch(`${apiBoletas.value}/user/${dni}`) // Cambia la URL a la de tu API
                 if (!response.ok) {
                     throw new Error('Error fetching user')
                 }
@@ -80,8 +85,8 @@ export const useUserStore = defineStore('userStore', {
             this.user = null
             this.auth = false
             try {
-                console.log(`${apiBaseDev.value}/api/view/users?UserName=${userName}`)
-                const response = await fetch(`${apiBaseDev.value}/api/view/users?UserName=${userName}`) // Cambia la URL a la de tu API
+                console.log(`${apiBase.value}/api/view/users?UserName=${userName}`)
+                const response = await fetch(`${apiBase.value}/api/view/users?UserName=${userName}`) // Cambia la URL a la de tu API
                 if (!response.ok) {
                     throw new Error('Error fetching user')
                 }
@@ -101,7 +106,7 @@ export const useUserStore = defineStore('userStore', {
             this.user = null
             this.auth = false
             try {
-                const response = await fetch(`${apiBaseDev.value}/api/view/users?email=${email}`) // Cambia la URL a la de tu API
+                const response = await fetch(`${apiBase.value}/api/view/users?email=${email}`) // Cambia la URL a la de tu API
                 if (!response.ok) {
                     throw new Error('Error fetching user')
                 }
@@ -120,7 +125,7 @@ export const useUserStore = defineStore('userStore', {
             this.success = false
             try {
 
-                const response = await fetch(`${apiBaseDev.value}/frontMenuRol?IdRol=${this.user.ROL}`) // Cambia la URL a la de tu API
+                const response = await fetch(`${apiBase.value}/frontMenuRol?IdRol=${this.user.ROL}`) // Cambia la URL a la de tu API
                 if (!response.ok) {
                     throw new Error('Error fetching user')
                 }
@@ -158,9 +163,9 @@ export const useUserStore = defineStore('userStore', {
             this.pers = null
             this.allowSign = false
             try {
-                console.log('try pers', dni, `${apiBoletasDev.value}/persona/${dni}`)
+                console.log('try pers', dni, `${apiBoletas.value}/persona/${dni}`)
 
-                const response = await fetch(`${apiBoletasDev.value}/persona/${dni}`)
+                const response = await fetch(`${apiBoletas.value}/persona/${dni}`)
 
                 if (!response.ok) {
                     throw new Error('Error fetching user')
@@ -185,9 +190,9 @@ export const useUserStore = defineStore('userStore', {
             this.pers = null
             this.allowSign = false
             try {
-                console.log('try pers', dni, `${apiBoletasDev.value}/personacargo/${dni}`)
+                console.log('try pers', dni, `${apiBoletas.value}/personacargo/${dni}`)
 
-                const response = await fetch(`${apiBoletasDev.value}/personacargo/${dni}`)
+                const response = await fetch(`${apiBoletas.value}/personacargo/${dni}`)
 
                 if (!response.ok) {
                     throw new Error('Error fetching user')
@@ -217,7 +222,7 @@ export const useUserStore = defineStore('userStore', {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(bodyIn)
                 }
-                await fetch(`${apiBoletasDev.value}/user`, requestOptions)
+                await fetch(`${apiBoletas.value}/user`, requestOptions)
             } catch (err) {
                 this.error = err
                 console.log(err)
@@ -242,7 +247,7 @@ export const useUserStore = defineStore('userStore', {
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(bodyIn)
                 }
-                await fetch(`${apiBoletasDev.value}/claveUsuario`, requestOptions)
+                await fetch(`${apiBoletas.value}/claveUsuario`, requestOptions)
                 this.result = 'ok'
             } catch (err) {
                 this.error = err
