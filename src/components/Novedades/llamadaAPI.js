@@ -1,12 +1,12 @@
 // Ejemplo implementando el metodo POST:
 
-import { useApiConfig } from '@/composables/useUrls'
+import { useEndPoints } from '@/composables/useEndPoints'
 
-const { apiBaseDev } = useApiConfig()
+const { apiBase } = useEndPoints()
 
 // const urlAPI = 'http://www.serverburru2.duckdns.org:3005/api/'
 
-const urlAPI = apiBaseDev.value + '/api/';
+const urlAPI = apiBase.value + '/api/';
 
 export async function grabarRegistro(url = '', data = {}, metodo = 'POST') {
   let estado = 0
@@ -85,7 +85,7 @@ export async function leerDatos(url) {
   let operacionOk = false
   let errmsg = ''
   let datos = null
-  //console.log(urlAPI + url)
+  console.log(urlAPI + url)
   let response = null
   try {
     response = await fetch(urlAPI + url)
