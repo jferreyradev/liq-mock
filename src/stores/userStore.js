@@ -1,13 +1,7 @@
-// stores/userStore.js o stores/userStore.ts
 import { defineStore } from 'pinia'
-//import { useApiConfig } from '@/composables/useUrls'
 import { useEndPoints } from '@/composables/useEndPoints'
 
-//const { apiBaseDev } = useApiConfig()
-
 const { apiBase, apiBoletas} = useEndPoints()
-
-//const { apiBase, apiBaseDev, apiBoletas, apiBoletasDev } = useApiConfig()
 
 export const useUserStore = defineStore('userStore', {
     state: () => ({
@@ -24,6 +18,7 @@ export const useUserStore = defineStore('userStore', {
     getters: {
         isRegistred: (state) => !!state.user,
         isAuthenticated: (state) => !!state.auth,
+        isAdmin:(state) => !!state.user && state.user.ROL===4 ,
         isValid: (state) => !!state.pers,
         userName: (state) => state.user?.name || '',
         checkPassword(state) {

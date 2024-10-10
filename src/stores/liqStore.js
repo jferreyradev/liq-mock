@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 //import { useApiConfig } from '@/composables/useUrls'
 import { useEndPoints } from '@/composables/useEndPoints'
 
-const { apiBase, apiBoletas, setDesa, setProd, env } = useEndPoints()
+const { apiBase } = useEndPoints()
 
 //const { apiBaseDev } = useApiConfig()
 

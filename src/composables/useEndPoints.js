@@ -2,12 +2,12 @@ import { ref } from 'vue';
 
 const endpoints = {
   desa: {
-    boletas: 'https://api-boletas-9jn3t0ca7a3j.deno.dev',
+    boletas: 'https://api-boletas-9jn3t0ca7a3j.deno.dev', 
     base: 'https://midliq-api-enncs681c25c.deno.dev'
   },
   prod: {
     boletas: 'https://api-boletas.deno.dev',
-    base: 'https://midliq-api.deno.dev'
+    base: 'https://midliq-api-jr2sc3ef7gnx.deno.dev'
   }
 }
 

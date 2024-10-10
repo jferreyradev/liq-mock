@@ -4,9 +4,14 @@ import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/userStore'
 import { useEndPoints } from '@/composables/useEndPoints'
 import { useItemsMenu } from './composables/useItemsMenu'
+import { useFilterStore } from '@/stores/filterStore'
 
-const { setDesa, env } = useEndPoints()
+const { setDesa,setProd, env } = useEndPoints()
+
+const storeFilter = useFilterStore()
+
 setDesa()
+storeFilter.setConfig()
 
 const { itemsMenu } = useItemsMenu();
 
@@ -26,8 +31,16 @@ function handleLogout() {
   router.push('/login')
 }
 
-import { ref } from 'vue'
+function changeEnv() {
+  if (env.value=='Desa'){
+    setProd()
+  }else{
+    setDesa()
+  }
+  storeFilter.setConfig()
+}
 
+import { ref } from 'vue'
 
 </script>
 
@@ -39,7 +52,10 @@ import { ref } from 'vue'
       <v-app-bar-nav-icon v-if="store.auth" variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-app-bar-title>Consultas - Municipalidad de Concepción</v-app-bar-title>
       <v-spacer></v-spacer>
-      <label class="text-caption" >{{ env }}</label>
+      <v-btn v-if="(store.auth && store.isAdmin)" 
+            class="text-caption" @click="changeEnv" 
+            variant="tonal" >{{ storeFilter.serverConfig.AMBIENTE }}
+      </v-btn>
        <v-btn @click="toggleTheme" icon="mdi mdi-theme-light-dark">
         <v-tooltip activator="parent" location="start">Cambiar tema</v-tooltip>
         <v-icon icon="mdi-theme-light-dark"></v-icon>
