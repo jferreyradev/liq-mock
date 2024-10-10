@@ -120,7 +120,7 @@ function validarRegistro() {
 </script>
 
 <template>
-  <v-container>
+  <v-container >
     <v-card>
       <v-form ref="form" v-model="formOK">
         <v-card-title>Novedades de Haberes</v-card-title>
@@ -136,7 +136,7 @@ function validarRegistro() {
           {{ mensajeError }}
         </v-alert>
         <v-card-text>
-          <v-container>
+          <v-container style="height: 70vh; overflow-y: scroll;">
             <v-row>
               <v-col cols="4">
                 <v-text-field
