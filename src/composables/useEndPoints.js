@@ -1,4 +1,3 @@
-
 import { ref } from 'vue';
 
 const endpoints = {
@@ -27,7 +26,7 @@ export function useEndPoints() {
   function setDesa() {
     apiBase.value = endpoints.desa.base
     apiBoletas.value = endpoints.desa.boletas
-    endpoints.value = 'Desa'
+    env.value = 'Desa'
   }
 
   return {

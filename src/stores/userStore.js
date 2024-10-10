@@ -124,13 +124,13 @@ export const useUserStore = defineStore('userStore', {
             this.error = null
             this.success = false
             try {
-
-                const response = await fetch(`${apiBase.value}/frontMenuRol?IdRol=${this.user.ROL}`) // Cambia la URL a la de tu API
+                console.log(`${apiBase.value}/api/view/frontMenuRol?IdRol=${this.user.ROL}`)
+                const response = await fetch(`${apiBase.value}/api/view/frontMenuRol?IdRol=${this.user.ROL}`) // Cambia la URL a la de tu API
                 if (!response.ok) {
                     throw new Error('Error fetching user')
                 }
                 const data = await response.json()
-                this.rol = data[0]
+                this.rol = data
                 this.success = true
             } catch (error) {
                 this.error = error.message

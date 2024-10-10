@@ -3,6 +3,9 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/userStore'
 import { useFilterStore } from '@/stores/filterStore';
+import { useItemsMenu } from '@/composables/useItemsMenu'
+
+const { setItemsMenu, itemsMenu } = useItemsMenu();
 
 // access the `store` variable anywhere in the component ✨
 const user = useUserStore()
@@ -42,6 +45,9 @@ const login = async () => {
   } else {
     overlay.value = true
     await filterStore.setPer()
+    await user.fetchRol()
+    setItemsMenu(user.rol)
+    console.log(itemsMenu.value)
     overlay.value = false
     router.push('/')
   }
@@ -79,14 +85,13 @@ async function sendEmail() {
         </div>
       </v-form>
     </v-card-text>
-    <v-divider></v-divider>
+    <!-- <v-divider></v-divider>
     <v-card-actions class="d-flex justify-end">
       <div >
         <v-btn color="primary" @click="forgot=true" v-if="!forgot">Recuperar contraseña</v-btn>
         <v-btn color="primary" @click="forgot=false" v-if="forgot">Cancelar</v-btn>
-      </div>
-      
-    </v-card-actions>
+      </div>      
+    </v-card-actions> -->
   </v-card>
 
   <v-dialog v-model="dialog" width="auto">
