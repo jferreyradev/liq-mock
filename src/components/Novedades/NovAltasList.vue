@@ -104,7 +104,7 @@ function cierraForm() {
 // funciones de agregado, modificación y eliminación
 async function grabarSP(item, id) {
   let url = ''
-  console.log(item)
+  console.log('item: ', item)
   if (id == 0) {
     url = 'sp/NovAltasIns'
   } else {

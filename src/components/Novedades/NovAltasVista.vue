@@ -47,7 +47,6 @@ if (registroOrigen) {
   vencimiento.value = getVto(registroOrigen.VTO)
   periodo.value = getVto(registroOrigen.PERIODO)
   sexoSelected.value = getObjetList(sexos, registroOrigen.SEXO)
-  
 } else {
   registroActual.value = registroVacio.value
 }
@@ -93,16 +92,14 @@ async function grabaRegistro() {
   if (registroActual.value.ID !== 0) {
     registroGrabar = {
       vIDNOV: registroActual.value.ID,
-      ...registroGrabar,
-      vIDESTADOREG: registroActual.value.ESTADOREGISTRO,
-      vFECHAGRAB: registroActual.value.FECHAGRABACION
+      ...registroGrabar
     }
   } else {
     registroGrabar = {
       ...registroGrabar,
       vIDHOJANOV: hojaId
+    }
   }
-}
   console.log(registroGrabar)
   let grabarOk = await props.funcion(registroGrabar, registroActual.value.ID)
 
@@ -120,7 +117,7 @@ function validarRegistro() {
 </script>
 
 <template>
-  <v-container >
+  <v-container>
     <v-card>
       <v-form ref="form" v-model="formOK">
         <v-card-title>Novedades de Haberes</v-card-title>
@@ -136,7 +133,7 @@ function validarRegistro() {
           {{ mensajeError }}
         </v-alert>
         <v-card-text>
-          <v-container style="height: 70vh; overflow-y: scroll;">
+          <v-container style="height: 70vh; overflow-y: scroll">
             <v-row>
               <v-col cols="4">
                 <v-text-field
