@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { getVto, getVtoActual, getFechaToAPIFromMMYYYY } from '@/utils/formatos'
 import { rules } from '@/utils/reglasValidacion'
 import { sexos, getObjetList } from '@/utils/tipos'
+import { componentsToColor } from 'pdf-lib'
 
 const props = defineProps(['Registro', 'cerrar', 'funcion', 'hojaId'])
 let registroOrigen = props.Registro
@@ -42,8 +43,9 @@ const registroVacio = ref({
 })
 
 if (registroOrigen) {
+  console.log(registroOrigen.APJUB)
   registroActual.value = { ...registroOrigen }
-  registroActual.value.AJUB = registroOrigen.AJUB == 1
+  registroActual.value.AJUB = registroOrigen.APJUB == 1
   vencimiento.value = getVto(registroOrigen.VTO)
   periodo.value = getVto(registroOrigen.PERIODO)
   sexoSelected.value = getObjetList(sexos, registroOrigen.SEXO)
@@ -100,7 +102,7 @@ async function grabaRegistro() {
       vIDHOJANOV: hojaId
     }
   }
-  console.log(registroGrabar)
+
   let grabarOk = await props.funcion(registroGrabar, registroActual.value.ID)
 
   if (grabarOk) {
@@ -286,7 +288,6 @@ function validarRegistro() {
                   v-model="registroActual.AJUB"
                   color="primary"
                   label="Ap. Jub"
-                  value="primary"
                   hide-details
                 ></v-checkbox>
               </v-col>

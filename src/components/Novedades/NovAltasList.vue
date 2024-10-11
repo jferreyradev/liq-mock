@@ -34,7 +34,7 @@ const listaHeaders = [
   { title: 'Vto.', key: 'VTO' },
   { title: 'Titulo', key: 'TITULO' },
   { title: 'Dif. Cat.', key: 'DIFCAT' },
-  { title: 'Ap. Jub.', key: 'AJUB' },
+  { title: 'Ap. Jub.', key: 'APJUB' },
   { title: 'Periodo', key: 'PERIODO' },
   { title: 'Fecha Grab.', key: 'FECHAGRABACION' },
   { title: 'Estado Reg.', key: 'ESTADOREGISTRO' }
@@ -72,7 +72,6 @@ const itemMostrar = ref({
 function handleModif(itemid) {
   mostrarAlert.value = false
   let item = null
-  console.log(itemid)
   if (itemid != null) if (itemid !== 0) item = data.value.find((e) => e.ID == itemid)
   abrirModal(item)
 }
@@ -104,13 +103,11 @@ function cierraForm() {
 // funciones de agregado, modificación y eliminación
 async function grabarSP(item, id) {
   let url = ''
-  console.log('item: ', item)
   if (id == 0) {
     url = 'sp/NovAltasIns'
   } else {
     url = 'sp/NovAltasUpd'
   }
-  //console.log(url, item)
 
   const { valorError, valorSalida } = await ejecutarSP(url, item)
   if (valorError == 0) {
@@ -167,7 +164,7 @@ function exportFile() {
       getVto(x.VTO),
       x.TITULO,
       x.DIFCAT,
-      x.AJUB,
+      x.APJUB,
       getVto(x.PERIODO),
       getFechaDMY(x.FECHAGRABACION)
     ]
@@ -310,7 +307,7 @@ function exportFile() {
             <td class="text-center m-0 p-0">{{ getVto(item.VTO) }}</td>
             <td class="text-right m-0 p-0">{{ item.TITULO }}</td>
             <td class="text-right m-0 p-0">{{ item.DIFCAT }}</td>
-            <td class="text-center m-0 p-0">{{ item.AJUB ? 'SI' : 'NO' }}</td>
+            <td class="text-center m-0 p-0">{{ item.APJUB == 1 ? 'SI' : 'NO' }}</td>
             <td class="text-center m-0 p-0">{{ getVto(item.PERIODO) }}</td>
             <td class="text-center m-0 p-0">{{ getFechaDMY(item.FECHAGRABACION) }}</td>
             <td class="text-center m-0 p-0">{{ item.ESTADOREGISTRO }}</td>
