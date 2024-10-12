@@ -135,7 +135,7 @@ function validarRegistro() {
           {{ mensajeError }}
         </v-alert>
         <v-card-text>
-          <v-container style="height: 70vh; overflow-y: scroll">
+          <v-container style="height: 60vh; overflow-y: scroll">
             <v-row>
               <v-col cols="4">
                 <v-text-field
