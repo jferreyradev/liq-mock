@@ -3,7 +3,6 @@ import { ref } from 'vue'
 import { getVto, getVtoActual, getFechaToAPIFromMMYYYY } from '@/utils/formatos'
 import { rules } from '@/utils/reglasValidacion'
 import { sexos, getObjetList } from '@/utils/tipos'
-import { componentsToColor } from 'pdf-lib'
 
 const props = defineProps(['Registro', 'cerrar', 'funcion', 'hojaId'])
 let registroOrigen = props.Registro

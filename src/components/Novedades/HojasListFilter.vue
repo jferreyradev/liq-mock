@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import { months, tipoCarga, tipoHoja, tipoLiq, getObjetList } from '@/utils/tipos'
+import { tipoCarga, tipoHoja, tipoLiq } from '@/utils/tipos'
 import { getPeriodoFromMMYYYY } from '@/utils/formatos'
 import { rules } from '@/utils/reglasValidacion'
 
