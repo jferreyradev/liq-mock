@@ -5,12 +5,15 @@ import { useFetch } from '@/composables/useFetch'
 import RepoHeader from './RepoHeader.vue'
 import { financial, agregaTitulosExcel } from '@/utils/reportes.js'
 import { computed } from 'vue'
+import { useEndPoints } from '@/composables/useEndPoints'
+
+const { apiBase } = useEndPoints()
 
 const store = useFilterStore()
 
 function useResLiqCod(getId) {
-  console.log(`${store.URL_API}/view/resumenSueldosComp?${getId()}`)
-  return useFetch(() => `${store.URL_API}/view/resumenSueldosComp?${getId()}`)
+  console.log(`${apiBase.value}/api/view/resumenSueldosComp?${getId()}`)
+  return useFetch(() => `${apiBase.value}/api/view/resumenSueldosComp?${getId()}`)
 }
 
 const { data, error, isPending } = useResLiqCod(() => store.filterString)

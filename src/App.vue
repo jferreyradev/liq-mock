@@ -1,10 +1,19 @@
 <script setup>
 import { useTheme } from 'vuetify'
 import { useRouter } from 'vue-router'
-import { useUserStore } from '@/stores/user'
-import { useFilterStore } from '@/stores/filterStore.js'
+import { useUserStore } from '@/stores/userStore'
+import { useEndPoints } from '@/composables/useEndPoints'
+import { useItemsMenu } from './composables/useItemsMenu'
+import { useFilterStore } from '@/stores/filterStore'
 
-const filterStore = useFilterStore();
+const { setDesa,setProd, env } = useEndPoints()
+
+const storeFilter = useFilterStore()
+
+setDesa()
+storeFilter.setConfig()
+
+const { itemsMenu } = useItemsMenu();
 
 // access the `store` variable anywhere in the component ✨
 const store = useUserStore()
@@ -18,22 +27,20 @@ function toggleTheme() {
 }
 
 function handleLogout() {
-  store.logout()
-  //store.user.value=''
+  store.$reset()
   router.push('/login')
 }
 
-import { ref } from 'vue'
+function changeEnv() {
+  if (env.value=='Desa'){
+    setProd()
+  }else{
+    setDesa()
+  }
+  storeFilter.setConfig()
+}
 
-const items = [
-  {
-    title: 'Panel de control de liquidaciones',
-    value: '/panel'
-  },
-  { text: 'Reportes', disabled: false, href: '/repo' },
-  { text: 'Boletas', disabled: false, href: '/boletas' },
-  { text: 'About', disabled: false, href: '/about' }
-]
+import { ref } from 'vue'
 
 </script>
 
@@ -42,9 +49,13 @@ const items = [
 
   <v-layout class="rounded rounded-md d-flex flex-column mb-6 ">
     <v-app-bar color="primary" prominent>
-      <v-app-bar-nav-icon v-if="store.isAuth" variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon v-if="store.auth" variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-app-bar-title>Consultas - Municipalidad de Concepción</v-app-bar-title>
       <v-spacer></v-spacer>
+      <v-btn v-if="(store.auth && store.isAdmin)" 
+            class="text-caption" @click="changeEnv" 
+            variant="tonal" >{{ storeFilter.serverConfig.AMBIENTE }}
+      </v-btn>
        <v-btn @click="toggleTheme" icon="mdi mdi-theme-light-dark">
         <v-tooltip activator="parent" location="start">Cambiar tema</v-tooltip>
         <v-icon icon="mdi-theme-light-dark"></v-icon>
@@ -54,14 +65,23 @@ const items = [
         <v-icon icon="mdi-logout"></v-icon>
       </v-btn>
      
-      <div v-if="store.isAuth">
+      <div v-if="store.auth">
         <v-menu>
           <template v-slot:activator="{ props }">
-            <v-btn icon="mdi-dots-vertical" prepend-icon="mdi-account" title="User Profile" v-bind="props"></v-btn> 
+            <v-btn icon="mdi-dots-vertical" prepend-icon="mdi-account" title="User Profile" v-bind="props">
+            </v-btn> 
           </template>
 
           <v-list>
-             <v-list-item title="Salir" @click="handleLogout()" />
+            <v-list-item
+            :subtitle="store.user.EMAIL"
+            :title="store.user.USERNAME" 
+          >
+          </v-list-item>
+          
+          <v-divider></v-divider>
+            <v-list-item title="Cambio de contraseña" @click="() => router.push('/passchange')" />
+            <v-list-item title="Salir" @click="handleLogout()" />
           </v-list>
         </v-menu>
       </div>
@@ -69,9 +89,7 @@ const items = [
 
     <v-navigation-drawer v-model="drawer" :location="$vuetify.display.mobile ? 'bottom' : undefined" temporary>
       <v-list>
-        <v-list-item title="Panel de control de liquidaciones" @click="() => router.push('/panel')" />
-        <v-list-item title="Reportes" @click="() => router.push('/repo')" />
-        <v-list-item title="Boletas" @click="() => router.push('/boletas')" />
+        <v-list-item v-for="item in itemsMenu" :title="item.DESCRIPCION" @click="()=>router.push(item.PATH)" :key="item.IDMENU" ></v-list-item>
         <v-list-item title="Salir" @click="handleLogout()" />
       </v-list>
     </v-navigation-drawer>
@@ -92,36 +110,6 @@ const items = [
     </v-footer>
 
   </v-layout>
-
-  <!-- 
-
-  <v-container>
-    <v-layout>
-      <v-app-bar color="primary" prominent>
-        <v-toolbar-title>Sistema de consultas de liquidaciones></v-toolbar-title>        
-        <v-spacer></v-spacer>
-       <div>
-            <nav v-if="store.isAuth">
-              <RouterLink class="text-body-1" to="/">Home</RouterLink>
-              <RouterLink class="text-body-1" to="/panel">Panel</RouterLink>
-              <RouterLink class="text-body-1" to="/repo">Reportes</RouterLink>
-              <RouterLink class="text-body-1" to="/boletas">Boletas</RouterLink>
-            </nav>         
-        </div> 
-        <v-spacer></v-spacer>
-        <span>{{ store.getUser }}</span>
-        <v-btn icon="mdi-logout" @click="handleLogout"></v-btn>
-
-        <v-btn @click="toggleTheme">Cambiar tema</v-btn>
-      </v-app-bar>
-      
-      <v-main class="d-flex align-center justify-center" style="min-height: 300px">
-        <Suspense>
-          <RouterView />
-        </Suspense>
-      </v-main>
-    </v-layout>
-  </v-container> -->
 
 </template>
 

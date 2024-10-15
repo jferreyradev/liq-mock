@@ -4,13 +4,18 @@ import { useFilterStore } from '@/stores/filterStore'
 import { useFetch } from '@/composables/useFetch'
 import RepoHeader from './RepoHeader.vue'
 import {getFecha, getVto, agregaTitulosExcel } from '@/utils/reportes.js'
+import { useEndPoints } from '@/composables/useEndPoints'
+
+//const { apiBaseDev } = useApiConfig()
+
+const { apiBase } = useEndPoints()
 
 const store = useFilterStore()
 
 function useResLiqCod(getId) {
   return useFetch(
     () =>
-      `${store.URL_API}/view/resumenCargos?${getId()}`
+      `${apiBase.value}/api/view/resumenCargos?${getId()}`
   )
 }
 

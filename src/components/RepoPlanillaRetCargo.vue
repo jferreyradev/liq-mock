@@ -4,13 +4,16 @@ import { useFilterStore } from '@/stores/filterStore'
 import { useFetch } from '@/composables/useFetch'
 import RepoHeader from './RepoHeader.vue'
 import { agregaTitulosExcel } from '@/utils/reportes.js'
+import { useEndPoints } from '@/composables/useEndPoints'
+
+const { apiBase } = useEndPoints()
 
 const store = useFilterStore()
 
 function useResLiqCod(getId) {
-  console.log(`${store.URL_API}/view/retencionesCargo?${getId()}`)
+  console.log(`${apiBase.value}/api/view/retencionesCargo?${getId()}`)
   return useFetch(
-    () => `${store.URL_API}/view/retencionesCargo?${getId()}&sort={"IdRep":"asc","Orden":"asc"}`
+    () => `${apiBase.value}/api/view/retencionesCargo?${getId()}&sort={"IdRep":"asc","Orden":"asc"}`
   )
 }
 

@@ -4,13 +4,16 @@ import { useFilterStore } from '@/stores/filterStore.js'
 import { useFetch } from '@/composables/useFetch'
 import RepoHeader from './RepoHeader.vue'
 import { useLiqStore } from '@/stores/liqStore.js'
+import { useEndPoints } from '@/composables/useEndPoints'
+
+const { apiBase } = useEndPoints()
 
 const store = useFilterStore()
 
 const liqStore = useLiqStore()
 
 function useLiqBoletas(getId) {
-  return useFetch(() => `${store.URL_API}/view/boletas?${getId()}`)
+  return useFetch(() => `${apiBase.value}/api/view/boletas?${getId()}`)
 }
 
 const { data, error, isPending } = useLiqBoletas(() => store.filterString)
@@ -82,7 +85,7 @@ function handleDownload(idliq) {
           </template>
 
           <template v-slot:item.LIQUIDACIONID="{ value }">
-            <a :href="store.URL_API + '/boleta?IdLiq=' + value">descargar</a>
+            <a :href="apiBase + '/api/boleta?IdLiq=' + value" target="_blank" >descargar</a>
           </template>
         </v-data-table>
       </v-card>

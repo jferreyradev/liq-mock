@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import { useUserStore } from '@/stores/user'
+//import { useUserStore } from '@/stores/user'
+
+import { useUserStore } from '@/stores/userStore'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -49,18 +51,40 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/LoginView.vue')
+    },
+    {
+      path: '/hojas',
+      name: 'hojas',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/HojasView.vue')
+    },
+    {
+      path: '/users',
+      name: 'users',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/UsersPanelView.vue')
+    },
+    {
+      path: '/passchange',
+      name: 'passchange',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/ChangePassword.vue')
     }
   ]
 })
 
-
 router.beforeEach((to, from, next) => {
-
   const store = useUserStore()
   const publicPages = ['/login']
   const authRequired = !publicPages.includes(to.path)
 
-  if (authRequired && !store.isAuth ) {
+  if (authRequired && !store.auth ) {
     return next('/login')
   }
   //router.push('/')

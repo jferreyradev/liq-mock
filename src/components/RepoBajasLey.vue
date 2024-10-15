@@ -4,12 +4,15 @@ import { useFilterStore } from '@/stores/filterStore'
 import { useFetch } from '@/composables/useFetch'
 import RepoHeader from './RepoHeader.vue'
 import { agregaTitulosExcel, getVto, getFecha } from '@/utils/reportes.js'
+import { useEndPoints } from '@/composables/useEndPoints'
+
+const { apiBase} = useEndPoints()
 
 const store = useFilterStore()
 
 function useResLiqCod(getId) {
-  console.log(`${store.URL_API}/view/bajasLey?${getId()}`)
-  return useFetch(() => `${store.URL_API}/view/bajasLey?${getId()}`)
+  console.log(`${apiBase.value}/api/view/bajasLey?${getId()}`)
+  return useFetch(() => `${apiBase.value}/api/view/bajasLey?${getId()}`)
 }
 
 const { data, error, isPending } = useResLiqCod(() => store.filterPeriodoString)

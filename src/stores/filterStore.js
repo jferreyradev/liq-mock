@@ -1,4 +1,7 @@
 import { defineStore } from 'pinia'
+import { useEndPoints } from '@/composables/useEndPoints'
+
+const { apiBase} = useEndPoints()
 
 const liqMap = new Map([
   ['1', 'Mensual'],
@@ -28,9 +31,6 @@ export const useFilterStore = defineStore('filter', {
     nroadi: 0,
     year: 0,
     month: 0,
-    //URL_API: 'http://www.serverburru2.duckdns.org:3003/api',
-    //URL_API: 'https://midliq-api-grq94rhtchph.deno.dev/api',
-    URL_API: 'https://midliq-api-jr2sc3ef7gnx.deno.dev/api',
     serverConfig: {}
   }),
   getters: {
@@ -40,14 +40,18 @@ export const useFilterStore = defineStore('filter', {
     periodoString: (state) => `${meses[state.month - 1]} - ${state.year}`,
     liqString: (state) =>
       `${liqMap.get(state.tipoliq.toString())}-${state.nroadi}  ${meses[state.month - 1]}-${state.year}`,
-    getURLAPI: (state) => `${state.URL_API}`,
+    getURLAPI: () => `${apiBase.value}`,
     liqCompactString: (state) =>
       `${state.year}${meses[state.month - 1].substring(0, 3)}${liqMap.get(state.tipoliq.toString()).substring(0, 1)}${state.nroadi}`,
     server: (state)=> `${state.serverConfig.AMBIENTE}`
   },
   actions: {
+    async init(){
+      await this.setConfig()
+      await this.setPer()      
+    },
     setPer() {
-      fetch(`${this.URL_API}/view/periodo?Activo=1`)
+      fetch(`${apiBase.value}/api/view/periodo?Activo=1`)
         .then((res) => res.json())
         .then((_data) => {
           this.year = _data[0].PERIODO.split('-')[0]
@@ -58,7 +62,7 @@ export const useFilterStore = defineStore('filter', {
         })
     },
     setConfig() {
-      fetch(`${this.URL_API}/view/configServer`)
+      fetch(`${apiBase.value}/api/view/configServer`)
         .then((res) => res.json())
         .then((_data) => {
           this.serverConfig = _data[0]

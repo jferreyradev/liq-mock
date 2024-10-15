@@ -1,14 +1,14 @@
 <script setup>
 import { computed } from 'vue'
-import { useFilterStore } from '@/stores/filterStore.js'
 import { useFetch } from '@/composables/useFetch'
+import { useEndPoints } from '@/composables/useEndPoints'
 
-const store = useFilterStore()
+const { apiBase} = useEndPoints()
 
 const props = defineProps(['id', 'subtitle'])
 
 function useLiqItem(getId) {
-  return useFetch(() => `${store.URL_API}/view/liqItem?LiquidacionId=${getId()}&sort={"Codigo":"asc","SubCodigo":"asc"}`)
+  return useFetch(() => `${apiBase.value}/api/view/liqItem?LiquidacionId=${getId()}&sort={"Codigo":"asc","SubCodigo":"asc"}`)
 }
 
 const { data, error, isPending } = useLiqItem(() => props.id )

@@ -5,6 +5,9 @@ import { useFetch } from '@/composables/useFetch'
 import RepoHeader from './RepoHeader.vue'
 import { financial, agregaTitulosExcel } from '@/utils/reportes.js'
 import { computed } from 'vue'
+import { useEndPoints } from '@/composables/useEndPoints'
+
+const { apiBase } = useEndPoints()
 
 const totImporte = computed(() => {
   var totPatJub = 0
@@ -24,7 +27,7 @@ const totImporte = computed(() => {
 const store = useFilterStore()
 
 function useResLiqCod(getId) {
-  return useFetch(() => `${store.URL_API}/view/aportesPat?${getId()}`)
+  return useFetch(() => `${apiBase.value}/api/view/aportesPat?${getId()}`)
 }
 
 const { data, error, isPending } = useResLiqCod(() => store.filterString)
