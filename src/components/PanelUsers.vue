@@ -1,13 +1,12 @@
 <script setup>
 import { onBeforeMount, onMounted, ref, toRefs } from 'vue'
-import { usersStore } from '@/stores/userStore.js'
+import { useUserStore } from '@/stores/userStore'
 
-const store = usersStore()
+const store = useUserStore()
 
-const { user, error, loading } = toRefs(store)
+const { users, error, loading } = toRefs(store)
 
 const props = defineProps(['title', 'subtitle'])
-const emit = defineEmits(['select'])
 
 const search = ref()
 
@@ -90,7 +89,7 @@ onMounted(() => {
 <template>
   <v-container>
     <div v-if="loading">loading...</div>
-    <v-card flat v-else-if="user">
+    <v-card flat v-else-if="users">
       <v-card-title class="d-flex align-center pe-2 bg-blue-accent-1">
         {{ props.title }}
         <v-spacer></v-spacer>
@@ -158,7 +157,7 @@ onMounted(() => {
   </v-container>
 
   <v-overlay :model-value="overlay" persistent class="align-center justify-center">
-        <v-progress-circular color="primary" size="64" indeterminate :active="isPending"></v-progress-circular>
+        <v-progress-circular color="primary" size="64" indeterminate :active="loading"></v-progress-circular>
     </v-overlay>
 
 </template>

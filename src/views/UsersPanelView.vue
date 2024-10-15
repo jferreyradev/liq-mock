@@ -1,9 +1,6 @@
 <script setup>
 import { ref } from 'vue';
-import { useFilterStore } from '@/stores/filterStore.js'
 import PanelUsers from '@/components/PanelUsers.vue';
-
-const store = useFilterStore();
 
 const dialog = ref(false)
 
