@@ -13,7 +13,8 @@ export const useUserStore = defineStore('userStore', {
         success: false,
         auth: false,
         allowSign: false,
-        rol: null
+        rol: null,
+        users: []
     }),
     getters: {
         isRegistred: (state) => !!state.user,
@@ -26,6 +27,57 @@ export const useUserStore = defineStore('userStore', {
         },
     },
     actions: {
+        getConfig() {
+            this.isPending = true
+            fetch(`${apiBoletas.value}/config`)
+              .then((res) => res.json())
+              .then((_data) => {
+                console.log(_data)
+                this.config = _data[0]
+              })
+              .catch((err) => {
+                console.log(err)
+                this.error = err
+              })
+              .finally(() => (this.isPending = false))
+          },
+        getUsers() {
+            this.loading = true
+            fetch(`${apiBoletas.value}/users`)
+              .then((res) => res.json())
+              .then((_data) => {
+                this.users = _data
+              })
+              .catch((err) => {
+                console.log(err)
+                this.error = err
+              })
+              .finally(() => (this.loading = false))
+        },
+        async setEstado(idus, estado) {
+            this.isPending = true
+            this.error = null
+            try {
+              const bodyIn = {
+                IdUsuario: idus,
+                Estado: estado
+              }
+              const requestOptions = {
+                method: `POST`, // POST, etc
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(bodyIn)
+              }
+              const res = await fetch(`${apiBoletas.value}/estadoUsuario`, requestOptions)
+              console.log(res)
+              this.result = res
+            } catch (err) {
+              this.error = err
+              console.log(err)
+            } finally {
+              this.isPending = false
+            }
+          },
         async login(dni, pass) {
             await this.fetchUser(dni)
             if (this.user) {
