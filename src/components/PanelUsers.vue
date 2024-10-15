@@ -1,10 +1,10 @@
 <script setup>
 import { onBeforeMount, onMounted, ref, toRefs } from 'vue'
-import { usersStore } from '@/stores/usersStore.js'
+import { usersStore } from '@/stores/userStore.js'
 
 const store = usersStore()
 
-const { users, error, isPending } = toRefs(store)
+const { user, error, loading } = toRefs(store)
 
 const props = defineProps(['title', 'subtitle'])
 const emit = defineEmits(['select'])
@@ -89,8 +89,8 @@ onMounted(() => {
 
 <template>
   <v-container>
-    <div v-if="isPending">loading...</div>
-    <v-card flat v-else-if="users">
+    <div v-if="loading">loading...</div>
+    <v-card flat v-else-if="user">
       <v-card-title class="d-flex align-center pe-2 bg-blue-accent-1">
         {{ props.title }}
         <v-spacer></v-spacer>
