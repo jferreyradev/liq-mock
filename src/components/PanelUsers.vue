@@ -65,7 +65,7 @@ async function handleConfirm() {
   dialog.value = false
   overlay.value = true
   if (currentOption.value === 3){
-    await store.changePassword(currentItem.value.ID, currentItem.value.DNI)
+    await store.changeUserPassword(currentItem.value.ID, currentItem.value.DNI)
   }else{
     await store.setEstado(currentItem.value.ID, currentOption.value)
   }
