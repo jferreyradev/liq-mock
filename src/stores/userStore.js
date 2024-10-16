@@ -302,6 +302,31 @@ export const useUserStore = defineStore('userStore', {
             } finally {
                 this.loading = false
             }
+        },
+        async changeUserPassword(idus, newPass) {
+            this.loading = true
+            this.error = null
+
+            console.log(idus, newPass)
+            try {
+                const bodyIn = {
+                    'IdUsuario': idus,
+                    'Clave': btoa(newPass)
+                }
+                const requestOptions = {
+                    method: `POST`, // POST, etc
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(bodyIn)
+                }
+                await fetch(`${apiBoletas.value}/claveUsuario`, requestOptions)
+                this.result = 'ok'
+            } catch (err) {
+                this.error = err
+                console.log(err)
+            } finally {
+                this.loading = false
+            }
         }
     }
 })
