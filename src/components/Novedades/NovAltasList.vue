@@ -9,7 +9,7 @@ import { utils, writeFileXLSX } from 'xlsx'
 import { agregaTitulosExcel } from '@/utils/reportes.js'
 
 const props = defineProps(['setHojaEdicion', 'hojaEditar'])
-
+// prueba de commir en github
 const hojaEditar = props.hojaEditar
 
 // cerrar editar registros de Hoja
