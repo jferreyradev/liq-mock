@@ -92,7 +92,7 @@ export const useUserStore = defineStore('userStore', {
                     this.auth = true
                     //await this.fetchRol()
                 }else{
-                    this.$reset()
+                    this.auth = false
                 }
             }
         },
