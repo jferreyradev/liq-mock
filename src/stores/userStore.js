@@ -85,11 +85,14 @@ export const useUserStore = defineStore('userStore', {
             }
         },
         async loginUserName(userName, pass) {
+            this.auth = false
             await this.fetchUserName(userName)
             if (this.user) {
                 if (atob(this.user?.PASSWORD) === pass) {
                     this.auth = true
                     //await this.fetchRol()
+                }else{
+                    this.$reset()
                 }
             }
         },
