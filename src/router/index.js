@@ -75,6 +75,14 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/ChangePassword.vue')
+    },
+    {
+      path: '/prevision',
+      name: 'prevision',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/PrevisionalView.vue')
     }
   ]
 })
@@ -84,7 +92,7 @@ router.beforeEach((to, from, next) => {
   const publicPages = ['/login']
   const authRequired = !publicPages.includes(to.path)
 
-  if (authRequired && !store.auth ) {
+  if (authRequired && !store.auth) {
     return next('/login')
   }
   //router.push('/')
