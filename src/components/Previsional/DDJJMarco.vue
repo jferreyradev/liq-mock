@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { rules } from '@/utils/reglasValidacion'
 import LiquidacionesDDJJ from './LiquidacionesDDJJ.vue'
+import DDJJResumenDJ from './DDJJResumenDJ.vue';
 
 const periodoActivoLeyenda = ref('Sin definir')
 const periodo = ref(null)
@@ -49,7 +50,10 @@ function definirPeriodoActivo(nuevoPeriodo) {
         <v-tabs-window-item v-if="tab == 0">
           <LiquidacionesDDJJ :periodo="periodoActivo"></LiquidacionesDDJJ>
         </v-tabs-window-item>
-        <v-tabs-window-item v-if="tab == 1"> Two </v-tabs-window-item>
+        <v-tabs-window-item v-if="tab == 1"> 
+          <DDJJResumenDJ :periodo="periodoActivo"></DDJJResumenDJ>  
+        </v-tabs-window-item>
+        
       </v-tabs-window>
     </v-card>
   </v-container>
