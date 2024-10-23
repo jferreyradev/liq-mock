@@ -50,6 +50,7 @@ function exportFile() {
       Nombre: x.PERSONANOMBRE,
       'Sujeto a aporte': x.SUJETOAPORTE,
       'Exento a aporte': x.EXCENTOAPORTE,
+      'Asignacion familiar': x.ASIGNACIONFAMILIAR,
       'Descuentos de ley': x.DESCUENTOSLEY,
       'Descuentos varios': x.DESCUENTOSVARIOS,
       Neto: x.NETO
