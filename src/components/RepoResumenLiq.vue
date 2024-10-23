@@ -26,6 +26,7 @@ const headers = [
   { title: 'Nombre', key: 'PERSONANOMBRE', align: 'start' },
   { title: 'Sujeto a aporte', key: 'SUJETOAPORTE', align: 'end' },
   { title: 'Exento de aporte', key: 'EXCENTOAPORTE', align: 'end' },
+  { title: 'Asignacion familiar', key: 'ASIGNACIONFAMILIAR', align: 'end' },
   { title: 'Descuentos de ley', key: 'DESCUENTOSLEY', align: 'end' },
   { title: 'Descuentos varios', key: 'DESCUENTOSVARIOS', align: 'end' },
   { title: 'Neto', key: 'NETO', align: 'end' }
@@ -66,6 +67,7 @@ function exportFile() {
     { wch: 15 },
     { wch: 15 },
     { wch: 15 },
+    { wch: 15 },
     { wch: 15 }
   ]
   /* create workbook and append worksheet */
@@ -102,6 +104,7 @@ function exportFile() {
             <td class="text-left">{{ item.PERSONANOMBRE }}</td>
             <td class="text-right">{{ financial(item.SUJETOAPORTE) }}</td>
             <td class="text-right">{{ financial(item.EXCENTOAPORTE) }}</td>
+            <td class="text-right">{{ financial(item.ASIGNACIONFAMILIAR) }}</td>
             <td class="text-right">{{ financial(item.DESCUENTOSLEY) }}</td>
             <td class="text-right">{{ financial(item.DESCUENTOSVARIOS) }}</td>
             <td class="text-right">{{ financial(item.NETO) }}</td>
