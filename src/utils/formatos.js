@@ -46,7 +46,6 @@ export const getPeriodoFromMMYYYY = (periodo) => {
 }
 
 export const getFechaToAPIFromMMYYYY = (periodo) => {
-  console.log(periodo)
   const d = periodo.split('/')
   let fecha = d[1] + '-' + d[0] + '-01'
   return fecha
