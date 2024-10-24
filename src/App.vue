@@ -10,10 +10,10 @@ const { setDesa,setProd, env } = useEndPoints()
 
 const storeFilter = useFilterStore()
 
-setProd()
+setDesa()
 storeFilter.setConfig()
 
-const { itemsMenu } = useItemsMenu();
+const { itemsMenu, setItemsMenu } = useItemsMenu();
 
 // access the `store` variable anywhere in the component ✨
 const store = useUserStore()
@@ -31,11 +31,19 @@ function handleLogout() {
   router.push('/login')
 }
 
-function changeEnv() {
+async function changeEnv() {
   if (env.value=='Desa'){
     setProd()
+    /*await store.fetchRol()
+    setItemsMenu(store.rol)
+    */
+    
   }else{
     setDesa()
+    /*
+    await store.fetchRol()
+    setItemsMenu(store.rol)
+    */
   }
   storeFilter.setConfig()
 }
