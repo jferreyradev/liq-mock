@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from 'vue'
-import { getFechaToAPIFromMMYYYY, getFechaDMY } from '@/utils/formatos'
+import { getFechaToAPIFromDDMMYYYY, getFechaDMY } from '@/utils/formatos'
 import { rules } from '@/utils/reglasValidacion'
 import { tipoEscolaridad, tipoRelacionFamiliar, getObjetList } from '@/utils/tipos'
 
@@ -30,7 +30,7 @@ const registroVacio = ref({
 if (registroOrigen) {
   registroActual.value = { ...registroOrigen }
   registroActual.value.DISCAPACITADO = registroOrigen.DISCAPACITADO == 1
-  registroActual.value.FECHANACIMIENTO = getFechaDMY(registroActual.value.FECHANACIMIENTO)
+  fechaNacimiento.value = getFechaDMY(registroActual.value.FECHANACIMIENTO)
   escolaridadSelected.value = getObjetList(tipoEscolaridad, registroOrigen.TIPOESCOLARIDADID)
   relacionFamiliarSelected.value = getObjetList(tipoRelacionFamiliar, registroOrigen.TIPORELACIONID)
 } else {
@@ -56,30 +56,32 @@ async function grabaRegistro() {
     return
   }
 
+  console.log('fecha de nacimiento: ' + fechaNacimiento.value)
   let fecNacimiento = ''
   if (fechaNacimiento.value !== null)
-    if (fechaNacimiento.value.lenth > 0)
-      fecNacimiento = getFechaToAPIFromMMYYYY(fechaNacimiento.value)
+    if (fechaNacimiento.value.length > 0)
+      fecNacimiento = getFechaToAPIFromDDMMYYYY(fechaNacimiento.value)
 
+  console.log('fecNac: ' + fecNacimiento)
   let registroGrabar = {
     vIDPERS: registroActual.value.PERSONAID,
     vDNI: registroActual.value.DOCUMENTO,
     vAPEYNOM: registroActual.value.APELLIDOYNOMBRE,
-    vTABTIPOREL: relacionFamiliarSelected.value.value,
+    vIDTABTIPOREL: relacionFamiliarSelected.value.value,
     vFECHANAC: fecNacimiento,
-    vTABTIPOESC: escolaridadSelected.value.value,
+    vIDTABTIPOESC: escolaridadSelected.value.value,
     vGRADO: registroActual.value.GRADO,
     vDISCAPACITADO: registroActual.value.DISCAPACITADO ? 1 : 0
   }
   if (registroActual.value.ID !== 0) {
     registroGrabar = {
-      vIDNOV: registroActual.value.ID,
+      vIDCARFAM: registroActual.value.ID,
       ...registroGrabar
     }
   }
 
   console.log('se va a grabar el siguiente registro')
-  console.log(registroGrabar)
+  console.log(JSON.stringify(registroGrabar))
   let grabarOk = await props.funcion(registroGrabar, registroActual.value.ID)
 
   console.log(grabarOk)
@@ -151,7 +153,7 @@ function validarRegistro() {
 
               <v-col cols="6">
                 <v-text-field
-                  v-model="registroActual.FECHANACIMIENTO"
+                  v-model="fechaNacimiento"
                   hide-details="auto"
                   label="Fec. Nac."
                   lazy-validation
