@@ -56,7 +56,16 @@ async function grabaRegistro() {
     return
   }
 
-  console.log('fecha de nacimiento: ' + fechaNacimiento.value)
+  // si es esposa/o coloca valores predeterminados en campos de hijo
+  if (relacionFamiliarSelected.value.value == 1) {
+    escolaridadSelected.value = tipoEscolaridad[0]
+    fechaNacimiento.value = null
+    registroActual.value.GRADO = 0
+    registroActual.value.DISCAPACITADO = false
+  }
+
+  //
+
   let fecNacimiento = ''
   if (fechaNacimiento.value !== null)
     if (fechaNacimiento.value.length > 0)
@@ -82,14 +91,12 @@ async function grabaRegistro() {
 
   console.log('se va a grabar el siguiente registro')
   console.log(JSON.stringify(registroGrabar))
-  let grabarOk = await props.funcion(registroGrabar, registroActual.value.ID)
+  let resultado = await props.funcion(registroGrabar, registroActual.value.ID)
 
-  console.log(grabarOk)
-
-  if (grabarOk) {
+  if (resultado === null) {
     props.cerrar()
   } else {
-    mensajeError.value = 'No se pudieron grabar los datos'
+    mensajeError.value = resultado
     mostrarAlert.value = true
   }
 }
@@ -150,18 +157,8 @@ function validarRegistro() {
                 >
                 </v-select>
               </v-col>
-
-              <v-col cols="6">
-                <v-text-field
-                  v-model="fechaNacimiento"
-                  hide-details="auto"
-                  label="Fec. Nac."
-                  lazy-validation
-                  :rules="rules.ddmmyyyy"
-                ></v-text-field>
-              </v-col>
             </v-row>
-            <v-row>
+            <v-row v-if="relacionFamiliarSelected.value == 2">
               <v-col cols="6">
                 <v-select
                   label="Escolaridad"
@@ -175,6 +172,17 @@ function validarRegistro() {
               </v-col>
               <v-col cols="6">
                 <v-text-field
+                  v-model="fechaNacimiento"
+                  hide-details="auto"
+                  label="Fec. Nac."
+                  lazy-validation
+                  :rules="rules.ddmmyyyy"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+            <v-row v-if="relacionFamiliarSelected.value == 2">
+              <v-col cols="6">
+                <v-text-field
                   v-model="registroActual.GRADO"
                   hide-details="auto"
                   label="Grado"
@@ -182,8 +190,7 @@ function validarRegistro() {
                   :rules="[...rules.number, (val) => rules.longitudEntre(val, 1, 1)]"
                 ></v-text-field>
               </v-col>
-            </v-row>
-            <v-row>
+
               <v-col cols="4">
                 <v-checkbox
                   v-model="registroActual.DISCAPACITADO"

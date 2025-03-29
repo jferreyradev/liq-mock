@@ -4,7 +4,7 @@ import Confirmacion from './Confirmacion.vue'
 import { leerDatos, ejecutarSP } from './llamadaAPI'
 import botonTooltip from './botonTooltip.vue'
 import { getFechaDMY } from '@/utils/formatos'
-import NovAltasVista from './NovAltasVista.vue'
+import CargaFamiliarVista from './CargaFamiliarVista.vue'
 import { utils, writeFileXLSX } from 'xlsx'
 import { agregaTitulosExcel } from '@/utils/reportes.js'
 
@@ -93,6 +93,7 @@ function cierraForm() {
 
 // funciones de agregado, modificación y eliminación
 async function grabarSP(item, id) {
+  let mensajeError = 'No se pudieron grabar los datos'
   let url = ''
   if (id == 0) {
     url = 'sp/CargaFamIns'
@@ -100,34 +101,44 @@ async function grabarSP(item, id) {
     url = 'sp/CargaFamUpd'
   }
 
-  const { valorError, valorSalida } = await ejecutarSP(url, item)
-  if (valorError == 0) {
-    await leerListaRegs()
-    alertMensaje.value = 'Se grabó el registro '
-    alertTipo.value = 'success'
-    mostrarAlert.value = true
-    return true
+  const { operacionOk, datos } = await ejecutarSP(url, item)
+  if (operacionOk) {
+    if (datos.out.vError == 0) {
+      await leerListaRegs()
+      alertMensaje.value = 'Se grabó el registro '
+      alertTipo.value = 'success'
+      mostrarAlert.value = true
+      return null
+    }
+    mensajeError = datos.out.vErrorMsg
   }
 
-  return false
+  return mensajeError
 }
 
 async function eliminar(id) {
   muestraConfirmacion.value = false
   let item = {
-    vIDNOV: id
+    vIDCARFAM: id
   }
   let url = 'sp/CargaFamDel'
+  console.log(item)
+  const { datos, operacionOk } = await ejecutarSP(url, item)
 
-  const { valorError } = await ejecutarSP(url, item)
-  if (valorError == 0) {
-    await leerListaRegs()
-    alertMensaje.value = 'Se eliminó el registro'
-    alertTipo.value = 'success'
-    mostrarAlert.value = true
-    return true
+  if (operacionOk) {
+    if (datos.out.vError == 0) {
+      await leerListaRegs()
+      alertMensaje.value = 'Se eliminó el registro'
+      alertTipo.value = 'success'
+      mostrarAlert.value = true
+      return true
+    }
   }
-  return false
+
+  alertMensaje.value = 'No se pudo eliminar el registro'
+  alertTipo.value = 'error'
+  mostrarAlert.value = true
+  return true
 }
 
 // -------------------------------------------------
@@ -248,10 +259,16 @@ function exportFile() {
             <td class="text-right m-0 p-0">{{ item.DOCUMENTO }}</td>
             <td class="text-left m-0 p-0">{{ item.APELLIDOYNOMBRE }}</td>
             <td class="text-left m-0 p-0">{{ item.TIPORELACIONDESCRIPCION }}</td>
-            <td class="text-center m-0 p-0">{{ getFechaDMY(item.FECHANACIMIENTO) }}</td>
-            <td class="text-left m-0 p-0">{{ item.TIPOESCOLARIDADDESCRIPCION }}</td>
-            <td class="text-center m-0 p-0">{{ item.GRADO }}</td>
-            <td class="text-center m-0 p-0">{{ item.DISCAPACITADO === 1 ? 'SI' : 'NO' }}</td>
+            <td class="text-center m-0 p-0">
+              {{ item.TIPORELACIONID == 2 ? getFechaDMY(item.FECHANACIMIENTO) : '' }}
+            </td>
+            <td class="text-left m-0 p-0">
+              {{ item.TIPORELACIONID == 2 ? item.TIPOESCOLARIDADDESCRIPCION : '' }}
+            </td>
+            <td class="text-center m-0 p-0">{{ item.TIPORELACIONID == 2 ? item.GRADO : '' }}</td>
+            <td class="text-center m-0 p-0">
+              {{ item.TIPORELACIONID == 2 ? (item.DISCAPACITADO === 1 ? 'SI' : 'NO') : '' }}
+            </td>
           </tr>
         </template>
       </v-data-table>
@@ -260,12 +277,12 @@ function exportFile() {
   </v-container>
 
   <v-dialog v-model="muestraRegistro" max-width="80%" persistent="">
-    <NovAltasVista
+    <CargaFamiliarVista
       :Registro="itemMostrar"
       :cerrar="cierraForm"
       :funcion="grabarSP"
       :personaId="personaEditar.PERSONAID"
-    ></NovAltasVista>
+    ></CargaFamiliarVista>
   </v-dialog>
 
   <v-dialog v-model="muestraConfirmacion" max-width="80%" persistent="">

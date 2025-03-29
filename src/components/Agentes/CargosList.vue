@@ -1,0 +1,141 @@
+<script setup>
+import { ref } from 'vue'
+//import Confirmacion from './Confirmacion.vue'
+import { leerDatos } from './llamadaAPI'
+import botonTooltip from './botonTooltip.vue'
+import { getFechaDMY, getVto, getTipoDescripcion } from '@/utils/formatos'
+import CargosListFilter from './CargosListFilter.vue'
+
+const props = defineProps(['setPersonaEdicion', 'filtros'])
+
+const filtros = props.filtros
+
+const hojasHeaders = [
+  { title: '', key: 'ACCIONES' },
+  { title: 'DNI', key: 'PERSONADOCUMENTO' },
+  { title: 'Apellido', key: 'PERSONAAPELLIDO' },
+  { title: 'Nombre', key: 'PERSONANOMBRE' },
+  { title: 'Rep.', key: 'REPARTICIONID' },
+  { title: 'Orden', key: 'ORDEN' },
+  { title: 'Afiliado', key: 'AFILIADO' },
+  { title: 'T.E.', key: 'TIPOEMPLEOID' },
+  { title: 'Vto. Escalafón', key: 'VTOESCALAFON' },
+  { title: 'Antigüedad', key: 'ANTIGUEDAD' },
+  { title: 'Sit. Rev.', key: 'SITUACIONREVISTA' },
+  { title: 'Categoría', key: 'CATEGORIA' },
+  { title: 'Fec. Baja', key: 'FECHABAJA' },
+  { title: 'Estado Cargo', key: 'ESTADOCARGOID' },
+  { title: 'Tipo O.S.', key: 'TIPOOBRASOCIALID' },
+  { title: 'TipoLiquidación', key: 'TIPOLIQUIDACIONID' },
+  { title: 'Salario', key: 'SALARIO' }
+]
+
+//function abrirModal(item) {
+//itemMostrar.value = item
+//muestraRegistro.value = true
+//}
+
+//function cierraForm() {
+//muestraRegistro.value = false
+//}
+
+// llamadas a API de grabación y eliminación
+
+// lectura de registros
+let isPending = ref(false)
+const data = ref(null)
+const error = null
+
+const lecturaRegistros = ref(true)
+
+async function leerRegistros(filtro = null) {
+  let url = 'view/cargo'
+  if (filtro !== null) url = url + '?' + filtro
+
+  isPending.value = true
+  const { datos, operacionOk } = await leerDatos(url)
+  data.value = datos
+  lecturaRegistros.value = operacionOk
+  isPending.value = false
+}
+
+function editarCargaFamiliar(itemid) {
+  let item = data.value.find((e) => e.PERSONAID == itemid)
+  props.setPersonaEdicion(item, 1)
+}
+
+leerRegistros()
+</script>
+
+<style>
+.sticky {
+  position: sticky !important;
+  left: 0 !important;
+  min-width: 130px !important;
+  z-index: 10 !important;
+}
+</style>
+
+<template>
+  <v-container>
+    <h1>Nómina de Cargos</h1>
+  </v-container>
+  <v-container>
+    <v-row>
+      <CargosListFilter :filtrar="leerRegistros" :filtros="filtros"></CargosListFilter>
+    </v-row>
+    <div v-if="isPending">loading...</div>
+    <div v-else-if="!lecturaRegistros">Error al intentar recibir los datos</div>
+    <div v-else-if="data">
+      <v-data-table
+        class="text-caption"
+        hover
+        density="compact"
+        :items="data"
+        :headers="hojasHeaders"
+      >
+        <template v-slot:item="{ item }">
+          <tr class="pa-0 ma-0">
+            <td class="text-center m-0 p-0 sticky">
+              <botonTooltip
+                :icono="'mdi-list-box-outline'"
+                :toolMsg="'Familiares'"
+                :funcion="editarCargaFamiliar"
+                :itemid="item.PERSONAID"
+              ></botonTooltip>
+            </td>
+
+            <td class="text-right m-0 p-0">{{ item.PERSONADOCUMENTO }}</td>
+            <td class="text-left m-0 p-0">{{ item.PERSONAAPELLIDO }}</td>
+            <td class="text-left m-0 p-0">{{ item.PERSONANOMBRE }}</td>
+            <td class="text-left m-0 p-0">
+              {{ getTipoDescripcion(item.REPARTICIONID, item.REPARTICIONDESCRIPCION) }}
+            </td>
+            <td class="text-center m-0 p-0">{{ item.ORDEN }}</td>
+            <td class="text-center m-0 p-0">{{ item.AFILIADO }}</td>
+            <td class="text-left m-0 p-0">
+              {{ getTipoDescripcion(item.TIPOEMPLEOID, item.TIPOEMPLEODESCRIPCION) }}
+            </td>
+            <td class="text-center m-0 p-0">{{ getVto(item.VTOESCALAGON) }}</td>
+            <td class="text-right m-0 p-0">{{ item.ANTIGUEDAD }}</td>
+            <td class="text-left m-0 p-0">
+              {{ getTipoDescripcion(item.SITUACIONREVISTAID, item.SITUACIONREVISTADESCRIPCION) }}
+            </td>
+            <td class="text-center m-0 p-0">{{ item.CATEGORIA }}</td>
+            <td class="text-right m-0 p-0">{{ getFechaDMY(item.FECHABAJA) }}</td>
+            <td class="text-center m-0 p-0">{{ item.ESTADOCARGOID }}</td>
+            <td class="text-left m-0 p-0">
+              {{ getTipoDescripcion(item.TIPOOBRASOCIALID, item.TIPOOBRASOCIALDESCRIPCION) }}
+            </td>
+            <td class="text-left m-0 p-0">
+              {{ getTipoDescripcion(item.TIPOLIQUIDACIONID, item.TIPOLIQUIDACIONDESCRIPCION) }}
+            </td>
+            <td class="text-right m-0 p-0">{{ item.SALARIO }}</td>
+          </tr>
+        </template>
+      </v-data-table>
+    </div>
+    <div v-else>Sin datos para mostrar</div>
+    <div v-if="error">No se puede obtener los datos solicitados.</div>
+  </v-container>
+</template>

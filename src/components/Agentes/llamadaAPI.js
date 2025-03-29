@@ -4,11 +4,12 @@ import { useEndPoints } from '@/composables/useEndPoints'
 
 const { apiBase } = useEndPoints()
 
-const urlAPI = 'http://www.serverburru2.duckdns.org:3005/api/'
+//const urlAPI = 'http://www.serverburru2.duckdns.org:3005/api/'
+const urlAPI = 'http://181.87.3.66:3005/api/'
 //const urlAPI = apiBase.value + '/api/'
 
-const urlAPI_sp = 'https://josrferreyr-deno-api-su-79.deno.dev/'
-//const urlAPI_sp = 'https://josrferreyr-deno-api-su-79--desarrollo.deno.dev'
+//const urlAPI_sp = 'https://josrferreyr-deno-api-su-79.deno.dev/'
+const urlAPI_sp = 'https://josrferreyr-deno-api-su-79--desarrollo.deno.dev/'
 
 export async function grabarRegistro(url = '', data = {}, metodo = 'POST') {
   let estado = 0
@@ -112,6 +113,7 @@ export async function ejecutarSP(url = '', data = {}, metodo = 'POST') {
   let valorError = -1
   let valorSalida = 0
   let errorMsg = ''
+  let datos = null
   console.log('dirección: ', urlAPI_sp + url)
   //console.log('datos:', JSON.stringify(data))
 
@@ -131,7 +133,7 @@ export async function ejecutarSP(url = '', data = {}, metodo = 'POST') {
     })
     estado = response.status
     operacionOk = response.ok
-    let datos = await response.json()
+    datos = await response.json()
     console.log(datos)
     if (response.ok) {
       //let datos = await response.json()
@@ -148,5 +150,5 @@ export async function ejecutarSP(url = '', data = {}, metodo = 'POST') {
     errmsg = 'Error en la Red'
   }
 
-  return { estado, operacionOk, errmsg, valorError, valorSalida, errorMsg }
+  return { estado, operacionOk, errmsg, valorError, valorSalida, errorMsg, datos }
 }
