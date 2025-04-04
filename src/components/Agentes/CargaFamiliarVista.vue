@@ -176,7 +176,8 @@ function validarRegistro() {
                   hide-details="auto"
                   label="Fec. Nac."
                   lazy-validation
-                  :rules="rules.ddmmyyyy"
+                  :rules=" [...rules.ddmmyyyy, 
+                      (val) => rules.longitudEntre(val, relacionFamiliarSelected.value == 2 ? 8 : 0 , 10)]"
                 ></v-text-field>
               </v-col>
             </v-row>

@@ -23,11 +23,11 @@ export const rules = {
   ],
   ddmmyyyy: [
     (value) => {
-      if (value === null) return true
-      if (value?.length == 0) return true
+      if (value === null ) return true
+      if (value?.length == 0 ) return true
       if (value?.length > 5 && /^([0-2][0-9]|3[0-1])\/(0?[1-9]|1[0-2])\/\d{4}$/.test(value))
         return true
-      return 'el formato debe se MM/YYYY'
+      return 'el formato debe se DD/MM/YYYY'
     }
   ],
   rango: (value, min, max) => {

@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { rules } from '@/utils/reglasValidacion'
+import { tipoLiq } from '@/utils/tipos'
 
 const props = defineProps(['filtrar', 'filtros'])
 
@@ -9,6 +10,17 @@ const DNI = ref(null)
 const Apellido = ref(null)
 const IdRep = ref(null)
 const Orden = ref(null)
+
+
+const tipoLiqFilter = [
+  {
+    name: 'Todas',
+    value: -1
+  },
+  ...tipoLiq
+]
+
+const liqSelected = ref(tipoLiqFilter[0])
 
 function ObtieneFiltro() {
   let filtro = ''
@@ -46,6 +58,12 @@ function ObtieneFiltro() {
     }
   }
 
+  if (liqSelected.value.value !== -1) {
+    expresion = `TipoLiquidacionId=${liqSelected.value.value}`
+    filtro = filtro.length == 0 ? expresion : filtro + '&' + expresion
+  }
+
+
   return filtro
 }
 
@@ -54,7 +72,8 @@ function setCamposFiltros() {
     DNI: DNI.value,
     Apellido: Apellido.value,
     IdRep: IdRep.value,
-    Orden: Orden.value
+    Orden: Orden.value,
+    liqSelected: liqSelected.value
   }
   return campos
 }
@@ -81,6 +100,7 @@ if (camposFiltros != null) {
   Apellido.value = camposFiltros.Apellido
   IdRep.value = camposFiltros.IdRep
   Orden.value = camposFiltros.Orden
+  liqSelected.value = camposFiltros.liqSelected
 }
 
 const formOK = ref(null)
@@ -116,6 +136,17 @@ const formOK = ref(null)
             label="Orden"
             :rules="rules.number"
           ></v-text-field>
+        </v-col>
+        <v-col cols="2">
+          <v-select
+            label="Tipo Liq"
+            :items="tipoLiqFilter"
+            item-title="name"
+            item-value="value"
+            v-model="liqSelected"
+            return-object
+          >
+          </v-select>
         </v-col>
         <v-col cols="2">
           <v-btn color="primary" elevation="3" outlined value="filtrar" @click="filtar()"

@@ -5,7 +5,7 @@ import { useEndPoints } from '@/composables/useEndPoints'
 const { apiBase } = useEndPoints()
 
 //const urlAPI = 'http://www.serverburru2.duckdns.org:3005/api/'
-const urlAPI = 'http://181.87.3.66:3005/api/'
+const urlAPI = 'http://181.87.2.91:3005/api/'
 //const urlAPI = apiBase.value + '/api/'
 
 //const urlAPI_sp = 'https://josrferreyr-deno-api-su-79.deno.dev/'
