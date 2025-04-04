@@ -183,6 +183,29 @@ export const tipoEscolaridad = [
   }
 ]
 
+// Estado de Hojas
+export const estadosCargo = [
+  {
+    name: 'Activo',
+    value: 1
+  },
+  {
+    name: 'Ret. de Cargo',
+    value: 2
+  },
+  {
+    name: 'Baja de Cargo',
+    value: 3
+  },
+  {
+    name: 'Lic. s/goce de Sueldo',
+    value: 4
+  }
+]
+
+
+
+
 export function getName(lista, id) {
   const found = lista.find((element) => element.value === id)
   return found ? found.name : 'sin definir'

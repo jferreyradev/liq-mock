@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { rules } from '@/utils/reglasValidacion'
-import { tipoLiq } from '@/utils/tipos'
+import { tipoLiq, estadosCargo } from '@/utils/tipos'
 
 const props = defineProps(['filtrar', 'filtros'])
 
@@ -20,7 +20,16 @@ const tipoLiqFilter = [
   ...tipoLiq
 ]
 
+const estadosCargoFilter = [
+  {
+    name: 'Todos',
+    value: -1
+  },
+  ...estadosCargo
+]
+
 const liqSelected = ref(tipoLiqFilter[0])
+const estCargoSelected = ref(estadosCargoFilter[0])
 
 function ObtieneFiltro() {
   let filtro = ''
@@ -63,6 +72,11 @@ function ObtieneFiltro() {
     filtro = filtro.length == 0 ? expresion : filtro + '&' + expresion
   }
 
+  if (estCargoSelected.value.value !== -1) {
+    expresion = `EstadoCargoId=${estCargoSelected.value.value}`
+    filtro = filtro.length == 0 ? expresion : filtro + '&' + expresion
+  }
+
 
   return filtro
 }
@@ -73,7 +87,8 @@ function setCamposFiltros() {
     Apellido: Apellido.value,
     IdRep: IdRep.value,
     Orden: Orden.value,
-    liqSelected: liqSelected.value
+    liqSelected: liqSelected.value,
+    estCargoSelected: estCargoSelected.value
   }
   return campos
 }
@@ -101,6 +116,7 @@ if (camposFiltros != null) {
   IdRep.value = camposFiltros.IdRep
   Orden.value = camposFiltros.Orden
   liqSelected.value = camposFiltros.liqSelected
+  estCargoSelected.value = camposFiltros.estCargoSelected
 }
 
 const formOK = ref(null)
@@ -121,7 +137,7 @@ const formOK = ref(null)
         <v-col cols="3">
           <v-text-field v-model="Apellido" hide-details="auto" label="Apellido"></v-text-field>
         </v-col>
-        <v-col cols="2">
+        <v-col cols="1">
           <v-text-field
             v-model="IdRep"
             hide-details="auto"
@@ -129,7 +145,7 @@ const formOK = ref(null)
             :rules="rules.number"
           ></v-text-field>
         </v-col>
-        <v-col cols="2">
+        <v-col cols="1">
           <v-text-field
             v-model="Orden"
             hide-details="auto"
@@ -148,6 +164,18 @@ const formOK = ref(null)
           >
           </v-select>
         </v-col>
+        <v-col cols="2">
+          <v-select
+            label="Est. Cargo"
+            :items="estadosCargoFilter"
+            item-title="name"
+            item-value="value"
+            v-model="estCargoSelected"
+            return-object
+          >
+          </v-select>
+        </v-col>
+
         <v-col cols="2">
           <v-btn color="primary" elevation="3" outlined value="filtrar" @click="filtar()"
             >Buscar</v-btn

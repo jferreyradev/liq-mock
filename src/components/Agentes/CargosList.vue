@@ -123,7 +123,7 @@ leerRegistros()
             </td>
             <td class="text-center m-0 p-0">{{ item.CATEGORIA }}</td>
             <td class="text-right m-0 p-0">{{ getFechaDMY(item.FECHABAJA) }}</td>
-            <td class="text-center m-0 p-0">{{ item.ESTADOCARGOID }}</td>
+            <td class="text-center m-0 p-0">{{ getTipoDescripcion(item.ESTADOCARGOID, item.ESTADOCARGODESCRIPCION) }}</td>
             <td class="text-left m-0 p-0">
               {{ getTipoDescripcion(item.TIPOOBRASOCIALID, item.TIPOOBRASOCIALDESCRIPCION) }}
             </td>
