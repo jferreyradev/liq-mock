@@ -7,6 +7,7 @@ import { getFechaDMY } from '@/utils/formatos'
 import CargaFamiliarVista from './CargaFamiliarVista.vue'
 import { utils, writeFileXLSX } from 'xlsx'
 import { agregaTitulosExcel } from '@/utils/reportes.js'
+import CargaFamiliarCargos from './CargaFamiliarCargos.vue'
 
 const props = defineProps(['setPersonaEdicion', 'personaEditar'])
 // prueba de commir en github
@@ -46,7 +47,34 @@ async function leerListaRegs() {
   isPending.value = false
 }
 
+// lectura de cargo asociado
+const cargoAsociado = ref({
+  cargoId: 0,
+  descripcion: ''
+})
+
+async function leerCargoAsoc() {
+  let resultado = {
+    cargoId: 0,
+    descripcion: 'No se pudieron establecer obtener datos del cargo'
+  }
+  //const { datos, operacionOk } = await leerDatos('view/novAltas?HojaId=' + hojaEditar.ID)
+  const { datos, operacionOk } = await leerDatos(
+    'cargo?PersonaId=' + personaEditar.PERSONAID + '&Salario=1'
+  )
+  if (operacionOk === true) {
+    if (datos == null) resultado.descripcion = 'No hay cargo asociado aún para el salario'
+    else {
+      let cargoAsoc = datos[0]
+      resultado.cargoId = cargoAsoc.ID
+      resultado.descripcion = cargoAsoc.REPARTICIONID + ' - ' + cargoAsoc.ORDEN
+    }
+  }
+  cargoAsociado.value = resultado
+}
+
 leerListaRegs()
+leerCargoAsoc()
 
 // alerta de grabación o error
 const mostrarAlert = ref(false)
@@ -81,6 +109,7 @@ function cierraConfirmacion() {
 
 // apertura y cierre del formulario modal
 let muestraRegistro = ref(false)
+let muestraListaCargos = ref(false)
 
 function abrirModal(item) {
   itemMostrar.value = item
@@ -89,6 +118,14 @@ function abrirModal(item) {
 
 function cierraForm() {
   muestraRegistro.value = false
+}
+
+function abrirModalCargos() {
+  muestraListaCargos.value = true
+}
+
+function cierraFormCargos() {
+  muestraListaCargos.value = false
 }
 
 // funciones de agregado, modificación y eliminación
@@ -104,7 +141,7 @@ async function grabarSP(item, id) {
   const { operacionOk, datos } = await ejecutarSP(url, item)
   if (operacionOk) {
     if (datos.out.vError == 0) {
-      await leerListaRegs()
+      await leerCargoAsoc()
       alertMensaje.value = 'Se grabó el registro '
       alertTipo.value = 'success'
       mostrarAlert.value = true
@@ -139,6 +176,42 @@ async function eliminar(id) {
   alertTipo.value = 'error'
   mostrarAlert.value = true
   return true
+}
+
+// funciones de agregado, modificación y eliminación
+async function grabarSPCargos(item) {
+  let mensajeError = 'No se pudieron grabar los datos'
+  let url = ''
+  url = 'sp/CargaFamCargo'
+
+  const { operacionOk, datos } = await ejecutarSP(url, item)
+  if (operacionOk) {
+    if (datos.out.vError == 0) {
+      await leerListaRegs()
+      alertMensaje.value = 'Se actualizó la asignación de cargo '
+      alertTipo.value = 'success'
+      mostrarAlert.value = true
+      return null
+    }
+    mensajeError = datos.out.vErrorMsg
+  }
+
+  return mensajeError
+}
+
+async function desasociarCargo(idCargo) {
+  let registroGrabar = {
+    vIDCARGO: idCargo,
+    vASIGNA: 0
+  }
+
+  let resultado = await grabarSPCargos(registroGrabar)
+
+  if (resultado !== null) {
+    alertMensaje.value = 'No se pudo actualizar la asignación de cargo '
+    alertTipo.value = 'error'
+    mostrarAlert.value = true
+  }
 }
 
 // -------------------------------------------------
@@ -211,13 +284,31 @@ function exportFile() {
 <template>
   <v-container>
     <v-container>
-      <v-btn color="primary" prepend-icon="mdi-plus" elevation="3" @click="handleModif(null)"
-        >Agregar</v-btn
-      >
-      <v-btn color="primary" @click="handleDownload" :disabled="!data">Descargar</v-btn>
-      <v-btn color="primary" prepend-icon="mdi-close" elevation="3" @click="handleCerrarEdicion()"
-        >Volver</v-btn
-      >
+      <v-row>
+        <v-col cols="2"><div>Cargo Asociado:</div></v-col>
+        <v-col cols="5"
+          ><div>{{ cargoAsociado.descripcion }}</div></v-col
+        >
+        <v-col cols="5">
+          <v-btn color="blue" @click="abrirModalCargos" :disabled="!data">Asociar cargo</v-btn>
+          <v-btn
+            v-if="cargoAsociado.cargoId !== 0"
+            color="teal"
+            @click="desasociarCargo(cargoAsociado.cargoId)"
+            :disabled="!data"
+            >Desvincular de cargo</v-btn
+          >
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-btn color="primary" prepend-icon="mdi-plus" elevation="3" @click="handleModif(null)"
+          >Agregar</v-btn
+        >
+        <v-btn color="primary" @click="handleDownload" :disabled="!data">Descargar</v-btn>
+        <v-btn color="primary" prepend-icon="mdi-close" elevation="3" @click="handleCerrarEdicion()"
+          >Volver</v-btn
+        >
+      </v-row>
     </v-container>
     <div v-if="isPending">loading...</div>
     <div v-else-if="!lecturaListaRegs">Sin datos para mostrar</div>
@@ -293,5 +384,13 @@ function exportFile() {
       :aceptar="eliminar"
       :parametro="itemEliminar"
     ></confirmacion>
+  </v-dialog>
+
+  <v-dialog v-model="muestraListaCargos" max-width="80%" persistent="">
+    <CargaFamiliarCargos
+      :cerrar="cierraFormCargos"
+      :funcion="grabarSPCargos"
+      :personaId="personaEditar.PERSONAID"
+    ></CargaFamiliarCargos>
   </v-dialog>
 </template>
