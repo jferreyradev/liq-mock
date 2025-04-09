@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import Confirmacion from './Confirmacion.vue'
 import { leerDatos, ejecutarSP } from './llamadaAPI'
 import botonTooltip from './botonTooltip.vue'
-import { getFechaDMY } from '@/utils/formatos'
+import { getFechaDMY, getTipoDescripcion } from '@/utils/formatos'
 import CargaFamiliarVista from './CargaFamiliarVista.vue'
 import { utils, writeFileXLSX } from 'xlsx'
 import { agregaTitulosExcel } from '@/utils/reportes.js'
@@ -67,7 +67,7 @@ async function leerCargoAsoc() {
     else {
       let cargoAsoc = datos[0]
       resultado.cargoId = cargoAsoc.ID
-      resultado.descripcion = cargoAsoc.REPARTICIONID + ' - ' + cargoAsoc.ORDEN
+      resultado.descripcion = 'Rep.: ' + cargoAsoc.REPARTICIONID + ' - Orden: ' + cargoAsoc.ORDEN + ' - Tipo: ' +getTipoDescripcion(cargoAsoc.TIPOEMPLEOID, cargoAsoc.TIPOEMPLEODESCRIPCION)
     }
   }
   cargoAsociado.value = resultado
@@ -95,17 +95,32 @@ function handleModif(itemid) {
   abrirModal(item)
 }
 
+//  confirmaciones
 const itemEliminar = ref(0)
 let muestraConfirmacion = ref(false)
+const itemDesasociar = ref(0)
+let muestraConfAsociar = ref(false)
+
+function cierraConfirmacion() {
+  muestraConfirmacion.value = false
+}
+function cierraConfAsociar() {
+  muestraConfAsociar.value = false
+}
+
 
 function handleEliminar(itemid) {
   mostrarAlert.value = false
   itemEliminar.value = itemid
   muestraConfirmacion.value = true
 }
-function cierraConfirmacion() {
-  muestraConfirmacion.value = false
+
+function handleDesasociar(itemid) {
+  mostrarAlert.value = false
+  itemDesasociar.value = itemid
+  muestraConfAsociar.value = true
 }
+
 
 // apertura y cierre del formulario modal
 let muestraRegistro = ref(false)
@@ -182,15 +197,16 @@ async function eliminar(id) {
 async function grabarSPCargos(item) {
   let mensajeError = 'No se pudieron grabar los datos'
   let url = ''
-  url = 'sp/CargaFamCargo'
+  url = 'sp/AsignaSalario'
 
   const { operacionOk, datos } = await ejecutarSP(url, item)
   if (operacionOk) {
     if (datos.out.vError == 0) {
-      await leerListaRegs()
+      await leerCargoAsoc()
       alertMensaje.value = 'Se actualizó la asignación de cargo '
       alertTipo.value = 'success'
       mostrarAlert.value = true
+
       return null
     }
     mensajeError = datos.out.vErrorMsg
@@ -200,6 +216,7 @@ async function grabarSPCargos(item) {
 }
 
 async function desasociarCargo(idCargo) {
+  muestraConfAsociar.value = false
   let registroGrabar = {
     vIDCARGO: idCargo,
     vASIGNA: 0
@@ -294,7 +311,7 @@ function exportFile() {
           <v-btn
             v-if="cargoAsociado.cargoId !== 0"
             color="teal"
-            @click="desasociarCargo(cargoAsociado.cargoId)"
+            @click="handleDesasociar(cargoAsociado.cargoId)"
             :disabled="!data"
             >Desvincular de cargo</v-btn
           >
@@ -385,6 +402,17 @@ function exportFile() {
       :parametro="itemEliminar"
     ></confirmacion>
   </v-dialog>
+
+  <v-dialog v-model="muestraConfAsociar" max-width="80%" persistent="">
+    <confirmacion
+      :titulo="'Desasociar cargo'"
+      :mensaje="'Seguro que desea desasociar el cargo de salario?'"
+      :cerrar="cierraConfAsociar"
+      :aceptar="desasociarCargo"
+      :parametro="itemDesasociar"
+    ></confirmacion>
+  </v-dialog>
+
 
   <v-dialog v-model="muestraListaCargos" max-width="80%" persistent="">
     <CargaFamiliarCargos
