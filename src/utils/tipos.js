@@ -203,8 +203,81 @@ export const estadosCargo = [
   }
 ]
 
+export const tiposEmpleo = [
+  {
+    name: 'ADMINISTRATIVO',
+    value: 1
+  },
+  {
+    name: 'DOCENTES',
+    value: 4
+  },
+  {
+    name: 'AUT. SUPERIORES',
+    value: 6
+  }
+]
 
+export const reparticiones = [
+  {
+    name: 'HCD CONCEPCION',
+    value: 469
+  },
+  {
+    name: 'MUNICIPALIDAD DE CONCEPCION',
+    value: 470
+  }
+]
 
+export const tiposOS = [
+  {
+    name: 'NO TIENE',
+    value: 0
+  },
+  {
+    name: 'SUB. SALUD',
+    value: 1
+  }
+]
+
+export const sitRev = [
+  {
+    name: 'Sin datos',
+    value: 0
+  },
+  {
+    name: 'Permanente',
+    value: 1
+  },
+  {
+    name: 'Pte. Trab. Públicos',
+    value: 2
+  },
+  {
+    name: 'H.C.D.',
+    value: 3
+  },
+  {
+    name: 'Personal de Bloque',
+    value: 4
+  },
+  {
+    name: 'Planta Interina',
+    value: 5
+  },
+  {
+    name: 'Personal - al 50%',
+    value: 6
+  },
+  {
+    name: 'Asesor',
+    value: 7
+  },
+  {
+    name: 'Retiro Programado',
+    value: 16
+  }
+]
 
 export function getName(lista, id) {
   const found = lista.find((element) => element.value === id)
