@@ -28,6 +28,7 @@ const tipoLiqSelected = ref(tipoLiq[0])
 const tipoOSSelected = ref(tiposOS[0])
 const estadoCargoSelected = ref(estadosCargo[0])
 const sitRevSelect = ref(sitRev[0])
+const salario = ref(false)
 
 const registroVacio = ref({
   PERSONAID: 0,
@@ -46,9 +47,10 @@ if (registroOrigen) {
   reparticionSelected.value = getObjetList(reparticiones, registroOrigen.REPARTICIONID)
   tipoEmpleoSelected.value = getObjetList(tiposEmpleo, registroOrigen.TIPOEMPLEOID)
   sitRevSelect.value = getObjetList(sitRev, registroOrigen.SITUACIONREVISTAID)
-  estadoCargoSelected.value = getObjetList(reparticiones, registroOrigen.ESTADOCARGOID)
+  estadoCargoSelected.value = getObjetList(estadosCargo, registroOrigen.ESTADOCARGOID)
   tipoOSSelected.value = getObjetList(tiposOS, registroOrigen.TIPOOBRASOCIALID)
   tipoLiqSelected.value = getObjetList(tipoLiq, registroOrigen.TIPOLIQUIDACIONID)
+  salario.value = registroOrigen.SALARIO === 1
 } else {
   registroActual.value = registroVacio.value
 }
@@ -127,9 +129,9 @@ function validarRegistro() {
   <v-container>
     <v-card>
       <v-form ref="form" v-model="formOK">
-        <v-card-title>Carga Familiar</v-card-title>
+        <v-card-title>Detalle del Cargo</v-card-title>
         <v-card-subtitle>
-          {{ registroActual.ID == 0 ? 'Agregar ' : 'Modificar' }}
+          {{ registroActual.ID == 0 ? 'Agregar ' : 'Datos del Cargo' }}
         </v-card-subtitle>
         <v-alert
           v-model="mostrarAlert"
@@ -146,88 +148,195 @@ function validarRegistro() {
             <v-row>
               <v-col cols="4">
                 <v-text-field
-                  v-model="registroActual.DOCUMENTO"
+                  v-model="registroActual.PERSONADOCUMENTO"
                   hide-details="auto"
                   label="DNI"
-                  :rules="[...rules.number, (val) => rules.longitudEntre(val, 8, 9)]"
+                  readonly
                 ></v-text-field>
               </v-col>
-              <v-col cols="8">
+              <v-col cols="4">
                 <v-text-field
-                  v-model="registroActual.APELLIDOYNOMBRE"
+                  v-model="registroActual.PERSONAAPELLIDO"
                   hide-details="auto"
                   label="Apellido"
                   lazy-validation
-                  :rules="[(val) => rules.longitudEntre(val, 3, 100)]"
+                  readonly
+                ></v-text-field>
+              </v-col>
+              <v-col cols="4">
+                <v-text-field
+                  v-model="registroActual.PERSONANOMBRE"
+                  hide-details="auto"
+                  label="Nombre"
+                  lazy-validation
+                  readonly
                 ></v-text-field>
               </v-col>
             </v-row>
             <v-row>
               <v-col cols="6">
                 <v-select
-                  label="Relación"
-                  :items="tipoRelacionFamiliar"
+                  label="Reparticion"
+                  :items="reparticiones"
                   item-title="name"
                   item-value="value"
-                  v-model="relacionFamiliarSelected"
+                  v-model="reparticionSelected"
                   return-object
+                  readonly
                 >
                 </v-select>
               </v-col>
+              <v-col cols="3">
+                <v-text-field
+                  v-model="registroActual.ORDEN"
+                  hide-details="auto"
+                  label="Orden"
+                  lazy-validation
+                  :rules="[(val) => rules.longitudEntre(val, 1, 7), rules.number]"
+                  readonly
+                ></v-text-field>
+              </v-col>
+              <v-col cols="3">
+                <v-text-field
+                  v-model="registroActual.AFILIADO"
+                  hide-details="auto"
+                  label="Afiliado"
+                  lazy-validation
+                  :rules="[(val) => rules.longitudEntre(val, 1, 7), rules.number]"
+                  readonly
+                ></v-text-field>
+              </v-col>
             </v-row>
-            <v-row v-if="relacionFamiliarSelected.value == 2">
-              <v-col cols="6">
+            <v-row>
+              <v-col cols="4">
                 <v-select
-                  label="Escolaridad"
-                  :items="tipoEscolaridad"
+                  label="Tipo Empleo"
+                  :items="tiposEmpleo"
                   item-title="name"
                   item-value="value"
-                  v-model="escolaridadSelected"
+                  v-model="tipoEmpleoSelected"
                   return-object
+                  readonly
                 >
                 </v-select>
               </v-col>
-              <v-col cols="6">
+              <v-col cols="4">
                 <v-text-field
-                  v-model="fechaNacimiento"
+                  v-model="vtoEscalafon"
                   hide-details="auto"
-                  label="Fec. Nac."
+                  label="Vto. Escalafón"
                   lazy-validation
-                  :rules="[
-                    ...rules.ddmmyyyy,
-                    (val) =>
-                      rules.longitudEntre(val, relacionFamiliarSelected.value == 2 ? 8 : 0, 10)
-                  ]"
+                  :rules="[...rules.ddmmyyyy]"
+                  readonly
+                ></v-text-field>
+              </v-col>
+              <v-col cols="4">
+                <v-text-field
+                  v-model="registroActual.ANTIGUEDAD"
+                  hide-details="auto"
+                  label="Antigüedad"
+                  lazy-validation
+                  :rules="[(val) => rules.longitudEntre(val, 1, 2), rules.number]"
+                  readonly
                 ></v-text-field>
               </v-col>
             </v-row>
-            <v-row v-if="relacionFamiliarSelected.value == 2">
-              <v-col cols="6">
+            <v-row>
+              <v-col cols="4">
+                <v-select
+                  label="Sit. Revista"
+                  :items="sitRev"
+                  item-title="name"
+                  item-value="value"
+                  v-model="sitRevSelect"
+                  return-object
+                  readonly
+                >
+                </v-select>
+              </v-col>
+              <v-col cols="4">
                 <v-text-field
-                  v-model="registroActual.GRADO"
+                  v-model="registroActual.CATEGORIA"
                   hide-details="auto"
-                  label="Grado"
+                  label="Categoría"
                   lazy-validation
-                  :rules="[...rules.number, (val) => rules.longitudEntre(val, 1, 1)]"
+                  :rules="[(val) => rules.longitudEntre(val, 1, 2), rules.number]"
+                  readonly
                 ></v-text-field>
               </v-col>
-
+              <v-col cols="4">
+                <v-text-field
+                  v-model="fechaBaja"
+                  hide-details="auto"
+                  label="Fecha Baja"
+                  lazy-validation
+                  :rules="[...rules.ddmmyyyy]"
+                  readonly
+                ></v-text-field>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="4">
+                <v-select
+                  label="Estado Cargo"
+                  :items="estadosCargo"
+                  item-title="name"
+                  item-value="value"
+                  v-model="estadoCargoSelected"
+                  return-object
+                  readonly
+                >
+                </v-select>
+              </v-col>
+              <v-col cols="4">
+                <v-select
+                  label="Tipo OS"
+                  :items="tiposOS"
+                  item-title="name"
+                  item-value="value"
+                  v-model="tipoOSSelected"
+                  return-object
+                  readonly
+                >
+                </v-select>
+              </v-col>
+              <v-col cols="4">
+                <v-select
+                  label="Tipo Liq."
+                  :items="tipoLiq"
+                  item-title="name"
+                  item-value="value"
+                  v-model="tipoLiqSelected"
+                  return-object
+                  readonly
+                >
+                </v-select>
+              </v-col>
+            </v-row>
+            <v-row>
               <v-col cols="4">
                 <v-checkbox
-                  v-model="registroActual.DISCAPACITADO"
+                  v-model="salario"
                   color="primary"
-                  label="Discapacitado"
+                  label="Salario"
                   hide-details
+                  readonly
                 ></v-checkbox>
               </v-col>
             </v-row>
           </v-container>
         </v-card-text>
         <v-card-actions class="d-flex justify-end">
-          <v-btn color="primary" elevation="3" outlined value="grabar" @click="grabaRegistro()"
+          <v-btn
+            v-if="false"
+            color="primary"
+            elevation="3"
+            outlined
+            value="grabar"
+            @click="grabaRegistro()"
             >Grabar</v-btn
           >
-          <v-btn color="error" elevation="3" outlined @click="cerrar()">Cancelar</v-btn>
+          <v-btn color="error" elevation="3" outlined @click="cerrar()">Cerrar</v-btn>
         </v-card-actions>
       </v-form>
     </v-card>

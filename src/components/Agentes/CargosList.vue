@@ -5,6 +5,7 @@ import { leerDatos } from './llamadaAPI'
 import botonTooltip from './botonTooltip.vue'
 import { getFechaDMY, getVto, getTipoDescripcion } from '@/utils/formatos'
 import CargosListFilter from './CargosListFilter.vue'
+import CargosVista from './CargosVista.vue'
 
 const props = defineProps(['setPersonaEdicion', 'filtros'])
 
@@ -30,14 +31,33 @@ const hojasHeaders = [
   { title: 'Salario', key: 'SALARIO' }
 ]
 
-//function abrirModal(item) {
-//itemMostrar.value = item
-//muestraRegistro.value = true
-//}
+// alerta de grabación o error
+const mostrarAlert = ref(false)
+const alertMensaje = ref(null)
+const alertTipo = ref(null)
 
-//function cierraForm() {
-//muestraRegistro.value = false
-//}
+const itemMostrar = ref({
+  HojaId: 0,
+  Id: 0
+})
+
+let muestraRegistro = ref(false)
+
+function handleModif(itemid) {
+  mostrarAlert.value = false
+  let item = null
+  if (itemid != null) if (itemid !== 0) item = data.value.find((e) => e.ID == itemid)
+  abrirModal(item)
+}
+
+function abrirModal(item) {
+  itemMostrar.value = item
+  muestraRegistro.value = true
+}
+
+function cierraForm() {
+  muestraRegistro.value = false
+}
 
 // llamadas a API de grabación y eliminación
 
@@ -59,9 +79,26 @@ async function leerRegistros(filtro = null) {
   isPending.value = false
 }
 
-function editarCargaFamiliar(itemid) {
-  let item = data.value.find((e) => e.PERSONAID == itemid)
-  props.setPersonaEdicion(item, 1)
+async function grabarSP(item, id) {
+  /*let url = ''
+  console.log(item)
+  if (id == 0) {
+    url = 'sp/NovVariasIns'
+  } else {
+    url = 'sp/NovVariasUpd'
+  }
+  //console.log(url, item)
+
+  const { valorError, valorSalida } = await ejecutarSP(url, item)
+  if (valorError == 0) {
+    await leerListaRegs()
+    alertMensaje.value = 'Se grabó la novedad Nº ' + valorSalida
+    alertTipo.value = 'success'
+    mostrarAlert.value = true
+    return true
+  }
+  */
+  return true
 }
 
 leerRegistros()
@@ -99,9 +136,9 @@ leerRegistros()
             <td class="text-center m-0 p-0 sticky">
               <botonTooltip
                 :icono="'mdi-list-box-outline'"
-                :toolMsg="'Familiares'"
-                :funcion="editarCargaFamiliar"
-                :itemid="item.PERSONAID"
+                :toolMsg="'Ver detalle del Cargo'"
+                :funcion="handleModif"
+                :itemid="item.ID"
               ></botonTooltip>
             </td>
 
@@ -123,7 +160,9 @@ leerRegistros()
             </td>
             <td class="text-center m-0 p-0">{{ item.CATEGORIA }}</td>
             <td class="text-right m-0 p-0">{{ getFechaDMY(item.FECHABAJA) }}</td>
-            <td class="text-center m-0 p-0">{{ getTipoDescripcion(item.ESTADOCARGOID, item.ESTADOCARGODESCRIPCION) }}</td>
+            <td class="text-center m-0 p-0">
+              {{ getTipoDescripcion(item.ESTADOCARGOID, item.ESTADOCARGODESCRIPCION) }}
+            </td>
             <td class="text-left m-0 p-0">
               {{ getTipoDescripcion(item.TIPOOBRASOCIALID, item.TIPOOBRASOCIALDESCRIPCION) }}
             </td>
@@ -138,4 +177,12 @@ leerRegistros()
     <div v-else>Sin datos para mostrar</div>
     <div v-if="error">No se puede obtener los datos solicitados.</div>
   </v-container>
+  <v-dialog v-model="muestraRegistro" max-width="80%" persistent="">
+    <CargosVista
+      :Registro="itemMostrar"
+      :cerrar="cierraForm"
+      :funcion="grabarSP"
+      :hojaId="itemMostrar.ID"
+    ></CargosVista>
+  </v-dialog>
 </template>
