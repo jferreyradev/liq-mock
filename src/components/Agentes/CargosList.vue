@@ -6,6 +6,7 @@ import botonTooltip from './botonTooltip.vue'
 import { getFechaDMY, getVto, getTipoDescripcion } from '@/utils/formatos'
 import CargosListFilter from './CargosListFilter.vue'
 import CargosVista from './CargosVista.vue'
+import CargosConceptosList from './CargosConceptosList.vue'
 
 const props = defineProps(['setPersonaEdicion', 'filtros'])
 
@@ -42,12 +43,21 @@ const itemMostrar = ref({
 })
 
 let muestraRegistro = ref(false)
+let muestraListaConceptos = ref(false)
 
 function handleModif(itemid) {
   mostrarAlert.value = false
   let item = null
   if (itemid != null) if (itemid !== 0) item = data.value.find((e) => e.ID == itemid)
   abrirModal(item)
+}
+
+function handleListaConceptos(itemid) {
+  mostrarAlert.value = false
+  let item = null
+  if (itemid != null) if (itemid !== 0) item = data.value.find((e) => e.ID == itemid)
+  itemMostrar.value = item
+  muestraListaConceptos.value = true
 }
 
 function abrirModal(item) {
@@ -58,6 +68,10 @@ function abrirModal(item) {
 function cierraForm() {
   muestraRegistro.value = false
 }
+function cierraListaConceptos() {
+  muestraListaConceptos.value = false
+}
+
 
 // llamadas a API de grabación y eliminación
 
@@ -135,11 +149,18 @@ leerRegistros()
           <tr class="pa-0 ma-0">
             <td class="text-center m-0 p-0 sticky">
               <botonTooltip
-                :icono="'mdi-list-box-outline'"
+                :icono="'mdi-dots-horizontal-circle'"
                 :toolMsg="'Ver detalle del Cargo'"
                 :funcion="handleModif"
                 :itemid="item.ID"
               ></botonTooltip>
+              <botonTooltip
+                :icono="'mdi-list-box-outline'"
+                :toolMsg="'Ver Conceptos asociados'"
+                :funcion="handleListaConceptos"
+                :itemid="item.ID"
+              ></botonTooltip>
+
             </td>
 
             <td class="text-right m-0 p-0">{{ item.PERSONADOCUMENTO }}</td>
@@ -185,4 +206,11 @@ leerRegistros()
       :hojaId="itemMostrar.ID"
     ></CargosVista>
   </v-dialog>
+  <v-dialog v-model="muestraListaConceptos" max-width="80%" persistent="">
+    <CargosConceptosList
+      :cerrar="cierraListaConceptos"
+      :cargoId="itemMostrar.ID"
+    ></CargosConceptosList>
+  </v-dialog>
+
 </template>
