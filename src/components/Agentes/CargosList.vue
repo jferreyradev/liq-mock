@@ -167,12 +167,12 @@ leerRegistros()
             <td class="text-left m-0 p-0">{{ item.PERSONAAPELLIDO }}</td>
             <td class="text-left m-0 p-0">{{ item.PERSONANOMBRE }}</td>
             <td class="text-left m-0 p-0">
-              {{ getTipoDescripcion(item.REPARTICIONID, item.REPARTICIONDESCRIPCION) }}
+              {{ item.REPARTICIONID }}
             </td>
             <td class="text-center m-0 p-0">{{ item.ORDEN }}</td>
             <td class="text-center m-0 p-0">{{ item.AFILIADO }}</td>
             <td class="text-left m-0 p-0">
-              {{ getTipoDescripcion(item.TIPOEMPLEOID, item.TIPOEMPLEODESCRIPCION) }}
+              {{ item.TIPOEMPLEOID }}
             </td>
             <td class="text-center m-0 p-0">{{ getVto(item.VTOESCALAGON) }}</td>
             <td class="text-right m-0 p-0">{{ item.ANTIGUEDAD }}</td>
