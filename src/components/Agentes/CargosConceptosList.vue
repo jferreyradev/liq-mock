@@ -1,7 +1,9 @@
 <script setup>
 import { ref } from 'vue'
-import { getVto } from '@/utils/formatos'
+import { getVto, financial } from '@/utils/formatos'
 import { leerDatos } from './llamadaAPI'
+import { TextAlignment } from 'pdf-lib'
+
 //import botonTooltip from './botonTooltip.vue'
 
 const props = defineProps(['cerrar', 'cargoId'])
@@ -9,15 +11,15 @@ let cargoId = props.cargoId
 
 const listaHeaders = [
   //{ title: '', key: '' },
-  { title: 'Código', key: 'CODIGO' },
-  { title: 'Sub. Cód.', key: 'SUBCODIGO' },
-  { title: 'Param. 1', key: 'PARAMETRO1' },
-  { title: 'Param. 2', key: 'PARAMETRO2' },
-  { title: 'Vto.', key: 'VENCIMIENTO' },
-  { title: 'Importe', key: 'IMPORTE' },
-  { title: 'Período', key: 'PERIODO' },
-  { title: 'Grupo Adic.', key: 'GRUPOADICIONALID' },
-  { title: 'Es Ley', key: 'PENLEY' }
+  { title: 'Código', key: 'CODIGO', align: 'center' },
+  { title: 'Sub. Cód.', key: 'SUBCODIGO', align: 'center' },
+  { title: 'Param. 1', key: 'PARAMETRO1', align: 'center' },
+  { title: 'Param. 2', key: 'PARAMETRO2', align: 'center' },
+  { title: 'Vto.', key: 'VENCIMIENTO', align: 'center' },
+  { title: 'Importe', key: 'IMPORTE', align: 'center' },
+  { title: 'Período', key: 'PERIODO', align: 'center' },
+  { title: 'Grupo Adic.', key: 'GRUPOADICIONALID', align: 'center' },
+  { title: 'Es Ley', key: 'PENLEY', align: 'center' }
 ]
 
 const mostrarAlert = ref(false)
@@ -88,17 +90,15 @@ leerListaRegs()
           >
             <template v-slot:item="{ item }">
               <tr class="pa-0 ma-0">
-                
-                <td class="text-left m-0 p-0">{{ item.CODIGO }}</td>
-                <td class="text-left m-0 p-0">{{ item.SUBCODIGO }}</td>
-                <td class="text-left m-0 p-0">{{ item.PARAMETRO1 }}</td>
-                <td class="text-left m-0 p-0">{{ item.PARAMETRO2 }}</td>
-                <td class="text-left m-0 p-0">{{ getVto(item.VENCIMIENTO) }}</td>
-                <td class="text-left m-0 p-0">{{ item.IMPORTE }}</td>
-                <td class="text-left m-0 p-0">{{ getVto(item.PERIODO) }}</td>
-                <td class="text-left m-0 p-0">{{ item.GRUPOADICIONALID }}</td>
-                <td class="text-left m-0 p-0">{{ item.PENLEY }}</td>
-                
+                <td class="text-right m-0 p-0">{{ item.CODIGO }}</td>
+                <td class="text-right m-0 p-0">{{ item.SUBCODIGO }}</td>
+                <td class="text-right m-0 p-0">{{ item.PARAMETRO1 }}</td>
+                <td class="text-right m-0 p-0">{{ item.PARAMETRO2 }}</td>
+                <td class="text-center m-0 p-0">{{ getVto(item.VENCIMIENTO) }}</td>
+                <td class="text-right m-0 p-0">{{ financial(item.IMPORTE) }}</td>
+                <td class="text-center m-0 p-0">{{ getVto(item.PERIODO) }}</td>
+                <td class="text-center m-0 p-0">{{ item.GRUPOADICIONALID }}</td>
+                <td class="text-center m-0 p-0">{{ item.PENLEY === 1 ? 'SI' : 'NO' }}</td>
               </tr>
             </template>
           </v-data-table>
