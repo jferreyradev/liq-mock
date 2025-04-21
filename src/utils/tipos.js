@@ -145,6 +145,140 @@ export const sexos = [
   }
 ]
 
+export const tipoRelacionFamiliar = [
+  {
+    name: 'ESPOSO/A',
+    value: 1
+  },
+  {
+    name: 'HIJO/A',
+    value: 2
+  }
+]
+
+export const tipoEscolaridad = [
+  {
+    name: 'NO ESTUDIA',
+    value: 0
+  },
+  {
+    name: 'JARDIN MENOR A 4 AÑOS',
+    value: 1
+  },
+  {
+    name: 'JARDIN',
+    value: 2
+  },
+  {
+    name: 'ESCOLARIDAD PRIMARIA',
+    value: 3
+  },
+  {
+    name: 'ESCOLARIDAD SECUNDARIA',
+    value: 4
+  },
+  {
+    name: 'ESTUDIOS TERCIARIOS/SUPERIOR',
+    value: 5
+  }
+]
+
+// Estado de Hojas
+export const estadosCargo = [
+  {
+    name: 'Activo',
+    value: 1
+  },
+  {
+    name: 'Ret. de Cargo',
+    value: 2
+  },
+  {
+    name: 'Baja de Cargo',
+    value: 3
+  },
+  {
+    name: 'Lic. s/goce de Sueldo',
+    value: 4
+  }
+]
+
+export const tiposEmpleo = [
+  {
+    name: 'ADMINISTRATIVO',
+    value: 1
+  },
+  {
+    name: 'DOCENTES',
+    value: 4
+  },
+  {
+    name: 'AUT. SUPERIORES',
+    value: 6
+  }
+]
+
+export const reparticiones = [
+  {
+    name: 'HCD CONCEPCION',
+    value: 469
+  },
+  {
+    name: 'MUNICIPALIDAD DE CONCEPCION',
+    value: 470
+  }
+]
+
+export const tiposOS = [
+  {
+    name: 'NO TIENE',
+    value: 0
+  },
+  {
+    name: 'SUB. SALUD',
+    value: 1
+  }
+]
+
+export const sitRev = [
+  {
+    name: 'Sin datos',
+    value: 0
+  },
+  {
+    name: 'Permanente',
+    value: 1
+  },
+  {
+    name: 'Pte. Trab. Públicos',
+    value: 2
+  },
+  {
+    name: 'H.C.D.',
+    value: 3
+  },
+  {
+    name: 'Personal de Bloque',
+    value: 4
+  },
+  {
+    name: 'Planta Interina',
+    value: 5
+  },
+  {
+    name: 'Personal - al 50%',
+    value: 6
+  },
+  {
+    name: 'Asesor',
+    value: 7
+  },
+  {
+    name: 'Retiro Programado',
+    value: 16
+  }
+]
+
 export function getName(lista, id) {
   const found = lista.find((element) => element.value === id)
   return found ? found.name : 'sin definir'
