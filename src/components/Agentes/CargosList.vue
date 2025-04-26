@@ -83,7 +83,7 @@ const error = null
 const lecturaRegistros = ref(true)
 
 async function leerRegistros(filtro = null) {
-  let url = 'view/cargo'
+  let url = 'en/cargo'
   if (filtro !== null) url = url + '?' + filtro
 
   isPending.value = true

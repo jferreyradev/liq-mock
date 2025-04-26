@@ -40,7 +40,7 @@ async function leerListaRegs() {
   isPending.value = true
   //const { datos, operacionOk } = await leerDatos('view/novAltas?HojaId=' + hojaEditar.ID)
   const { datos, operacionOk } = await leerDatos(
-    'cargaFamiliar?PersonaId=' + personaEditar.PERSONAID
+    'en/cargaFamiliar?PersonaId=' + personaEditar.PERSONAID
   )
   data.value = datos
   lecturaListaRegs.value = operacionOk
@@ -60,7 +60,7 @@ async function leerCargoAsoc() {
   }
   //const { datos, operacionOk } = await leerDatos('view/novAltas?HojaId=' + hojaEditar.ID)
   const { datos, operacionOk } = await leerDatos(
-    'cargo?PersonaId=' + personaEditar.PERSONAID + '&Salario=1'
+    'en/cargo?PersonaId=' + personaEditar.PERSONAID + '&Salario=1'
   )
   if (operacionOk === true) {
     if (datos == null) resultado.descripcion = 'No hay cargo asociado aún para el salario'
