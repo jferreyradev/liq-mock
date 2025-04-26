@@ -2,8 +2,6 @@ import { useEndPoints } from '@/composables/useEndPoints'
 
 const { apiBase, apiSp } = useEndPoints()
 
-//const urlAPI = 'http://www.serverburru2.duckdns.org:3005/api/'
-//const urlAPI_sp = 'https://josrferreyr-deno-api-su-79.deno.dev/'
 const urlAPI_sp = apiSp.value + '/'
 const urlAPI = apiBase.value + '/api/'
 
