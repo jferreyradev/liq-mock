@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { getVto, financial } from '@/utils/formatos'
 import { leerDatos } from './llamadaAPI'
-import { TextAlignment } from 'pdf-lib'
+
 
 //import botonTooltip from './botonTooltip.vue'
 

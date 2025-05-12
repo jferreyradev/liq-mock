@@ -10,7 +10,7 @@ const { setDesa,setProd, env } = useEndPoints()
 
 const storeFilter = useFilterStore()
 
-setProd()
+setDesa()
 storeFilter.setConfig()
 
 const { itemsMenu, setItemsMenu } = useItemsMenu();
