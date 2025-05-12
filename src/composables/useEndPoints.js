@@ -2,9 +2,9 @@ import { ref } from 'vue';
 
 const endpoints = {
   prod: {
-    boletas: 'https://dno-mid-tafiviejo-boletas.deno.dev',
-    base: 'https://dno-mid-tafiviejo.deno.dev', 
-    sp: 'https://dno-mid-tafiviejo-boletas.deno.dev'
+    boletas: 'https://dno-mid-burruyacu-boletas.deno.dev',
+    base: 'https://dno-mid-burruyacu.deno.dev', 
+    sp: 'https://dno-mid-burruyacu-boletas.deno.dev'
   }
 }
 
