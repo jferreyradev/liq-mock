@@ -88,35 +88,36 @@ async function grabarSP(item, id) {
   let url = ''
   console.log(item)
   if (id == 0) {
-    url = 'sp/NovVariasIns'
+    url = 'sp/ConceptoLiqIns'
   } else {
-    url = 'sp/NovVariasUpd'
+    url = 'sp/ConceptoLiqIns'
   }
   //console.log(url, item)
 
-  const { valorError, valorSalida } = await ejecutarSP(url, item)
+  const { valorError, valorSalida, errorMsg } = await ejecutarSP(url, item)
+  console.log(valorError, valorSalida)
   if (valorError == 0) {
     await leerListaRegs()
-    alertMensaje.value = 'Se grabó la novedad Nº ' + valorSalida
+    alertMensaje.value = 'Se grabó el concepto de liquidación'
     alertTipo.value = 'success'
     mostrarAlert.value = true
-    return true
+    return null
   }
 
-  return false
+  return errorMsg
 }
 
 async function eliminar(id) {
   muestraConfirmacion.value = false
   let item = {
-    vIDNOV: id
+    vIDCONCEPTOLIQ: id
   }
-  let url = 'sp/NovVariasDel'
+  let url = 'sp/ConceptoLiqDel'
 
   const { valorError } = await ejecutarSP(url, item)
   if (valorError == 0) {
     await leerListaRegs()
-    alertMensaje.value = 'Se eliminó la novedad Nº' + id
+    alertMensaje.value = 'Se eliminó el concepto de liquidación'
     alertTipo.value = 'success'
     mostrarAlert.value = true
     return true
@@ -131,9 +132,14 @@ leerListaRegs()
 
 <template>
   <v-card>
-    <v-card-title>Conceptos del cargo</v-card-title>
+    <v-card-title>Conceptos de Liquidación del cargo</v-card-title>
     <v-card-subtitle> Visualiza los conceptos a liquidar en el cargo </v-card-subtitle>
     <v-card-text>
+      <v-row>
+        <v-btn color="primary" prepend-icon="mdi-plus" elevation="3" @click="handleModif(null)"
+          >Agregar concepto</v-btn
+        >
+      </v-row>
       <v-container>
         <div v-if="isPending">loading...</div>
         <div v-else-if="!lecturaListaRegs">Sin datos para mostrar</div>
@@ -142,13 +148,12 @@ leerListaRegs()
             v-model="mostrarAlert"
             border="start"
             close-label="Close Alert"
-            color="error"
-            icon="$error"
+            :color="alertTipo"
+            :icon="'$' + alertTipo"
             closable
           >
             {{ alertMensaje }}
           </v-alert>
-
           <v-data-table
             class="text-caption"
             hover

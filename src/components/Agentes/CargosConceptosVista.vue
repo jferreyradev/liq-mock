@@ -1,7 +1,8 @@
 <script setup>
 import { ref } from 'vue'
-import { getFechaToAPIFromDDMMYYYY, getFechaDMY } from '@/utils/formatos'
+import { getFechaToAPIFromMMYYYY, getVtoActual } from '@/utils/formatos'
 import { rules } from '@/utils/reglasValidacion'
+import { getVto } from '@/utils/reportes'
 
 const props = defineProps(['Registro', 'cerrar', 'funcion', 'cargoId'])
 let registroOrigen = props.Registro
@@ -30,11 +31,12 @@ const registroVacio = ref({
 
 if (registroOrigen) {
   registroActual.value = { ...registroOrigen }
-  vencimiento.value = getFechaDMY(registroActual.value.VENCIMIENTO)
-  periodo.value = getFechaDMY(registroActual.value.PERIODO)
-  
+  vencimiento.value = getVto(registroActual.value.VENCIMIENTO)
+  periodo.value = getVto(registroActual.value.PERIODO)
+  registroActual.value.PENLEY = registroOrigen.PENLEY == 1
 } else {
   registroActual.value = registroVacio.value
+  periodo.value = getVtoActual()
 }
 
 const mostrarAlert = ref(false)
@@ -60,30 +62,27 @@ async function grabaRegistro() {
 
   let fecVencimiento = ''
   if (vencimiento.value !== null)
-    if (vencimiento.value.length > 0)
-      fecVencimiento = getFechaToAPIFromDDMMYYYY(vencimiento.value)
+    if (vencimiento.value.length > 0) fecVencimiento = getFechaToAPIFromMMYYYY(vencimiento.value)
 
   let fecPeriodo = ''
   if (periodo.value !== null)
-    if (periodo.value.length > 0)
-      fecPeriodo = getFechaToAPIFromDDMMYYYY(periodo.value)
+    if (periodo.value.length > 0) fecPeriodo = getFechaToAPIFromMMYYYY(periodo.value)
 
-  
   let registroGrabar = {
-    vCARGOID: cargoId,
+    vIDCARGO: cargoId,
     vCODIGO: registroActual.value.CODIGO,
-    vSUBCODIGO: registroActual.value.SUBCODIGO,
-    vPARAMETRO1: registroActual.value.PARAMETRO1,
-    vPARAMETRO2: registroActual.value.PARAMETRO2,
-    vVENCIMIENTO: fecVencimiento,
+    vSUBCOD: registroActual.value.SUBCODIGO,
+    vPARM1: registroActual.value.PARAMETRO1,
+    vPARM2: registroActual.value.PARAMETRO2,
+    vVTO: fecVencimiento,
     vIMPORTE: registroActual.value.IMPORTE,
     vPERIODO: fecPeriodo,
-    vGRUPOADICIONALID: registroActual.value.GRUPOADICIONALID,
-    vPENLEY: registroActual.value.PENLEY,
+    vIDGRUPOADI: registroActual.value.GRUPOADICIONALID,
+    vPENLEY: registroActual.value.PENLEY ? 1 : 0
   }
   if (registroActual.value.ID !== 0) {
     registroGrabar = {
-      vID: registroActual.value.ID,
+      vIDCONCEPTOLIQ: registroActual.value.ID,
       ...registroGrabar
     }
   }
@@ -109,7 +108,7 @@ function validarRegistro() {
   <v-container>
     <v-card>
       <v-form ref="form" v-model="formOK">
-        <v-card-title>Carga Familiar</v-card-title>
+        <v-card-title>Concepto de Liquidación</v-card-title>
         <v-card-subtitle>
           {{ registroActual.ID == 0 ? 'Agregar ' : 'Modificar' }}
         </v-card-subtitle>
@@ -170,8 +169,7 @@ function validarRegistro() {
                   hide-details="auto"
                   label="Fec. Vto."
                   lazy-validation
-                  :rules=" [...rules.ddmmyyyy, 
-                      (val) => rules.longitudEntre(val, relacionFamiliarSelected.value == 2 ? 8 : 0 , 10)]"
+                  :rules="[...rules.mmyyyy]"
                 ></v-text-field>
               </v-col>
               <v-col cols="4">
@@ -189,8 +187,7 @@ function validarRegistro() {
                   hide-details="auto"
                   label="Período"
                   lazy-validation
-                  :rules=" [...rules.ddmmyyyy, 
-                      (val) => rules.longitudEntre(val,  8, 10)]"
+                  :rules="[...rules.mmyyyy, (val) => rules.longitudEntre(val, 6, 7)]"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -204,13 +201,12 @@ function validarRegistro() {
                 ></v-text-field>
               </v-col>
               <v-col cols="6">
-                <v-text-field
+                <v-checkbox
                   v-model="registroActual.PENLEY"
-                  hide-details="auto"
-                  label="Es Ley"
-                  lazy-validation
-                  :rules="[...rules.number, (val) => rules.longitudEntre(val, 1, 1)]"
-                ></v-text-field>
+                  color="primary"
+                  label="Pen. Ley."
+                  hide-details
+                ></v-checkbox>
               </v-col>
             </v-row>
           </v-container>
