@@ -30,7 +30,8 @@ const lecturaListaRegs = ref(true)
 async function leerListaRegs() {
   isPending.value = true
   //const { datos, operacionOk } = await leerDatos('view/novAltas?HojaId=' + hojaEditar.ID)
-  const { datos, operacionOk } = await leerDatos('en/conceptoLiq?CargoId=' + cargoId)
+  let url = 'en/conceptoLiq?CargoId=' + cargoId + '&sort={"codigo":"asc","subcod":"asc", "vencimiento":"asc"}'
+  const { datos, operacionOk } = await leerDatos(url)
   data.value = datos
   lecturaListaRegs.value = operacionOk
   isPending.value = false
@@ -90,7 +91,7 @@ async function grabarSP(item, id) {
   if (id == 0) {
     url = 'sp/ConceptoLiqIns'
   } else {
-    url = 'sp/ConceptoLiqIns'
+    url = 'sp/ConceptoLiqUpd'
   }
   //console.log(url, item)
 
