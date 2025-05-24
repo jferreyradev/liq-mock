@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 //import Confirmacion from './Confirmacion.vue'
-import { leerDatos } from './llamadaAPI'
+import { leerDatos, ejecutarSP } from './llamadaAPI'
 import botonTooltip from './botonTooltip.vue'
 import { getFechaDMY, getVto, getTipoDescripcion } from '@/utils/formatos'
 import CargosListFilter from './CargosListFilter.vue'
@@ -44,11 +44,21 @@ const itemMostrar = ref({
 
 let muestraRegistro = ref(false)
 let muestraListaConceptos = ref(false)
+let cargoSoloLectura = ref(true)
 
 function handleModif(itemid) {
   mostrarAlert.value = false
   let item = null
   if (itemid != null) if (itemid !== 0) item = data.value.find((e) => e.ID == itemid)
+  cargoSoloLectura.value = false
+  abrirModal(item)
+}
+
+function handleVerCargo(itemid) {
+  mostrarAlert.value = false
+  let item = null
+  if (itemid != null) if (itemid !== 0) item = data.value.find((e) => e.ID == itemid)
+  cargoSoloLectura.value = true
   abrirModal(item)
 }
 
@@ -72,7 +82,6 @@ function cierraListaConceptos() {
   muestraListaConceptos.value = false
 }
 
-
 // llamadas a API de grabación y eliminación
 
 // lectura de registros
@@ -94,25 +103,26 @@ async function leerRegistros(filtro = null) {
 }
 
 async function grabarSP(item, id) {
-  /*let url = ''
+  let url = ''
   console.log(item)
   if (id == 0) {
-    url = 'sp/NovVariasIns'
+    //url = 'sp/CargosIns'
+    return 'Por el momento no se pueden agregar cargos por este medio'
   } else {
-    url = 'sp/NovVariasUpd'
+    url = 'sp/CargosUpd'
   }
   //console.log(url, item)
 
-  const { valorError, valorSalida } = await ejecutarSP(url, item)
+  const { valorError, errorMsg } = await ejecutarSP(url, item)
   if (valorError == 0) {
-    await leerListaRegs()
-    alertMensaje.value = 'Se grabó la novedad Nº ' + valorSalida
+    await leerRegistros()
+    alertMensaje.value = 'Grabó el cargo'
     alertTipo.value = 'success'
     mostrarAlert.value = true
-    return true
+    return null
   }
-  */
-  return true
+
+  return errorMsg
 }
 
 leerRegistros()
@@ -149,9 +159,15 @@ leerRegistros()
           <tr class="pa-0 ma-0">
             <td class="text-center m-0 p-0 sticky">
               <botonTooltip
+                :icono="'mdi-pencil'"
+                :toolMsg="'Editar Cargo'"
+                :funcion="handleModif"
+                :itemid="item.ID"
+              ></botonTooltip>
+              <botonTooltip
                 :icono="'mdi-dots-horizontal-circle'"
                 :toolMsg="'Ver detalle del Cargo'"
-                :funcion="handleModif"
+                :funcion="handleVerCargo"
                 :itemid="item.ID"
               ></botonTooltip>
               <botonTooltip
@@ -160,7 +176,6 @@ leerRegistros()
                 :funcion="handleListaConceptos"
                 :itemid="item.ID"
               ></botonTooltip>
-
             </td>
 
             <td class="text-right m-0 p-0">{{ item.PERSONADOCUMENTO }}</td>
@@ -204,6 +219,7 @@ leerRegistros()
       :cerrar="cierraForm"
       :funcion="grabarSP"
       :hojaId="itemMostrar.ID"
+      :soloLectura="cargoSoloLectura"
     ></CargosVista>
   </v-dialog>
   <v-dialog v-model="muestraListaConceptos" max-width="80%" persistent="">
@@ -212,5 +228,4 @@ leerRegistros()
       :cargoId="itemMostrar.ID"
     ></CargosConceptosList>
   </v-dialog>
-
 </template>

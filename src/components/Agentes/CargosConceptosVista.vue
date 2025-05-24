@@ -178,7 +178,7 @@ function validarRegistro() {
                   hide-details="auto"
                   label="Importe"
                   lazy-validation
-                  :rules="[...rules.number]"
+                  :rules="[...rules.numDecimal]"
                 ></v-text-field>
               </v-col>
               <v-col cols="4">
