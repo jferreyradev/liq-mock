@@ -12,9 +12,10 @@ import {
   getObjetList
 } from '@/utils/tipos'
 
-const props = defineProps(['Registro', 'cerrar', 'funcion'])
+const props = defineProps(['Registro', 'cerrar', 'funcion', 'soloLectura'])
 let registroOrigen = props.Registro
 let registroActual = ref({})
+const soloLectura = props.soloLectura
 
 const form = ref(null)
 const formOK = ref(false)
@@ -87,7 +88,6 @@ async function grabaRegistro() {
     if (vtoEscalafon.value.length > 0) vtoEsc = getFechaToAPIFromDDMMYYYY(vtoEscalafon.value)
 
   let registroGrabar = {
-    vIDPERS: registroActual.value.PERSONAID,
     vIDREP: reparticionSelected.value.value,
     vORDEN: registroActual.value.ORDEN,
     vAFILIADO: registroActual.value.AFILIADO,
@@ -182,7 +182,7 @@ function validarRegistro() {
                   item-value="value"
                   v-model="reparticionSelected"
                   return-object
-                  readonly
+                  :readonly="soloLectura"
                 >
                 </v-select>
               </v-col>
@@ -193,7 +193,7 @@ function validarRegistro() {
                   label="Orden"
                   lazy-validation
                   :rules="[(val) => rules.longitudEntre(val, 1, 7), rules.number]"
-                  readonly
+                  :readonly="soloLectura"
                 ></v-text-field>
               </v-col>
               <v-col cols="3">
@@ -203,7 +203,7 @@ function validarRegistro() {
                   label="Afiliado"
                   lazy-validation
                   :rules="[(val) => rules.longitudEntre(val, 1, 7), rules.number]"
-                  readonly
+                  :readonly="soloLectura"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -216,7 +216,7 @@ function validarRegistro() {
                   item-value="value"
                   v-model="tipoEmpleoSelected"
                   return-object
-                  readonly
+                  :readonly="soloLectura"
                 >
                 </v-select>
               </v-col>
@@ -227,7 +227,7 @@ function validarRegistro() {
                   label="Vto. Escalafón"
                   lazy-validation
                   :rules="[...rules.ddmmyyyy]"
-                  readonly
+                  :readonly="soloLectura"
                 ></v-text-field>
               </v-col>
               <v-col cols="4">
@@ -237,7 +237,7 @@ function validarRegistro() {
                   label="Antigüedad"
                   lazy-validation
                   :rules="[(val) => rules.longitudEntre(val, 1, 2), rules.number]"
-                  readonly
+                  :readonly="soloLectura"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -250,7 +250,7 @@ function validarRegistro() {
                   item-value="value"
                   v-model="sitRevSelect"
                   return-object
-                  readonly
+                  :readonly="soloLectura"
                 >
                 </v-select>
               </v-col>
@@ -261,7 +261,7 @@ function validarRegistro() {
                   label="Categoría"
                   lazy-validation
                   :rules="[(val) => rules.longitudEntre(val, 1, 2), rules.number]"
-                  readonly
+                  :readonly="soloLectura"
                 ></v-text-field>
               </v-col>
               <v-col cols="4">
@@ -271,7 +271,7 @@ function validarRegistro() {
                   label="Fecha Baja"
                   lazy-validation
                   :rules="[...rules.ddmmyyyy]"
-                  readonly
+                  :readonly="soloLectura"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -284,7 +284,7 @@ function validarRegistro() {
                   item-value="value"
                   v-model="estadoCargoSelected"
                   return-object
-                  readonly
+                  :readonly="soloLectura"
                 >
                 </v-select>
               </v-col>
@@ -296,7 +296,7 @@ function validarRegistro() {
                   item-value="value"
                   v-model="tipoOSSelected"
                   return-object
-                  readonly
+                  :readonly="soloLectura"
                 >
                 </v-select>
               </v-col>
@@ -308,7 +308,7 @@ function validarRegistro() {
                   item-value="value"
                   v-model="tipoLiqSelected"
                   return-object
-                  readonly
+                  :readonly="soloLectura"
                 >
                 </v-select>
               </v-col>
@@ -328,7 +328,7 @@ function validarRegistro() {
         </v-card-text>
         <v-card-actions class="d-flex justify-end">
           <v-btn
-            v-if="false"
+            v-if="!soloLectura"
             color="primary"
             elevation="3"
             outlined

@@ -226,6 +226,10 @@ export const reparticiones = [
   {
     name: 'MUNICIPALIDAD DE CONCEPCION',
     value: 470
+  },
+  {
+    name: 'MUNICIPALIDAD DE BURRUYACU',
+    value: 484
   }
 ]
 

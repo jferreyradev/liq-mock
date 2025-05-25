@@ -133,8 +133,8 @@ export async function ejecutarSP(url = '', data = {}, metodo = 'POST') {
     console.log(datos)
     if (response.ok) {
       //let datos = await response.json()
-      valorError = datos.out.ValorError
-      valorSalida = datos.out.ValorSalida
+      valorError = datos.out.vError
+      valorSalida = datos.out.vSALIDA
       errorMsg = datos.out.vErrorMsg
     } else {
       errmsg = 'Error al intentar grabar el registro'
