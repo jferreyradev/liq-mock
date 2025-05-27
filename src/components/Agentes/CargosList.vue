@@ -104,15 +104,15 @@ async function leerRegistros(filtro = null) {
 
 async function grabarSP(item, id) {
   let url = ''
-  console.log(item)
+  
   if (id == 0) {
     //url = 'sp/CargosIns'
     return 'Por el momento no se pueden agregar cargos por este medio'
   } else {
-    url = 'sp/CargosUpd'
+    url = 'sp/CargoUpd'
   }
-  //console.log(url, item)
-
+  console.log("Se intentará grabar el registro")
+ console.log(item)
   const { valorError, errorMsg } = await ejecutarSP(url, item)
   if (valorError == 0) {
     await leerRegistros()

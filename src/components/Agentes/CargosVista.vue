@@ -91,19 +91,19 @@ async function grabaRegistro() {
     vIDREP: reparticionSelected.value.value,
     vORDEN: registroActual.value.ORDEN,
     vAFILIADO: registroActual.value.AFILIADO,
-    vIDTIPOEMPLEO: tipoEmpleoSelected.value.value,
+    vANTIG: registroActual.value.ANTIGUEDAD,  
     vVTOESC: vtoEsc,
-    vANTIGUEDAD: registroActual.value.APELLIDOYNOMBRE,
+    vIDTE: tipoEmpleoSelected.value.value,
     vIDSITREV: sitRevSelect.value.value,
-    vCATEGORIA: registroActual.value.CATEGORIA,
-    vFECHABAJA: fecBaja,
-    vIDESTADOCARGO: estadoCargoSelected.value.value,
     vIDTIPOOS: tipoOSSelected.value.value,
-    vIDTIPOLIQ: tipoLiqSelected.value.value
+    vCATEGORIA: registroActual.value.CATEGORIA,
+    vIDTIPOLIQ: tipoLiqSelected.value.value,
+    vIDESTADOCARGO: estadoCargoSelected.value.value,
+    vFECHABAJA: fecBaja
   }
   if (registroActual.value.ID !== 0) {
     registroGrabar = {
-      vID: registroActual.value.ID,
+      vIDCARGO: registroActual.value.ID,
       ...registroGrabar
     }
   }
