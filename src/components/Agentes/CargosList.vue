@@ -104,19 +104,18 @@ async function leerRegistros(filtro = null) {
 
 async function grabarSP(item, id) {
   let url = ''
-  console.log(item)
+
   if (id == 0) {
     //url = 'sp/CargosIns'
     return 'Por el momento no se pueden agregar cargos por este medio'
   } else {
-    url = 'sp/CargosUpd'
+    url = 'sp/CargoUpd'
   }
-  //console.log(url, item)
 
   const { valorError, errorMsg } = await ejecutarSP(url, item)
   if (valorError == 0) {
     await leerRegistros()
-    alertMensaje.value = 'Grabó el cargo'
+    alertMensaje.value = 'Se grabó el cargo'
     alertTipo.value = 'success'
     mostrarAlert.value = true
     return null
@@ -148,6 +147,16 @@ leerRegistros()
     <div v-if="isPending">loading...</div>
     <div v-else-if="!lecturaRegistros">Error al intentar recibir los datos</div>
     <div v-else-if="data">
+      <v-alert
+        v-model="mostrarAlert"
+        border="start"
+        close-label="Close Alert"
+        :color="alertTipo"
+        :icon="'$' + alertTipo"
+        closable
+      >
+        {{ alertMensaje }}
+      </v-alert>
       <v-data-table
         class="text-caption"
         hover
