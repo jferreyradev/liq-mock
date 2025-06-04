@@ -1,7 +1,7 @@
 <script setup>
 import LiqInputPanel from '@/components/LiqInputPanel.vue'
 import ArchIPSST from '@/components/ArchIPSST.vue'
-import ResumenIPSST from '@/components/ResumenIPSST.vue';
+import ResumenIPSST from '@/components/ResumenIPSST.vue'
 </script>
 
 <template>
@@ -10,8 +10,8 @@ import ResumenIPSST from '@/components/ResumenIPSST.vue';
       <h3>Archivos</h3>
     </v-row>
     <v-row>
-      <LiqInputPanel></LiqInputPanel>
-    </v-row>    
+      <LiqInputPanel :tipoliq=false :nroadi=false ></LiqInputPanel>
+    </v-row>
     <v-row>
       <ResumenIPSST></ResumenIPSST>
     </v-row>
