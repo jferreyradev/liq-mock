@@ -20,7 +20,7 @@ export const tipoCarga = [
     name: 'Manual',
     value: 1
   },
-  {
+  { 
     name: 'Disco',
     value: 0
   },
