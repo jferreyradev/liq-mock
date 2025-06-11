@@ -7,15 +7,11 @@ import { getFechaDMY, getVto, getTipoDescripcion } from '@/utils/formatos'
 import CargosListFilter from './CargosListFilter.vue'
 import CargosVista from './CargosVista.vue'
 import CargosConceptosList from './CargosConceptosList.vue'
-import { leerPaises } from './ObtieneTipos'
 
-async function  obtPaises() {
-var tiposPaises = await leerPaises()
-console.log('tipos de paises obtenidos')
-console.log(tiposPaises)
-}
+import { usePersonasStore } from '@/stores/personasStore'
 
-
+const usoStore = usePersonasStore()
+console.log(usoStore.getProvincias)
 
 const props = defineProps(['setPersonaEdicion', 'filtros'])
 
@@ -247,7 +243,3 @@ leerRegistros()
     ></CargosConceptosList>
   </v-dialog>
 </template>
-<script>
-let lista = await obtPaises()
-console.log(lista)
-</script>

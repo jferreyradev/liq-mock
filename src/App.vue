@@ -5,15 +5,18 @@ import { useUserStore } from '@/stores/userStore'
 import { useEndPoints } from '@/composables/useEndPoints'
 import { useItemsMenu } from './composables/useItemsMenu'
 import { useFilterStore } from '@/stores/filterStore'
+import { usePersonasStore } from './stores/personasStore'
 
-const { setDesa,setProd, env } = useEndPoints()
+const { setDesa, setProd, env } = useEndPoints()
 
 const storeFilter = useFilterStore()
+const storePersonas = usePersonasStore()
+storePersonas.init()
 
 setDesa()
 storeFilter.setConfig()
 
-const { itemsMenu, setItemsMenu } = useItemsMenu();
+const { itemsMenu, setItemsMenu } = useItemsMenu()
 
 // access the `store` variable anywhere in the component ✨
 const store = useUserStore()
@@ -33,12 +36,12 @@ function handleLogout() {
 
 async function changeEnv() {
   console.log(env.value)
-  if (env.value=='Desa'){
+  if (env.value == 'Desa') {
     setProd()
     await store.fetchRol()
-    setItemsMenu(store.rol)    
-  }else{
-    setDesa()    
+    setItemsMenu(store.rol)
+  } else {
+    setDesa()
     await store.fetchRol()
     setItemsMenu(store.rol)
   }
@@ -46,22 +49,26 @@ async function changeEnv() {
 }
 
 import { ref } from 'vue'
-
 </script>
 
 <template>
-
-
-  <v-layout class="rounded rounded-md d-flex flex-column mb-6 ">
+  <v-layout class="rounded rounded-md d-flex flex-column mb-6">
     <v-app-bar color="primary" prominent>
-      <v-app-bar-nav-icon v-if="store.auth" variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-app-bar-nav-icon
+        v-if="store.auth"
+        variant="text"
+        @click.stop="drawer = !drawer"
+      ></v-app-bar-nav-icon>
       <v-app-bar-title>Consultas - Municipalidad de Concepción</v-app-bar-title>
       <v-spacer></v-spacer>
-      <v-btn v-if="(store.auth && store.isAdmin)" 
-            class="text-caption" @click="changeEnv" 
-            variant="tonal" >{{ storeFilter.serverConfig.AMBIENTE }}
+      <v-btn
+        v-if="store.auth && store.isAdmin"
+        class="text-caption"
+        @click="changeEnv"
+        variant="tonal"
+        >{{ storeFilter.serverConfig.AMBIENTE }}
       </v-btn>
-       <v-btn @click="toggleTheme" icon="mdi mdi-theme-light-dark">
+      <v-btn @click="toggleTheme" icon="mdi mdi-theme-light-dark">
         <v-tooltip activator="parent" location="start">Cambiar tema</v-tooltip>
         <v-icon icon="mdi-theme-light-dark"></v-icon>
       </v-btn>
@@ -69,22 +76,23 @@ import { ref } from 'vue'
         <v-tooltip activator="parent" location="start">Salir</v-tooltip>
         <v-icon icon="mdi-logout"></v-icon>
       </v-btn>
-     
+
       <div v-if="store.auth">
         <v-menu>
           <template v-slot:activator="{ props }">
-            <v-btn icon="mdi-dots-vertical" prepend-icon="mdi-account" title="User Profile" v-bind="props">
-            </v-btn> 
+            <v-btn
+              icon="mdi-dots-vertical"
+              prepend-icon="mdi-account"
+              title="User Profile"
+              v-bind="props"
+            >
+            </v-btn>
           </template>
 
           <v-list>
-            <v-list-item
-            :subtitle="store.user.EMAIL"
-            :title="store.user.USERNAME" 
-          >
-          </v-list-item>
-          
-          <v-divider></v-divider>
+            <v-list-item :subtitle="store.user.EMAIL" :title="store.user.USERNAME"> </v-list-item>
+
+            <v-divider></v-divider>
             <v-list-item title="Cambio de contraseña" @click="() => router.push('/passchange')" />
             <v-list-item title="Salir" @click="handleLogout()" />
           </v-list>
@@ -92,9 +100,18 @@ import { ref } from 'vue'
       </div>
     </v-app-bar>
 
-    <v-navigation-drawer v-model="drawer" :location="$vuetify.display.mobile ? 'bottom' : undefined" temporary>
+    <v-navigation-drawer
+      v-model="drawer"
+      :location="$vuetify.display.mobile ? 'bottom' : undefined"
+      temporary
+    >
       <v-list>
-        <v-list-item v-for="item in itemsMenu" :title="item.DESCRIPCION" @click="()=>router.push(item.PATH)" :key="item.IDMENU" ></v-list-item>
+        <v-list-item
+          v-for="item in itemsMenu"
+          :title="item.DESCRIPCION"
+          @click="() => router.push(item.PATH)"
+          :key="item.IDMENU"
+        ></v-list-item>
         <v-list-item title="Salir" @click="handleLogout()" />
       </v-list>
     </v-navigation-drawer>
@@ -113,9 +130,7 @@ import { ref } from 'vue'
         </v-col>
       </v-row>
     </v-footer>
-
   </v-layout>
-
 </template>
 
 <style scoped>
