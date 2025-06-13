@@ -50,6 +50,15 @@ async function leerRegistros(filtro = null) {
   isPending.value = false
 }
 
+async function buscarPersona(id) {
+  let url = 'persona?Id='+id
+  let persona = null
+  const { datos, operacionOk } = await leerDatos(url)
+  if (operacionOk)
+     persona = datos[0]
+  return persona
+}
+
 function editarCargaFamiliar(itemid) {
   let item = data.value.find((e) => e.PERSONAID == itemid)
   props.setPersonaEdicion(item, 1)

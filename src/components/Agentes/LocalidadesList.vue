@@ -4,20 +4,19 @@ import { getTipoDescripcion } from '@/utils/formatos'
 import { leerDatos } from './llamadaAPI'
 import botonTooltip from './botonTooltip.vue'
 
-const props = defineProps(['cerrar',  'seleccionaLocalidad'])
-let personaId = props.personaId
+const props = defineProps(['cerrar', 'seleccionaLocalidad'])
 
 const listaHeaders = [
   { title: '', key: '' },
-  { title: 'Nombnre', key: 'DESCRIPCION' },
+  { title: 'Nombre', key: 'DESCRIPCION' },
   { title: 'Provincia', key: 'PROVINCIADESCRIPCION' }
 ]
 
-
-async function grabaRegistro(item) {
+async function grabaRegistro(itemid) {
+  let item = null
+  if (itemid != null) if (itemid !== 0) item = data.value.find((e) => e.ID == itemid)
   props.seleccionaLocalidad(item)
   props.cerrar()
-
 }
 
 // lectura de registros
@@ -29,36 +28,37 @@ const codPostal = ref(0)
 async function leerListaRegs() {
   isPending.value = true
   //const { datos, operacionOk } = await leerDatos('view/novAltas?HojaId=' + hojaEditar.ID)
-  let url = 'localidad?CP='+codPostal.value+'&sort={"Descripcion":"asc"}'
+  let url = 'localidad?CP=' + codPostal.value + '&sort={"Descripcion":"asc"}'
   const { datos, operacionOk } = await leerDatos(url)
   data.value = datos
   lecturaListaRegs.value = operacionOk
   isPending.value = false
 }
-
-
 </script>
 
 <template>
   <v-card>
     <v-card-title>Buscador de Localidades</v-card-title>
-    <v-card-subtitle> Vincular a un cargo </v-card-subtitle>
+    <v-card-subtitle>
+      <v-col cols="3"> Ingrese el Código Postal </v-col>
+      <v-col cols="2">
+        <v-text-field
+          v-model="codPostal"
+          hide-details="auto"
+          label="Cód. Postal"
+          lazy-validation
+          :rules="[(val) => rules.longitudEntre(val, 1, 5), rules.number]"
+        ></v-text-field>
+      </v-col>
+      <v-col cols="2">
+        <v-btn color="success" elevation="3" outlined @click="leerListaRegs()">Buscar</v-btn>
+      </v-col>
+    </v-card-subtitle>
     <v-card-text>
       <v-container>
         <div v-if="isPending">loading...</div>
         <div v-else-if="!lecturaListaRegs">Sin datos para mostrar</div>
         <div v-else-if="data">
-          <v-alert
-            v-model="mostrarAlert"
-            border="start"
-            close-label="Close Alert"
-            color="error"
-            icon="$error"
-            closable
-          >
-            {{ alertMensaje }}
-          </v-alert>
-
           <v-data-table
             class="text-caption"
             hover
@@ -71,7 +71,7 @@ async function leerListaRegs() {
                 <td class="text-center m-0 p-0 sticky">
                   <botonTooltip
                     :icono="'mdi-pencil'"
-                    :toolMsg="'Asociar'"
+                    :toolMsg="'Seleccionar'"
                     :funcion="grabaRegistro"
                     :itemid="item.ID"
                   ></botonTooltip>
