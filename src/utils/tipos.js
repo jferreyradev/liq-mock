@@ -283,6 +283,43 @@ export const sitRev = [
   }
 ]
 
+export const estadosCivil = [
+  {
+    name: 'SOLTERO/A',
+    value: 1
+  },
+  {
+    name: 'CASADO/A',
+    value: 2
+  },
+  {
+    name: 'DIVORCIADO/A',
+    value: 3
+  },
+  {
+    name: 'VIUDO/A',
+    value: 4
+  }
+]
+
+export const tiposDoc = [
+  {
+    name: 'DNI',
+    value: 1
+  },
+  {
+    name: 'LE',
+    value: 2
+  },
+  {
+    name: 'LC',
+    value: 3
+  },{
+    name: 'CDI',
+    value: 4
+  }
+]
+
 export function getName(lista, id) {
   const found = lista.find((element) => element.value === id)
   return found ? found.name : 'sin definir'

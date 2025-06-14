@@ -2,15 +2,7 @@
 import { ref } from 'vue'
 import { getFechaToAPIFromDDMMYYYY, getFechaDMY } from '@/utils/formatos'
 import { rules } from '@/utils/reglasValidacion'
-import {
-  reparticiones,
-  tiposEmpleo,
-  tipoLiq,
-  tiposOS,
-  estadosCargo,
-  sitRev,
-  getObjetList
-} from '@/utils/tipos'
+import { sexos, estadosCivil, tiposDoc, getObjetList } from '@/utils/tipos'
 
 const props = defineProps(['Registro', 'cerrar', 'funcion', 'soloLectura'])
 let registroOrigen = props.Registro
@@ -20,38 +12,35 @@ const soloLectura = props.soloLectura
 const form = ref(null)
 const formOK = ref(false)
 
-const fechaBaja = ref(null)
-const vtoEscalafon = ref(null)
+const fechaNacimiento = ref(null)
+const fechaIngreso = ref(null)
 
-const reparticionSelected = ref(reparticiones[0])
-const tipoEmpleoSelected = ref(tiposEmpleo[0])
-const tipoLiqSelected = ref(tipoLiq[0])
-const tipoOSSelected = ref(tiposOS[0])
-const estadoCargoSelected = ref(estadosCargo[0])
-const sitRevSelect = ref(sitRev[0])
-const salario = ref(false)
+const sexoSelected = ref(sexos[0])
+const tipoDocSelected = ref(tiposDoc[0])
+const estCivilSelected = ref(estadosCivil[0])
 
 const registroVacio = ref({
-  PERSONAID: 0,
-  ORDEN: 0,
-  AFILIADO: 0,
-  ANTIGUEDAD: 0,
-  CATEGORIA: 0,
-  SALARIO: 0,
-  ID: 0
+  DOCUMENTO: 0,
+  APELLIDO: null,
+  NOMBRE: null,
+  CUIL: 0,
+  TELEFONO: null,
+  EMAIL: null,
+  DOMICILIOCALLE: null,
+  DOMICILIONUMERO: null,
+  PISO: null,
+  DEPARTAMENTO: null,
+  CBU: null,
+  CUENTA: null
 })
 
 if (registroOrigen) {
   registroActual.value = { ...registroOrigen }
-  fechaBaja.value = getFechaDMY(registroActual.value.FECHABAJA)
-  vtoEscalafon.value = getFechaDMY(registroActual.value.VTOESCALAFON)
-  reparticionSelected.value = getObjetList(reparticiones, registroOrigen.REPARTICIONID)
-  tipoEmpleoSelected.value = getObjetList(tiposEmpleo, registroOrigen.TIPOEMPLEOID)
-  sitRevSelect.value = getObjetList(sitRev, registroOrigen.SITUACIONREVISTAID)
-  estadoCargoSelected.value = getObjetList(estadosCargo, registroOrigen.ESTADOCARGOID)
-  tipoOSSelected.value = getObjetList(tiposOS, registroOrigen.TIPOOBRASOCIALID)
-  tipoLiqSelected.value = getObjetList(tipoLiq, registroOrigen.TIPOLIQUIDACIONID)
-  salario.value = registroOrigen.SALARIO === 1
+  fechaNacimiento.value = getFechaDMY(registroActual.value.FECHANACIMIENTO)
+  fechaIngreso.value = getFechaDMY(registroActual.value.FECHAINGRESO)
+  tipoDocSelected.value = getObjetList(tiposDoc, registroOrigen.TIPODOCUMENTOID)
+  sexoSelected.value = getObjetList(sexos, registroOrigen.SEXO)
+  estCivilSelected.value = getObjetList(estadosCivil, registroOrigen.ESTADOCIVILID)
 } else {
   registroActual.value = registroVacio.value
 }
@@ -79,35 +68,41 @@ async function grabaRegistro() {
 
   //
 
-  let fecBaja = ''
-  if (fechaBaja.value !== null)
-    if (fechaBaja.value.length > 0) fecBaja = getFechaToAPIFromDDMMYYYY(fechaBaja.value)
+  let fecNacimiento = ''
+  if (fechaNacimiento.value !== null)
+    if (fechaNacimiento.value.length > 0)
+      fecNacimiento = getFechaToAPIFromDDMMYYYY(fechaNacimiento.value)
 
-  let vtoEsc = ''
-  if (vtoEscalafon.value !== null)
-    if (vtoEscalafon.value.length > 0) vtoEsc = getFechaToAPIFromDDMMYYYY(vtoEscalafon.value)
+  let fecIngreso = ''
+  if (fechaIngreso.value !== null)
+    if (fechaIngreso.value.length > 0) fecIngreso = getFechaToAPIFromDDMMYYYY(fechaIngreso.value)
 
   let registroGrabar = {
-    vIDREP: reparticionSelected.value.value,
-    vORDEN: registroActual.value.ORDEN,
-    vAFILIADO: registroActual.value.AFILIADO,
-    vANTIG: registroActual.value.ANTIGUEDAD,  
-    vVTOESC: vtoEsc,
-    vIDTE: tipoEmpleoSelected.value.value,
-    vIDSITREV: sitRevSelect.value.value,
-    vIDTIPOOS: tipoOSSelected.value.value,
-    vCATEGORIA: registroActual.value.CATEGORIA,
-    vIDTIPOLIQ: tipoLiqSelected.value.value,
-    vIDESTADOCARGO: estadoCargoSelected.value.value,
-    vFECHABAJA: fecBaja
+    vDNI: registroActual.value.DOCUMENTO,
+    vAPELLIDO: registroActual.value.APELLIDO,
+    vCUIL: registroActual.value.CUIL,
+    vSEXO: sexoSelected.value.value,
+    vFECHANAC: fecNacimiento,
+    vDOMICILIO: registroActual.value.DOMICILIOCALLE,
+    vNRO: registroActual.value.DOMICILIONUMERO,
+    vFECHAINGRESO: fecIngreso,
+    vTELEFONO: registroActual.value.TELEFONO,
+    vEMAIL: registroActual.value.EMAIL,
+    vNOMBRE: registroActual.value.NOMBRE,
+    vIDTIPODOC: tipoDocSelected.value.value,
+    vIDTESTCIVIL: estCivilSelected.value.value,
+    vLOCALIDAD_ID: registroActual.value.LOCALIDADID,
+    vPISO: registroActual.value.PISO,
+    vDPTO: registroActual.value.DEPARTAMENTO,
+    vCUENTA: registroActual.value.CUENTA,
+    vCBU: registroActual.value.CBU
   }
   if (registroActual.value.ID !== 0) {
     registroGrabar = {
-      vIDCARGO: registroActual.value.ID,
+      vIDPERS: registroActual.value.ID,
       ...registroGrabar
     }
   }
-
 
   //console.log(JSON.stringify(registroGrabar))
   let resultado = await props.funcion(registroGrabar, registroActual.value.ID)
@@ -148,31 +143,123 @@ function validarRegistro() {
             <v-row>
               <v-col cols="4">
                 <v-text-field
-                  v-model="registroActual.PERSONADOCUMENTO"
+                  v-model="registroActual.DOCUMENTO"
                   hide-details="auto"
                   label="DNI"
-                  readonly
                 ></v-text-field>
               </v-col>
               <v-col cols="4">
                 <v-text-field
-                  v-model="registroActual.PERSONAAPELLIDO"
+                  v-model="registroActual.APELLIDO"
                   hide-details="auto"
                   label="Apellido"
                   lazy-validation
-                  readonly
                 ></v-text-field>
               </v-col>
               <v-col cols="4">
                 <v-text-field
-                  v-model="registroActual.PERSONANOMBRE"
+                  v-model="registroActual.NOMBRE"
                   hide-details="auto"
                   label="Nombre"
-                  lazy-validation
-                  readonly
                 ></v-text-field>
               </v-col>
             </v-row>
+
+            <v-row>
+              <v-col cols="4">
+                <v-select
+                  label="Sexo"
+                  :items="sexos"
+                  item-title="name"
+                  item-value="value"
+                  v-model="sexoSelected"
+                  return-object
+                >
+                </v-select>
+              </v-col>
+              <v-col cols="4">
+                <v-text-field
+                  v-model="registroActual.CUIL"
+                  hide-details="auto"
+                  label="CUIL"
+                  lazy-validation
+                  :rules="[(val) => rules.longitudEntre(val, 11, 11), rules.number]"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="4">
+                <v-text-field
+                  v-model="fechaNacimiento"
+                  hide-details="auto"
+                  label="Fecha Nac."
+                  lazy-validation
+                  :rules="[...rules.ddmmyyyy]"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+
+            <v-row>
+              <v-col cols="4">
+                <v-text-field
+                  v-model="registroActual.TELEFONO"
+                  hide-details="auto"
+                  label="Teléfono"
+                  lazy-validation
+                ></v-text-field>
+              </v-col>
+              <v-col cols="4">
+                <v-text-field
+                  v-model="registroActual.EMAIL"
+                  hide-details="auto"
+                  label="EMAIL"
+                  lazy-validation
+                ></v-text-field>
+              </v-col>
+              <v-col cols="4">
+                <v-text-field
+                  v-model="fechaIngreso"
+                  hide-details="auto"
+                  label="Fecha Ing."
+                  lazy-validation
+                  :rules="[...rules.ddmmyyyy]"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="6">
+                <v-text-field
+                  v-model="registroActual.DOMICILIOCALLE"
+                  hide-details="auto"
+                  label="Calle"
+                  lazy-validation
+                ></v-text-field>
+              </v-col>
+              <v-col cols="2">
+                <v-text-field
+                  v-model="registroActual.DOMICILIONUMERO"
+                  hide-details="auto"
+                  label="Número"
+                  lazy-validation
+                  :rules="[...rules.number]"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="2">
+                <v-text-field
+                  v-model="registroActual.PISO"
+                  hide-details="auto"
+                  label="Piso"
+                  lazy-validation
+                ></v-text-field>
+              </v-col>
+              <v-col cols="2">
+                <v-text-field
+                  v-model="registroActual.DEPARTAMENTO"
+                  hide-details="auto"
+                  label="Dpto"
+                  lazy-validation
+                ></v-text-field>
+              </v-col>
+            </v-row>
+            
             <v-row>
               <v-col cols="6">
                 <v-select
