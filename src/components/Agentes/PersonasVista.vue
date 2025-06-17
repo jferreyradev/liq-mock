@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { getFechaToAPIFromDDMMYYYY, getFechaDMY } from '@/utils/formatos'
 import { rules } from '@/utils/reglasValidacion'
 import { sexos, estadosCivil, tiposDoc, getObjetList } from '@/utils/tipos'
+import LocalidadesList from './LocalidadesList.vue'
 
 const props = defineProps(['Registro', 'cerrar', 'funcion', 'soloLectura'])
 let registroOrigen = props.Registro
@@ -103,8 +104,9 @@ async function grabaRegistro() {
       ...registroGrabar
     }
   }
-
-  //console.log(JSON.stringify(registroGrabar))
+  console.log('ESTE SERIA EL REGISTRO A GRABAR')
+  console.log(JSON.stringify(registroGrabar))
+  return
   let resultado = await props.funcion(registroGrabar, registroActual.value.ID)
 
   if (resultado === null) {
@@ -118,6 +120,27 @@ async function grabaRegistro() {
 function validarRegistro() {
   return true
 }
+
+////// seleccionador de localidades
+let muestraRegistro = ref(false)
+
+function abrirModal() {
+  muestraRegistro.value = true
+}
+
+function cierraForm() {
+  muestraRegistro.value = false
+}
+
+function estableceLocalidad(item) {
+  registroActual.value.LOCALIDADID = item.ID
+  registroActual.value.LOCALIDADDESCRIPCION = item.DESCRIPCION
+  registroActual.value.LOCALIDADCODIGOPOSTAL = item.CP
+  registroActual.value.PROVINCIADESCRIPCION = item.PROVINCIADESCRIPCION
+  registroActual.value.PAISDESCRIPCION = 'ARGENTINA'
+}
+
+////////////////////////////
 </script>
 
 <template>
@@ -142,12 +165,34 @@ function validarRegistro() {
           <v-container style="height: 60vh; overflow-y: scroll">
             <v-row>
               <v-col cols="4">
+                <v-select
+                  label="Tipo Doc."
+                  :items="tiposDoc"
+                  item-title="name"
+                  item-value="value"
+                  v-model="tipoDocSelected"
+                  return-object
+                >
+                </v-select>
+              </v-col>
+              <v-col cols="4">
                 <v-text-field
                   v-model="registroActual.DOCUMENTO"
                   hide-details="auto"
                   label="DNI"
                 ></v-text-field>
               </v-col>
+              <v-col cols="4">
+                <v-text-field
+                  v-model="registroActual.CUIL"
+                  hide-details="auto"
+                  label="CUIL"
+                  lazy-validation
+                  :rules="[(val) => rules.longitudEntre(val, 11, 11), rules.number]"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+            <v-row>
               <v-col cols="4">
                 <v-text-field
                   v-model="registroActual.APELLIDO"
@@ -163,9 +208,6 @@ function validarRegistro() {
                   label="Nombre"
                 ></v-text-field>
               </v-col>
-            </v-row>
-
-            <v-row>
               <v-col cols="4">
                 <v-select
                   label="Sexo"
@@ -177,15 +219,9 @@ function validarRegistro() {
                 >
                 </v-select>
               </v-col>
-              <v-col cols="4">
-                <v-text-field
-                  v-model="registroActual.CUIL"
-                  hide-details="auto"
-                  label="CUIL"
-                  lazy-validation
-                  :rules="[(val) => rules.longitudEntre(val, 11, 11), rules.number]"
-                ></v-text-field>
-              </v-col>
+            </v-row>
+
+            <v-row>
               <v-col cols="4">
                 <v-text-field
                   v-model="fechaNacimiento"
@@ -193,25 +229,6 @@ function validarRegistro() {
                   label="Fecha Nac."
                   lazy-validation
                   :rules="[...rules.ddmmyyyy]"
-                ></v-text-field>
-              </v-col>
-            </v-row>
-
-            <v-row>
-              <v-col cols="4">
-                <v-text-field
-                  v-model="registroActual.TELEFONO"
-                  hide-details="auto"
-                  label="Teléfono"
-                  lazy-validation
-                ></v-text-field>
-              </v-col>
-              <v-col cols="4">
-                <v-text-field
-                  v-model="registroActual.EMAIL"
-                  hide-details="auto"
-                  label="EMAIL"
-                  lazy-validation
                 ></v-text-field>
               </v-col>
               <v-col cols="4">
@@ -222,6 +239,17 @@ function validarRegistro() {
                   lazy-validation
                   :rules="[...rules.ddmmyyyy]"
                 ></v-text-field>
+              </v-col>
+              <v-col cols="4">
+                <v-select
+                  label="Est. Civil"
+                  :items="estadosCivil"
+                  item-title="name"
+                  item-value="value"
+                  v-model="estCivilSelected"
+                  return-object
+                >
+                </v-select>
               </v-col>
             </v-row>
             <v-row>
@@ -259,156 +287,86 @@ function validarRegistro() {
                 ></v-text-field>
               </v-col>
             </v-row>
-            
+
+            <v-row>
+              <v-col cols="4">
+                <v-text-field
+                  v-model="registroActual.TELEFONO"
+                  hide-details="auto"
+                  label="Teléfono"
+                  lazy-validation
+                ></v-text-field>
+              </v-col>
+              <v-col cols="4">
+                <v-text-field
+                  v-model="registroActual.EMAIL"
+                  hide-details="auto"
+                  label="EMAIL"
+                  lazy-validation
+                ></v-text-field>
+              </v-col>
+            </v-row>
             <v-row>
               <v-col cols="6">
-                <v-select
-                  label="Reparticion"
-                  :items="reparticiones"
-                  item-title="name"
-                  item-value="value"
-                  v-model="reparticionSelected"
-                  return-object
-                  :readonly="soloLectura"
-                >
-                </v-select>
-              </v-col>
-              <v-col cols="3">
                 <v-text-field
-                  v-model="registroActual.ORDEN"
+                  v-model="registroActual.LOCALIDADDESCRIPCION"
                   hide-details="auto"
-                  label="Orden"
+                  label="Localidad"
                   lazy-validation
-                  :rules="[(val) => rules.longitudEntre(val, 1, 7), rules.number]"
-                  :readonly="soloLectura"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="3">
-                <v-text-field
-                  v-model="registroActual.AFILIADO"
-                  hide-details="auto"
-                  label="Afiliado"
-                  lazy-validation
-                  :rules="[(val) => rules.longitudEntre(val, 1, 7), rules.number]"
-                  :readonly="soloLectura"
-                ></v-text-field>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="4">
-                <v-select
-                  label="Tipo Empleo"
-                  :items="tiposEmpleo"
-                  item-title="name"
-                  item-value="value"
-                  v-model="tipoEmpleoSelected"
-                  return-object
-                  :readonly="soloLectura"
-                >
-                </v-select>
-              </v-col>
-              <v-col cols="4">
-                <v-text-field
-                  v-model="vtoEscalafon"
-                  hide-details="auto"
-                  label="Vto. Escalafón"
-                  lazy-validation
-                  :rules="[...rules.ddmmyyyy]"
-                  :readonly="soloLectura"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="4">
-                <v-text-field
-                  v-model="registroActual.ANTIGUEDAD"
-                  hide-details="auto"
-                  label="Antigüedad"
-                  lazy-validation
-                  :rules="[(val) => rules.longitudEntre(val, 1, 2), rules.number]"
-                  :readonly="soloLectura"
-                ></v-text-field>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="4">
-                <v-select
-                  label="Sit. Revista"
-                  :items="sitRev"
-                  item-title="name"
-                  item-value="value"
-                  v-model="sitRevSelect"
-                  return-object
-                  :readonly="soloLectura"
-                >
-                </v-select>
-              </v-col>
-              <v-col cols="4">
-                <v-text-field
-                  v-model="registroActual.CATEGORIA"
-                  hide-details="auto"
-                  label="Categoría"
-                  lazy-validation
-                  :rules="[(val) => rules.longitudEntre(val, 1, 2), rules.number]"
-                  :readonly="soloLectura"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="4">
-                <v-text-field
-                  v-model="fechaBaja"
-                  hide-details="auto"
-                  label="Fecha Baja"
-                  lazy-validation
-                  :rules="[...rules.ddmmyyyy]"
-                  :readonly="soloLectura"
-                ></v-text-field>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="4">
-                <v-select
-                  label="Estado Cargo"
-                  :items="estadosCargo"
-                  item-title="name"
-                  item-value="value"
-                  v-model="estadoCargoSelected"
-                  return-object
-                  :readonly="soloLectura"
-                >
-                </v-select>
-              </v-col>
-              <v-col cols="4">
-                <v-select
-                  label="Tipo OS"
-                  :items="tiposOS"
-                  item-title="name"
-                  item-value="value"
-                  v-model="tipoOSSelected"
-                  return-object
-                  :readonly="soloLectura"
-                >
-                </v-select>
-              </v-col>
-              <v-col cols="4">
-                <v-select
-                  label="Tipo Liq."
-                  :items="tipoLiq"
-                  item-title="name"
-                  item-value="value"
-                  v-model="tipoLiqSelected"
-                  return-object
-                  :readonly="soloLectura"
-                >
-                </v-select>
-              </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="4">
-                <v-checkbox
-                  v-model="salario"
-                  color="primary"
-                  label="Salario"
-                  hide-details
                   readonly
-                ></v-checkbox>
+                ></v-text-field>
+              </v-col>
+              <v-col cols="2">
+                <v-btn color="primary" elevation="3" outlined value="grabar" @click="abrirModal()"
+                  >Cambiar</v-btn
+                >
+              </v-col>
+              <v-col cols="2">
+                <v-text-field
+                  v-model="registroActual.LOCALIDADCODIGOPOSTAL"
+                  hide-details="auto"
+                  label="C. Postal"
+                  lazy-validation
+                  :rules="[...rules.number]"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="6">
+                <v-text-field
+                  v-model="registroActual.PROVINCIADESCRIPCION"
+                  hide-details="auto"
+                  label="Provincia"
+                  lazy-validation
+                  readonly
+                ></v-text-field>
+              </v-col>
+              <v-col cols="6">
+                <v-text-field
+                  v-model="registroActual.PAISDESCRIPCION"
+                  hide-details="auto"
+                  label="País"
+                  lazy-validation
+                  readonly
+                ></v-text-field>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col cols="6">
+                <v-text-field
+                  v-model="registroActual.CBU"
+                  hide-details="auto"
+                  label="CBU"
+                  lazy-validation
+                ></v-text-field>
+              </v-col>
+              <v-col cols="6">
+                <v-text-field
+                  v-model="registroActual.CUENTA"
+                  hide-details="auto"
+                  label="Cuenta"
+                  lazy-validation
+                ></v-text-field>
               </v-col>
             </v-row>
           </v-container>
@@ -428,4 +386,10 @@ function validarRegistro() {
       </v-form>
     </v-card>
   </v-container>
+  <v-dialog v-model="muestraRegistro" max-width="80%" persistent="">
+    <LocalidadesList
+      :cerrar="cierraForm"
+      :seleccionaLocalidad="estableceLocalidad"
+    ></LocalidadesList>
+  </v-dialog>
 </template>

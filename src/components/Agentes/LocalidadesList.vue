@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { getTipoDescripcion } from '@/utils/formatos'
 import { leerDatos } from './llamadaAPI'
 import botonTooltip from './botonTooltip.vue'
+import { rules } from '@/utils/reglasValidacion'
 
 const props = defineProps(['cerrar', 'seleccionaLocalidad'])
 
@@ -28,7 +29,7 @@ const codPostal = ref(0)
 async function leerListaRegs() {
   isPending.value = true
   //const { datos, operacionOk } = await leerDatos('view/novAltas?HojaId=' + hojaEditar.ID)
-  let url = 'localidad?CP=' + codPostal.value + '&sort={"Descripcion":"asc"}'
+  let url = 'en/localidad?CP=' + codPostal.value + '&sort={"Descripcion":"asc"}'
   const { datos, operacionOk } = await leerDatos(url)
   data.value = datos
   lecturaListaRegs.value = operacionOk
@@ -39,23 +40,24 @@ async function leerListaRegs() {
 <template>
   <v-card>
     <v-card-title>Buscador de Localidades</v-card-title>
-    <v-card-subtitle>
-      <v-col cols="3"> Ingrese el Código Postal </v-col>
-      <v-col cols="2">
-        <v-text-field
-          v-model="codPostal"
-          hide-details="auto"
-          label="Cód. Postal"
-          lazy-validation
-          :rules="[(val) => rules.longitudEntre(val, 1, 5), rules.number]"
-        ></v-text-field>
-      </v-col>
-      <v-col cols="2">
-        <v-btn color="success" elevation="3" outlined @click="leerListaRegs()">Buscar</v-btn>
-      </v-col>
-    </v-card-subtitle>
     <v-card-text>
       <v-container>
+        <v-row>
+          <v-col cols="3"> Ingrese el Código Postal </v-col>
+          <v-col cols="2">
+            <v-text-field
+              v-model="codPostal"
+              hide-details="auto"
+              label="Cód. Postal"
+              lazy-validation
+              :rules="[(val) => rules.longitudEntre(val, 1, 5), rules.number]"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="2">
+            <v-btn color="green" elevation="3" outlined @click="leerListaRegs()">Buscar</v-btn>
+          </v-col>
+        </v-row>
+
         <div v-if="isPending">loading...</div>
         <div v-else-if="!lecturaListaRegs">Sin datos para mostrar</div>
         <div v-else-if="data">
@@ -76,14 +78,8 @@ async function leerListaRegs() {
                     :itemid="item.ID"
                   ></botonTooltip>
                 </td>
-                <td class="text-left m-0 p-0">
-                  {{ getTipoDescripcion(item.REPARTICIONID, item.REPARTICIONDESCRIPCION) }}
-                </td>
-                <td class="text-left m-0 p-0">{{ item.ORDEN }}</td>
-                <td class="text-left m-0 p-0">{{ item.AFILIADO }}</td>
-                <td class="text-center m-0 p-0">
-                  {{ getTipoDescripcion(item.TIPOEMPLEOID, item.TIPOEMPLEODESCRIPCION) }}
-                </td>
+                <td class="text-left m-0 p-0">{{ item.DESCRIPCION }}</td>
+                <td class="text-left m-0 p-0">{{ item.PROVINCIADESCRIPCION }}</td>
               </tr>
             </template>
           </v-data-table>
