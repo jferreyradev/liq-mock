@@ -62,3 +62,15 @@ export const getTipoDescripcion = (id, descripcion, forma = 1) => {
   if (forma === 2) return id + ' - ' + descripcion
   return id
 }
+
+export const getDecimalToAPI = (valor) => {
+  let nuevoValor = valor
+  if (valor !== null) {
+    if (typeof valor === 'string') {
+      let valorFormateado = valor.replace(',', '.')
+      nuevoValor = Number(valorFormateado)
+    }
+  }
+
+  return nuevoValor
+}

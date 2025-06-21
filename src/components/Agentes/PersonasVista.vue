@@ -180,6 +180,7 @@ function estableceLocalidad(item) {
                   v-model="registroActual.DOCUMENTO"
                   hide-details="auto"
                   label="DNI"
+                  :rules="[(val) => rules.longitudEntre(val, 8, 9), rules.number]"
                 ></v-text-field>
               </v-col>
               <v-col cols="4">
@@ -199,6 +200,7 @@ function estableceLocalidad(item) {
                   hide-details="auto"
                   label="Apellido"
                   lazy-validation
+                  :rules="[(val) => rules.longitudMax(val, 50)]"
                 ></v-text-field>
               </v-col>
               <v-col cols="4">
@@ -206,6 +208,7 @@ function estableceLocalidad(item) {
                   v-model="registroActual.NOMBRE"
                   hide-details="auto"
                   label="Nombre"
+                  :rules="[(val) => rules.longitudMax(val, 50)]"
                 ></v-text-field>
               </v-col>
               <v-col cols="4">
@@ -259,6 +262,7 @@ function estableceLocalidad(item) {
                   hide-details="auto"
                   label="Calle"
                   lazy-validation
+                  :rules="[(val) => rules.longitudMax(val, 100)]"
                 ></v-text-field>
               </v-col>
               <v-col cols="2">
@@ -276,6 +280,7 @@ function estableceLocalidad(item) {
                   hide-details="auto"
                   label="Piso"
                   lazy-validation
+                  :rules="[(val) => rules.longitudMax(val, 10)]"
                 ></v-text-field>
               </v-col>
               <v-col cols="2">
@@ -284,6 +289,7 @@ function estableceLocalidad(item) {
                   hide-details="auto"
                   label="Dpto"
                   lazy-validation
+                  :rules="[(val) => rules.longitudMax(val, 10)]"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -295,6 +301,7 @@ function estableceLocalidad(item) {
                   hide-details="auto"
                   label="Teléfono"
                   lazy-validation
+                  :rules="[(val) => rules.longitudMax(val, 30)]"
                 ></v-text-field>
               </v-col>
               <v-col cols="4">
@@ -303,6 +310,7 @@ function estableceLocalidad(item) {
                   hide-details="auto"
                   label="EMAIL"
                   lazy-validation
+                  :rules="[(val) => rules.longitudMax(val, 100)]"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -327,7 +335,7 @@ function estableceLocalidad(item) {
                   hide-details="auto"
                   label="C. Postal"
                   lazy-validation
-                  :rules="[...rules.number]"
+                  readonly
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -358,6 +366,7 @@ function estableceLocalidad(item) {
                   hide-details="auto"
                   label="CBU"
                   lazy-validation
+                  :rules="[(val) => rules.longitudMax(val, 50), rules.number]"
                 ></v-text-field>
               </v-col>
               <v-col cols="6">
@@ -366,6 +375,7 @@ function estableceLocalidad(item) {
                   hide-details="auto"
                   label="Cuenta"
                   lazy-validation
+                  :rules="[(val) => rules.longitudMax(val, 50), rules.number]"
                 ></v-text-field>
               </v-col>
             </v-row>

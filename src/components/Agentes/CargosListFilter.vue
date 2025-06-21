@@ -11,7 +11,6 @@ const Apellido = ref(null)
 const IdRep = ref(null)
 const Orden = ref(null)
 
-
 const tipoLiqFilter = [
   {
     name: 'Todas',
@@ -28,8 +27,8 @@ const estadosCargoFilter = [
   ...estadosCargo
 ]
 
-const liqSelected = ref(tipoLiqFilter[0])
-const estCargoSelected = ref(estadosCargoFilter[0])
+const liqSelected = ref(tipoLiqFilter[1])
+const estCargoSelected = ref(estadosCargoFilter[1])
 
 function ObtieneFiltro() {
   let filtro = ''
@@ -77,7 +76,6 @@ function ObtieneFiltro() {
     filtro = filtro.length == 0 ? expresion : filtro + '&' + expresion
   }
 
-
   return filtro
 }
 
@@ -107,7 +105,11 @@ async function filtar() {
   props.filtros.setFiltrosCampos(filtro, setCamposFiltros())
   props.filtrar(filtro)
 }
+/////
 
+// ver el modo de que que este filtrado por defecto con tipoliq mensual y estado de cargo activo
+
+///
 let camposFiltros = props.filtros.getFiltroCampos()
 
 if (camposFiltros != null) {

@@ -9,6 +9,7 @@ import CargosVista from './CargosVista.vue'
 import CargosConceptosList from './CargosConceptosList.vue'
 
 import { usePersonasStore } from '@/stores/personasStore'
+import { estadosCargo, getName } from '@/utils/tipos'
 
 const usoStore = usePersonasStore()
 console.log(usoStore.getProvincias)
@@ -98,7 +99,8 @@ const lecturaRegistros = ref(true)
 
 async function leerRegistros(filtro = null) {
   let url = 'en/cargo'
-  if (filtro !== null) url = url + '?' + filtro
+  if (filtro !== null) url = url + '?' + filtro + '&sort={"ReparticionId":"asc", "Orden":"asc"}'
+  else url = url + '?sort={"ReparticionId":"asc", "Orden":"asc"}'
 
   isPending.value = true
   const { datos, operacionOk } = await leerDatos(url)
@@ -211,7 +213,9 @@ leerRegistros()
             <td class="text-center m-0 p-0">{{ item.CATEGORIA }}</td>
             <td class="text-right m-0 p-0">{{ getFechaDMY(item.FECHABAJA) }}</td>
             <td class="text-center m-0 p-0">
-              {{ getTipoDescripcion(item.ESTADOCARGOID, item.ESTADOCARGODESCRIPCION) }}
+              {{
+                getTipoDescripcion(item.ESTADOCARGOID, getName(estadosCargo, item.ESTADOCARGOID))
+              }}
             </td>
             <td class="text-left m-0 p-0">
               {{ getTipoDescripcion(item.TIPOOBRASOCIALID, item.TIPOOBRASOCIALDESCRIPCION) }}

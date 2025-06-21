@@ -20,7 +20,7 @@ export const tipoCarga = [
     name: 'Manual',
     value: 1
   },
-  { 
+  {
     name: 'Disco',
     value: 0
   },
@@ -314,7 +314,8 @@ export const tiposDoc = [
   {
     name: 'LC',
     value: 3
-  },{
+  },
+  {
     name: 'CDI',
     value: 4
   }

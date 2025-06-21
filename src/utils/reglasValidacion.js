@@ -57,7 +57,7 @@ export const rules = {
       if (value === null) return true
       if (value?.length === 0) return true
       if (value?.length === 0) return true
-      if (/^[0-9]+(\.[0-9]+)?$/.test(value)) return true
+      if (/^[0-9]+([.,][0-9]+)?$/.test(value)) return true
       return 'Número decimal inválido'
     }
   ]

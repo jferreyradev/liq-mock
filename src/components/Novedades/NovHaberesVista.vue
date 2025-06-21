@@ -1,7 +1,8 @@
 <script setup>
 import { ref } from 'vue'
-import { getVto } from '@/utils/formatos'
+import { getVto, getDecimalToAPI } from '@/utils/formatos'
 import { rules } from '@/utils/reglasValidacion'
+import { financial } from '@/utils/reportes'
 
 const props = defineProps(['Registro', 'cerrar', 'funcion', 'hojaId'])
 let registroOrigen = props.Registro
@@ -37,6 +38,7 @@ const vencimiento = ref(null)
 if (registroOrigen) {
   registroActual.value = { ...registroOrigen }
   vencimiento.value = getVto(registroOrigen.VENCIMIENTO)
+  registroActual.value.IMPORTE = financial(registroOrigen.IMPORTE)
 } else {
   registroActual.value = registroVacio.value
 }
@@ -64,7 +66,7 @@ async function grabaRegistro() {
     Clase: registroActual.value.CLASE,
     Dias: registroActual.value.DIAS,
     Vencimiento: registroActual.value.VENCIMIENTO,
-    Importe: registroActual.value.IMPORTE,
+    Importe: getDecimalToAPI(registroActual.value.IMPORTE),
     Documento: registroActual.value.DOCUMENTO,
     Apellido: registroActual.value.APELLIDO,
     Nombre: registroActual.value.NOMBRE,
