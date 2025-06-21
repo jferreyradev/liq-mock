@@ -98,6 +98,7 @@ const error = null
 const lecturaRegistros = ref(true)
 
 async function leerRegistros(filtro = null) {
+  console.log(filtro)
   let url = 'en/cargo'
   if (filtro !== null) url = url + '?' + filtro + '&sort={"ReparticionId":"asc", "Orden":"asc"}'
   else url = url + '?sort={"ReparticionId":"asc", "Orden":"asc"}'
@@ -131,7 +132,22 @@ async function grabarSP(item, id) {
   return errorMsg
 }
 
-leerRegistros()
+let camposFiltros = props.filtros.getFiltroCampos()
+
+if (camposFiltros == null) {
+    let campos = {
+    DNI: null,
+    Apellido: null,
+    IdRep: null,
+    Orden: null,
+    liqSelected: 1,
+    estCargoSelected: 1
+  }
+  let expresion = `TipoLiquidacionId=1&EstadoCargoId=1`
+  props.filtros.setFiltrosCampos(expresion, campos)
+}
+
+leerRegistros(filtros.getFiltroString())
 </script>
 
 <style>

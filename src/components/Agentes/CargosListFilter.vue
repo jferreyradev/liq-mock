@@ -105,11 +105,7 @@ async function filtar() {
   props.filtros.setFiltrosCampos(filtro, setCamposFiltros())
   props.filtrar(filtro)
 }
-/////
 
-// ver el modo de que que este filtrado por defecto con tipoliq mensual y estado de cargo activo
-
-///
 let camposFiltros = props.filtros.getFiltroCampos()
 
 if (camposFiltros != null) {
