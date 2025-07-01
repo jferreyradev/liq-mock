@@ -142,7 +142,8 @@ export const sexos = [
   {
     name: 'No declarado',
     value: 'X'
-  }
+  },
+  { name: 'Sin definir', value: null }
 ]
 
 export const tipoRelacionFamiliar = [
@@ -326,7 +327,7 @@ export function getName(lista, id) {
   return found ? found.name : 'sin definir'
 }
 
-export function getObjetList(lista, id) {
+export function getObjetList(lista, id, defecto = null) {
   const found = lista.find((element) => element.value === id)
-  return found ? found : null
+  return found ? found : defecto
 }

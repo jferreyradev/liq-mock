@@ -52,6 +52,26 @@ export const rules = {
     if (valorString.length >= min) return true
     return 'ingresar al menos ' + min + ' caracteres'
   },
+  longitudMaxONull: (value, max) => {
+    if (value === null) return true
+    let valorString = value.toString()
+    if (valorString.length <= max) return true
+    return 'se aceptan hasta ' + max + ' caracteres'
+  },
+  longitudEntreONull: (value, min, max) => {
+    if (value === null) return true
+    let valorString = value.toString()
+    if (valorString.length == 0) return true
+    if (valorString.length >= min && valorString.length <= max) return true
+    let mensaje = 'Se acepta entre ' + min + ' y ' + max + ' caracteres'
+    return mensaje
+  },
+  longitudMinONull: (value, min) => {
+    if (value === null) return true
+    let valorString = value.toString()
+    if (valorString.length >= min) return true
+    return 'ingresar al menos ' + min + ' caracteres'
+  },
   numDecimal: [
     (value) => {
       if (value === null) return true

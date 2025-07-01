@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 //import Confirmacion from './Confirmacion.vue'
-import { leerDatos } from './llamadaAPI'
+import { leerDatos, ejecutarSP } from './llamadaAPI'
 import botonTooltip from './botonTooltip.vue'
 import { getFechaDMY } from '@/utils/formatos'
 import PersonasListFilter from './PersonasListFilter.vue'
@@ -43,6 +43,11 @@ let isPending = ref(false)
 const data = ref(null)
 const error = null
 
+// alerta de grabación o error
+const mostrarAlert = ref(false)
+const alertMensaje = ref(null)
+const alertTipo = ref(null)
+
 const lecturaRegistros = ref(true)
 
 async function leerRegistros(filtro = null) {
@@ -81,8 +86,25 @@ function editarCargaFamiliar(itemid) {
   props.setPersonaEdicion(item, 1)
 }
 
-async function grabarSP(item) {
-  return
+async function grabarSP(item, id) {
+  let url = ''
+
+  if (id == 0) {
+    return 'Por el momento no se pueden agregar cargos por este medio'
+  } else {
+    url = 'sp/persUpd'
+  }
+
+  const { valorError, errorMsg } = await ejecutarSP(url, item)
+  if (valorError == 0) {
+    await leerRegistros()
+    alertMensaje.value = 'Se grabó el cargo'
+    alertTipo.value = 'success'
+    mostrarAlert.value = true
+    return null
+  }
+
+  return errorMsg
 }
 
 leerRegistros()
@@ -108,6 +130,16 @@ leerRegistros()
     <div v-if="isPending">loading...</div>
     <div v-else-if="!lecturaRegistros">Error al intentar recibir los datos</div>
     <div v-else-if="data">
+      <v-alert
+        v-model="mostrarAlert"
+        border="start"
+        close-label="Close Alert"
+        :color="alertTipo"
+        :icon="'$' + alertTipo"
+        closable
+      >
+        {{ alertMensaje }}
+      </v-alert>
       <v-data-table
         class="text-caption"
         hover
@@ -125,7 +157,7 @@ leerRegistros()
                 :itemid="item.PERSONAID"
               ></botonTooltip>
               <botonTooltip
-                :icono="'mdi-list-box-outline'"
+                :icono="'mdi-pencil'"
                 :toolMsg="'Editar'"
                 :funcion="editarPersona"
                 :itemid="item.PERSONAID"

@@ -60,18 +60,9 @@ async function grabaRegistro() {
     return
   }
   mostrarAlert.value = false
-
-  //console.log(registroActual.value.CBU.legnth)
-  //console.log()
-  let CBU = registroActual.value.CBU == null ? '' : registroActual.value.CBU
-  let CUENTA = registroActual.value.CUENTA == null ? '' : registroActual.value.CUENTA
-
-  if (CBU > 0) {
-    if (CUENTA.length == 0) {
-      mensajeError.value = 'No puede especificar CBU si no especificó número de cuenta'
-      mostrarAlert.value = true
-      return
-    }
+  if (!validarRegistro()) {
+    mostrarAlert.value = true
+    return
   }
 
   // si es esposa/o coloca valores predeterminados en campos de hijo
@@ -100,7 +91,7 @@ async function grabaRegistro() {
     vEMAIL: registroActual.value.EMAIL,
     vNOMBRE: registroActual.value.NOMBRE,
     vIDTIPODOC: tipoDocSelected.value.value,
-    vIDESTCIVIL: estCivilSelected.value.value,
+    vIDTESTCIVIL: estCivilSelected.value.value,
     vLOCALIDAD_ID: registroActual.value.LOCALIDADID,
     vPISO: registroActual.value.PISO,
     vDPTO: registroActual.value.DEPARTAMENTO,
@@ -113,8 +104,8 @@ async function grabaRegistro() {
       ...registroGrabar
     }
   }
-  console.log('ESTE SERIA EL REGISTRO A GRABAR')
-  console.log(JSON.stringify(registroGrabar))
+  //console.log('ESTE SERIA EL REGISTRO A GRABAR')
+  //console.log(JSON.stringify(registroGrabar))
   //return
   let resultado = await props.funcion(registroGrabar, registroActual.value.ID)
 
@@ -124,6 +115,10 @@ async function grabaRegistro() {
     mensajeError.value = resultado
     mostrarAlert.value = true
   }
+}
+
+function validarRegistro() {
+  return true
 }
 
 ////// seleccionador de localidades
@@ -194,7 +189,7 @@ function estableceLocalidad(item) {
                   hide-details="auto"
                   label="CUIL"
                   lazy-validation
-                  :rules="[(val) => rules.longitudEntreONull(val, 11, 11), rules.number]"
+                  :rules="[(val) => rules.longitudEntre(val, 11, 11), rules.number]"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -267,7 +262,7 @@ function estableceLocalidad(item) {
                   hide-details="auto"
                   label="Calle"
                   lazy-validation
-                  :rules="[(val) => rules.longitudMaxONull(val, 100)]"
+                  :rules="[(val) => rules.longitudMax(val, 100)]"
                 ></v-text-field>
               </v-col>
               <v-col cols="2">
@@ -285,7 +280,7 @@ function estableceLocalidad(item) {
                   hide-details="auto"
                   label="Piso"
                   lazy-validation
-                  :rules="[(val) => rules.longitudMaxONull(val, 10)]"
+                  :rules="[(val) => rules.longitudMax(val, 10)]"
                 ></v-text-field>
               </v-col>
               <v-col cols="2">
@@ -294,7 +289,7 @@ function estableceLocalidad(item) {
                   hide-details="auto"
                   label="Dpto"
                   lazy-validation
-                  :rules="[(val) => rules.longitudMaxONull(val, 10)]"
+                  :rules="[(val) => rules.longitudMax(val, 10)]"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -306,7 +301,7 @@ function estableceLocalidad(item) {
                   hide-details="auto"
                   label="Teléfono"
                   lazy-validation
-                  :rules="[(val) => rules.longitudMaxONull(val, 30)]"
+                  :rules="[(val) => rules.longitudMax(val, 30)]"
                 ></v-text-field>
               </v-col>
               <v-col cols="4">
@@ -315,7 +310,7 @@ function estableceLocalidad(item) {
                   hide-details="auto"
                   label="EMAIL"
                   lazy-validation
-                  :rules="[(val) => rules.longitudMaxONull(val, 100)]"
+                  :rules="[(val) => rules.longitudMax(val, 100)]"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -371,7 +366,7 @@ function estableceLocalidad(item) {
                   hide-details="auto"
                   label="CBU"
                   lazy-validation
-                  :rules="[(val) => rules.longitudEntreONull(val, 20, 50), rules.number]"
+                  :rules="[(val) => rules.longitudMax(val, 50), rules.number]"
                 ></v-text-field>
               </v-col>
               <v-col cols="6">
@@ -380,7 +375,7 @@ function estableceLocalidad(item) {
                   hide-details="auto"
                   label="Cuenta"
                   lazy-validation
-                  :rules="[(val) => rules.longitudEntreONull(val, 10, 50), rules.number]"
+                  :rules="[(val) => rules.longitudMax(val, 50), rules.number]"
                 ></v-text-field>
               </v-col>
             </v-row>
