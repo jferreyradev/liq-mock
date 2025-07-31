@@ -157,6 +157,7 @@ async function grabarSP(item, id) {
   if (operacionOk) {
     if (datos.out.vError == 0) {
       await leerCargoAsoc()
+      await leerListaRegs()
       alertMensaje.value = 'Se grabó el registro '
       alertTipo.value = 'success'
       mostrarAlert.value = true

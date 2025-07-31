@@ -1,10 +1,11 @@
 <script setup>
 import { ref } from 'vue'
 //import Confirmacion from './Confirmacion.vue'
-import { leerDatos } from './llamadaAPI'
+import { leerDatos, ejecutarSP } from './llamadaAPI'
 import botonTooltip from './botonTooltip.vue'
 import { getFechaDMY } from '@/utils/formatos'
 import PersonasListFilter from './PersonasListFilter.vue'
+import PersonasVista from './PersonasVista.vue'
 
 const props = defineProps(['setPersonaEdicion', 'filtros'])
 
@@ -20,14 +21,20 @@ const hojasHeaders = [
   { title: 'Cobra Ley', key: 'COBRALEY' }
 ]
 
-//function abrirModal(item) {
-//itemMostrar.value = item
-//muestraRegistro.value = true
-//}
+const itemMostrar = ref({
+  HojaId: 0,
+  Id: 0
+})
+let muestraRegistro = ref(false)
 
-//function cierraForm() {
-//muestraRegistro.value = false
-//}
+function abrirModal(item) {
+  itemMostrar.value = item
+  muestraRegistro.value = true
+}
+
+function cierraForm() {
+  muestraRegistro.value = false
+}
 
 // llamadas a API de grabación y eliminación
 
@@ -35,6 +42,11 @@ const hojasHeaders = [
 let isPending = ref(false)
 const data = ref(null)
 const error = null
+
+// alerta de grabación o error
+const mostrarAlert = ref(false)
+const alertMensaje = ref(null)
+const alertTipo = ref(null)
 
 const lecturaRegistros = ref(true)
 
@@ -50,9 +62,49 @@ async function leerRegistros(filtro = null) {
   isPending.value = false
 }
 
+async function buscarPersona(id) {
+  let url = 'en/persona?Id=' + id
+  let persona = null
+  const { datos, operacionOk } = await leerDatos(url)
+  if (operacionOk) persona = datos[0]
+  console.log('PERSONA=====')
+  console.log(persona)
+  return persona
+}
+
+async function editarPersona(id) {
+  let persona = await buscarPersona(id)
+  if (persona != null) {
+    console.log('PERSONA desde editar=====')
+    console.log(persona)
+    abrirModal(persona)
+  }
+}
+
 function editarCargaFamiliar(itemid) {
   let item = data.value.find((e) => e.PERSONAID == itemid)
   props.setPersonaEdicion(item, 1)
+}
+
+async function grabarSP(item, id) {
+  let url = ''
+
+  if (id == 0) {
+    return 'Por el momento no se pueden agregar cargos por este medio'
+  } else {
+    url = 'sp/persUpd'
+  }
+
+  const { valorError, errorMsg } = await ejecutarSP(url, item)
+  if (valorError == 0) {
+    await leerRegistros()
+    alertMensaje.value = 'Se grabó el cargo'
+    alertTipo.value = 'success'
+    mostrarAlert.value = true
+    return null
+  }
+
+  return errorMsg
 }
 
 leerRegistros()
@@ -78,6 +130,16 @@ leerRegistros()
     <div v-if="isPending">loading...</div>
     <div v-else-if="!lecturaRegistros">Error al intentar recibir los datos</div>
     <div v-else-if="data">
+      <v-alert
+        v-model="mostrarAlert"
+        border="start"
+        close-label="Close Alert"
+        :color="alertTipo"
+        :icon="'$' + alertTipo"
+        closable
+      >
+        {{ alertMensaje }}
+      </v-alert>
       <v-data-table
         class="text-caption"
         hover
@@ -92,6 +154,12 @@ leerRegistros()
                 :icono="'mdi-list-box-outline'"
                 :toolMsg="'Familiares'"
                 :funcion="editarCargaFamiliar"
+                :itemid="item.PERSONAID"
+              ></botonTooltip>
+              <botonTooltip
+                :icono="'mdi-pencil'"
+                :toolMsg="'Editar'"
+                :funcion="editarPersona"
                 :itemid="item.PERSONAID"
               ></botonTooltip>
             </td>
@@ -109,4 +177,7 @@ leerRegistros()
     <div v-else>Sin datos para mostrar</div>
     <div v-if="error">No se puede obtener los datos solicitados.</div>
   </v-container>
+  <v-dialog v-model="muestraRegistro" max-width="80%" persistent="">
+    <PersonasVista :Registro="itemMostrar" :cerrar="cierraForm" :funcion="grabarSP"></PersonasVista>
+  </v-dialog>
 </template>

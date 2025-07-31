@@ -1,8 +1,8 @@
 <script setup>
 import { ref } from 'vue'
-import { getFechaToAPIFromMMYYYY, getVtoActual } from '@/utils/formatos'
+import { getDecimalToAPI, getFechaToAPIFromMMYYYY, getVtoActual } from '@/utils/formatos'
 import { rules } from '@/utils/reglasValidacion'
-import { getVto } from '@/utils/reportes'
+import { financial, getVto } from '@/utils/reportes'
 
 const props = defineProps(['Registro', 'cerrar', 'funcion', 'cargoId'])
 let registroOrigen = props.Registro
@@ -34,6 +34,7 @@ if (registroOrigen) {
   vencimiento.value = getVto(registroActual.value.VENCIMIENTO)
   periodo.value = getVto(registroActual.value.PERIODO)
   registroActual.value.PENLEY = registroOrigen.PENLEY == 1
+  registroActual.value.IMPORTE = financial(registroOrigen.IMPORTE)
 } else {
   registroActual.value = registroVacio.value
   periodo.value = getVtoActual()
@@ -75,7 +76,8 @@ async function grabaRegistro() {
     vPARM1: registroActual.value.PARAMETRO1,
     vPARM2: registroActual.value.PARAMETRO2,
     vVTO: fecVencimiento,
-    vIMPORTE: registroActual.value.IMPORTE,
+    vIMPORTE: getDecimalToAPI(registroActual.value.IMPORTE),
+    //vIMPORTE: getDecimalToAPI(registroActual.value.IMPORTE),
     vPERIODO: fecPeriodo,
     vIDGRUPOADI: registroActual.value.GRUPOADICIONALID,
     vPENLEY: registroActual.value.PENLEY ? 1 : 0

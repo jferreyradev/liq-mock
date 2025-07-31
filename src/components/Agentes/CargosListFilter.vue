@@ -11,7 +11,6 @@ const Apellido = ref(null)
 const IdRep = ref(null)
 const Orden = ref(null)
 
-
 const tipoLiqFilter = [
   {
     name: 'Todas',
@@ -28,8 +27,8 @@ const estadosCargoFilter = [
   ...estadosCargo
 ]
 
-const liqSelected = ref(tipoLiqFilter[0])
-const estCargoSelected = ref(estadosCargoFilter[0])
+const liqSelected = ref(tipoLiqFilter[1])
+const estCargoSelected = ref(estadosCargoFilter[1])
 
 function ObtieneFiltro() {
   let filtro = ''
@@ -76,7 +75,6 @@ function ObtieneFiltro() {
     expresion = `EstadoCargoId=${estCargoSelected.value.value}`
     filtro = filtro.length == 0 ? expresion : filtro + '&' + expresion
   }
-
 
   return filtro
 }
