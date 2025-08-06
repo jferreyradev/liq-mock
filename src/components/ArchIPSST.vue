@@ -82,6 +82,7 @@ function useLiqBoletas(getId) {
   return useFetch(() => `${apiBase.value}/api/view/archivoIPSST?${getId()}`)
 }
 
+
 const { data, error, isPending } = useLiqBoletas(() => store.filterPeriodoString)
 
 function useResumenIPSST(getId) {
