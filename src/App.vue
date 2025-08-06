@@ -1,4 +1,5 @@
 <script setup>
+import { ref } from 'vue'
 import { useTheme } from 'vuetify'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/userStore'
@@ -45,8 +46,6 @@ async function changeEnv() {
   storeFilter.setConfig()
 }
 
-import { ref } from 'vue'
-
 </script>
 
 <template>
@@ -55,6 +54,10 @@ import { ref } from 'vue'
       <v-app-bar-nav-icon v-if="store.auth" variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-app-bar-title>Consultas - Municipalidad de Burruyacu</v-app-bar-title>
       <v-spacer></v-spacer>
+      <v-btn v-if="store.auth" @click="changeEnv" icon="mdi-swap-horizontal" variant="text">
+        <v-tooltip activator="parent" location="start">Cambiar entorno: {{ env }}</v-tooltip>
+        <v-icon icon="mdi-swap-horizontal"></v-icon>
+      </v-btn>
        <v-btn @click="toggleTheme" icon="mdi mdi-theme-light-dark">
         <v-tooltip activator="parent" location="start">Cambiar tema</v-tooltip>
         <v-icon icon="mdi-theme-light-dark"></v-icon>

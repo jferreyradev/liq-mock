@@ -14,21 +14,9 @@ const props = defineProps({
         type: Boolean,
         default: true
     },
-    esley:{
+    esley: {
         type: Boolean,
-        default:false
-    }
-
-})
-
-const props = defineProps({
-    tipoliq: {
-        type: Boolean,
-        default: true
-    },
-    nroadi: {
-        type: Boolean,
-        default: true
+        default: false
     }
 })
 
