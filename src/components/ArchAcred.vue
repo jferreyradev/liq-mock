@@ -5,6 +5,10 @@ import { useFilterStore } from '@/stores/filterStore'
 import { useEndPoints } from '@/composables/useEndPoints'
 import { useFetch } from '@/composables/useFetch'
 
+
+const preview = ref(false)
+
+
 const { apiBase } = useEndPoints()
 
 const store = useFilterStore()
@@ -13,13 +17,13 @@ function printData() {
   let largeString = ""
   for (let index = 0; index < data.value.length; index++) {
     const element = data.value[index];
-    
-    largeString+= element.CADENA + '\n'
+
+    largeString += element.CADENA + '\n'
   }
 
-  console.log(largeString )
+  console.log(largeString)
   //downloadTxt(largeString,data.value[0].NOMBREARCHIVO)
-  downloadIpsst()
+  downloadAcred()
 }
 
 const getTxtFromAPI = async (url) => {
@@ -38,37 +42,29 @@ const getTxtFromAPI = async (url) => {
   return urlSalida
 }
 
-const getResumenIPSST = async (url) => {
-  const response = await fetch(url)
-  if (!response.ok) {
-    return null
-  }
-  const datos = await response.json()
-  console.log(datos)
-  return datos
-}
 
-async function downloadIpsst() {
 
-  const url = `${apiBase.value}/api/txt/archivoIPSST?${store.filterString}`
+async function downloadAcred() {
+
+  const url = `${apiBase.value}/api/txt/archivoAcred?${store.filterStringLey}`
 
   const urlDescarga = await getTxtFromAPI(url)
 
   if (urlDescarga == null) {
-   
+
     return
   }
 
   const a = document.createElement('a')
   a.href = urlDescarga
-  a.download = data.value[0].NOMBREARCHIVO // Nombre con el que se descargará el archivo
+  a.download = `Archivo_Acreditaciones_${store.periodoString}`; //data.value[0].NOMBREARCHIVO // Nombre con el que se descargará el archivo
   document.body.appendChild(a)
   a.click() // Simula el clic para iniciar la descarga
   a.remove() // Elimina el enlace del DOM
   window.URL.revokeObjectURL(urlDescarga) // Limpia la URL creada
 }
 
-const downloadTxt = (contenido, nombre) => {
+/*const downloadTxt = (contenido, nombre) => {
     const a = document.createElement("a");
     const archivo = new Blob([contenido], { type: 'text/plain' });
     const url = URL.createObjectURL(archivo);
@@ -76,20 +72,16 @@ const downloadTxt = (contenido, nombre) => {
     a.download = nombre;
     a.click();
     URL.revokeObjectURL(url);
+}*/
+
+
+
+
+function useResumenAcred(getId) {
+  return useFetch(() => `${apiBase.value}/api/view/archivoAcred?${getId()}`)
 }
 
-function useLiqBoletas(getId) {
-  return useFetch(() => `${apiBase.value}/api/view/archivoIPSST?${getId()}`)
-}
-
-
-const { data, error, isPending } = useLiqBoletas(() => store.filterPeriodoString)
-
-function useResumenIPSST(getId) {
-  return useFetch(() => `${apiBase.value}/api/view/resumenIPSST?${getId()}`)
-}
-
-const { dataRes, errorRes, isPendingRes } = useResumenIPSST(() => store.filterPeriodoString )
+const { data, error, isPending } = useResumenAcred(() => store.filterStringLey)
 
 const headers = [
   {
@@ -101,26 +93,20 @@ const headers = [
 </script>
 
 <template>
- <v-container>
-   <RepoHeader title="Archivo IPSST" :subtitle="store.liqString">
-      <v-btn color="primary" :disabled="!data" @click="printData" >Descargar</v-btn>
+  <v-container>
+    <RepoHeader title="Archivo Acreditaciones">
+      <v-btn color="primary" :disabled="!data" @click="preview = !preview">Previsualizar</v-btn>
+      <v-btn color="primary" :disabled="!data" @click="printData">Descargar</v-btn>
     </RepoHeader>
 
-    <v-row>
+    <v-row v-if="preview">
       <div v-if="isPending">loading...</div>
-      <v-data-table
-        v-else-if="data"
-        class="text-caption"
-        hover
-        density="compact"
-        :items="data"
-        :headers="headers"
-      >
-      </v-data-table>      
+      <v-data-table v-else-if="data" class="text-caption" hover density="compact" :items="data" :headers="headers">
+      </v-data-table>
       <div v-else-if="error">No se puede obtener los datos solicitados.</div>
     </v-row>
 
- <!-- 
+    <!-- 
     <v-row>
       <div v-if="isPendingRes">loading...</div>
       <v-data-table
@@ -135,5 +121,5 @@ const headers = [
 
     </v-row>
      -->
-  </v-container> 
+  </v-container>
 </template>

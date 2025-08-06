@@ -42,6 +42,12 @@ const totImporte = computed(() => {
 const props = defineProps(['title', 'subtitle', 'fileName'])
 
 const headers = [
+{
+    title: 'Uni Org',
+    align: 'start',
+    sortable: false,
+    key: 'UNIORG'
+  },
   {
     title: 'Rep',
     align: 'start',
@@ -51,16 +57,16 @@ const headers = [
   {
     title: 'Orden',
     align: 'start',
-    sortable: false,
+    sortable: true,
     key: 'ORDEN'
   },
   {
     title: 'DNI',
     align: 'start',
-    sortable: false,
+    sortable: true,
     key: 'DOCUMENTO'
   },
-  { title: 'Apellido y nombre', key: 'APENOM', sortable: false },
+  { title: 'Apellido y nombre', key: 'APENOM', sortable: true },
   { title: 'Mes Liq.', key: 'MESLIQ', sortable: false },
   { title: 'Categoría', key: 'CAT', sortable: false },
   { title: 'Hab. c/Ap.', key: 'HABCONAP', sortable: false },
@@ -79,6 +85,7 @@ function handleDownload() {
 function exportFile() {
   const map1 = data.value.map((x) => {
     return [
+      x.UNIORG,
       x.IDREP,
       x.ORDEN,
       x.DOCUMENTO,
@@ -95,6 +102,7 @@ function exportFile() {
   })
 
   const titulosTabla = [
+    'Uni Org',
     'Rep',
     'Orden',
     'Documento',
@@ -115,6 +123,7 @@ function exportFile() {
     null,
     null,
     null,
+    null,
     totImporte.value.totHabCA,
     totImporte.value.totHabSA,
     totImporte.value.totAsigFam,
@@ -129,18 +138,19 @@ function exportFile() {
   const ws = utils.aoa_to_sheet(map1)
 
   ws['!cols'] = [
+    { wch: 5 },
     { wch: 10 },
     { wch: 10 },
     { wch: 15 },
     { wch: 35 },
     { wch: 10 },
     { wch: 10 },
-    { wch: 15 },
-    { wch: 15 },
-    { wch: 15 },
-    { wch: 15 },
-    { wch: 15 },
-    { wch: 15 }
+    { wch: 17 },
+    { wch: 17 },
+    { wch: 17 },
+    { wch: 17 },
+    { wch: 17 },
+    { wch: 17 }
   ]
   /* create workbook and append worksheet */
   const wb = utils.book_new()
@@ -170,6 +180,7 @@ function exportFile() {
       >
         <template v-slot:item="{ item }">
           <tr class="pa-0 ma-0">
+            <td class="text-right">{{ item.UNIORG }}</td>
             <td class="text-right">{{ item.IDREP }}</td>
             <td class="text-right">{{ item.ORDEN }}</td>
             <td class="text-right">{{ item.DOCUMENTO }}</td>
@@ -186,6 +197,7 @@ function exportFile() {
         </template>
         <template v-slot:body.append>
           <tr>
+            <th></th>
             <th></th>
             <th></th>
             <th></th>

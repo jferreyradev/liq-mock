@@ -50,17 +50,11 @@ import { ref } from 'vue'
 </script>
 
 <template>
-
-
   <v-layout class="rounded rounded-md d-flex flex-column mb-6 ">
     <v-app-bar color="primary" prominent>
       <v-app-bar-nav-icon v-if="store.auth" variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-app-bar-title>Consultas - Municipalidad de Concepción</v-app-bar-title>
+      <v-app-bar-title>Consultas - Municipalidad de Burruyacu</v-app-bar-title>
       <v-spacer></v-spacer>
-      <v-btn v-if="(store.auth && store.isAdmin)" 
-            class="text-caption" @click="changeEnv" 
-            variant="tonal" >{{ storeFilter.serverConfig.AMBIENTE }}
-      </v-btn>
        <v-btn @click="toggleTheme" icon="mdi mdi-theme-light-dark">
         <v-tooltip activator="parent" location="start">Cambiar tema</v-tooltip>
         <v-icon icon="mdi-theme-light-dark"></v-icon>
@@ -109,7 +103,7 @@ import { ref } from 'vue'
     <v-footer>
       <v-row justify="center" no-gutters>
         <v-col class="text-center ma-1" cols="6">
-          {{ new Date().getFullYear() }} — <strong>Concepción - Tucumán</strong>
+          {{ new Date().getFullYear() }} — <strong>Burruyacú- Tucumán</strong>
         </v-col>
       </v-row>
     </v-footer>

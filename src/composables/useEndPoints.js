@@ -1,15 +1,10 @@
 import { ref } from 'vue';
 
 const endpoints = {
-  desa: {
-    boletas: 'https://api-boletas-9jn3t0ca7a3j.deno.dev', 
-    base: 'https://midliq-api-hdprsd64qb7n.deno.dev',
-    sp: 'https://josrferreyr-deno-api-su-79--desarrollo.deno.dev',
-  },
   prod: {
-    boletas: 'https://api-boletas.deno.dev',
-    base: 'https://midliq-api.deno.dev', //'https://midliq-api-yr8qdhkr86sq.deno.dev',
-    sp: 'https://josrferreyr-deno-api-su-79.deno.dev'
+    boletas: 'https://dno-mid-burruyacu-boletas.deno.dev',
+    base: 'https://dno-mid-burruyacu.deno.dev', 
+    sp: 'https://dno-mid-burruyacu-boletas.deno.dev'
   }
 }
 

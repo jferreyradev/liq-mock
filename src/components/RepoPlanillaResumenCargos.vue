@@ -24,6 +24,12 @@ const { data, error, isPending } = useResLiqCod(() => store.filterString)
 const props = defineProps(['title', 'subtitle', 'fileName'])
 
 const headers = [
+{
+    title: 'UniOrg',
+    align: 'start',
+    sortable: false,
+    key: 'UNIORG'
+  },
   {
     title: 'Rep',
     align: 'start',
@@ -52,12 +58,15 @@ const headers = [
   { title: 'Nombre', key: 'NOMBRE', sortable: false },
   { title: 'Nacimiento', key: 'FECHANAC', sortable: false },
   { title: 'Sexo', key: 'SEXO', sortable: false },
-  { title: 'Categoria', key: 'CATEGORIA', sortable: false },
-  { title: 'SitRev', key: 'SITUACIONREVISTAID', sortable: false },
+  { title: 'Categoria', key: 'CATEGORIA', sortable: false },  
   {title:'Titulo', key: 'TITULO', sortable:false},
   {title:'Titulo Esp', key: 'TITULOESPECIAL', sortable:false},
   { title: 'Antiguedad', key: 'ANTIGUEDAD', sortable: false },
-  { title: 'Vto Esc.', key: 'VTOESCALAFON', sortable: false }
+  { title: 'Vto Esc.', key: 'VTOESCALAFON', sortable: false },
+  { title: 'SitRev', key: 'SITUACIONREVISTAID', sortable: false },
+  { title: 'TE', key: 'TIPOEMPLEOID', sortable: false },
+  { title: 'OS', key: 'TIPOOBRASOCIALID', sortable: false },
+  { title: 'Salario', key: 'SALARIO', sortable: false },
 ]
 
 function handleDownload() {
@@ -68,6 +77,7 @@ function handleDownload() {
 function exportFile() {
   const map1 = data.value.map((x) => {
     return [
+      x.UNIORG,
       x.IDREP,
       x.ORDEN,
       x.DOCUMENTO,
@@ -76,16 +86,20 @@ function exportFile() {
       x.NOMBRE,
       getFecha(x.FECHANAC),
       x.SEXO,
-      x.CATEGORIA,
-      x.SITUACIONREVISTAID,
+      x.CATEGORIA,      
       x.TITULO,
       x.TITULOESPECIAL,
       x.ANTIGUEDAD,
       getVto(x.VTOESCALAFON),
+      x.SITUACIONREVISTAID,
+      x.TIPOEMPLEOID,
+      x.TIPOOBRASOCIALID,
+      x.SALARIO
     ]
   })
 
   const titulosTabla = [
+    'UniOrg',
     'Rep',
     'Orden',
     'Documento',
@@ -93,12 +107,15 @@ function exportFile() {
     'Apellido','Nombre',
     'Nacimiento',
     'Sexo',
-    'Categoria',
-    'SitRev',
+    'Categoria',    
     'Titulo',
     'Titulo Esp.',
     'Antiguedad',
-    'Vto. Esc.'
+    'Vto. Esc.',
+    'SitRev',
+    'TE',
+    'OS',
+    'Salario'
   ]
   
   const filtros = store.liqString
@@ -107,6 +124,7 @@ function exportFile() {
   const ws = utils.aoa_to_sheet(map1)
 
   ws['!cols'] = [
+    { wch: 5 },
     { wch: 5 },
     { wch: 5 },
     { wch: 10 },
@@ -120,7 +138,10 @@ function exportFile() {
     { wch: 7 },
     { wch: 10 },
     { wch: 10 },
-    { wch: 10 }
+    { wch: 10 },
+    { wch: 3 },
+    { wch: 3 },
+    { wch: 5 }
   ]
   /* create workbook and append worksheet */
   const wb = utils.book_new()
@@ -150,6 +171,7 @@ function exportFile() {
       >
         <template v-slot:item="{ item }">
           <tr class="pa-0 ma-0">
+            <td class="text-right">{{ item.UNIORG }}</td>
             <td class="text-right">{{ item.IDREP }}</td>
             <td class="text-right">{{ item.ORDEN }}</td>
             <td class="text-right">{{ item.DOCUMENTO }}</td>
@@ -158,12 +180,15 @@ function exportFile() {
             <td class="text-left">{{ item.NOMBRE }}</td>
             <td class="text-right">{{ getFecha(item.FECHANAC) }}</td>
             <td class="text-right">{{ item.SEXO }}</td>
-            <td class="text-left">{{ item.CATEGORIA }}</td>
-            <td class="text-left">{{ item.SITUACIONREVISTAID }}</td>
+            <td class="text-left">{{ item.CATEGORIA }}</td>            
             <td class="text-right">{{ item.TITULO}}</td>
             <td class="text-right">{{ item.TITULOESPECIAL }}</td>
             <td class="text-right">{{ item.ANTIGUEDAD }}</td>
             <td class="text-left">{{ getVto(item.VTOESCALAFON ) }}</td>
+            <td class="text-left">{{ item.SITUACIONREVISTAID }}</td>
+            <td class="text-left">{{ item.TIPOEMPLEOID }}</td>
+            <td class="text-left">{{ item.TIPOOBRASOCIALID }}</td>
+            <td class="text-left">{{ item.SALARIO }}</td>
           </tr>
         </template>
       </v-data-table>

@@ -35,6 +35,12 @@ const totImporte = computed(() => {
 const props = defineProps(['title', 'subtitle', 'fileName'])
 
 const headers = [
+{
+    title: 'Uniorg',
+    align: 'start',
+    sortable: false,
+    key: 'UNIORG'
+  },
   {
     title: 'Rep',
     align: 'start',
@@ -72,6 +78,7 @@ function handleDownload() {
 function exportFile() {
   const map1 = data.value.map((x) => {
     return [
+      x.UNIORG,
       x.IDREP,
       x.ORDEN,
       x.DOCUMENTO,
@@ -88,6 +95,7 @@ function exportFile() {
   })
 
   const titulosTabla = [
+    'Uni Org',
     'Rep',
     'Orden',
     'Documento',
@@ -112,6 +120,7 @@ function exportFile() {
     null,
     null,
     null,
+    null,
     totImporte.value.totImp,
     null
   ]
@@ -122,6 +131,7 @@ function exportFile() {
   const ws = utils.aoa_to_sheet(map1)
 
   ws['!cols'] = [
+    { wch: 5 },
     { wch: 10 },
     { wch: 10 },
     { wch: 15 },
@@ -163,6 +173,7 @@ function exportFile() {
       >
         <template v-slot:item="{ item }">
           <tr class="pa-0 ma-0">
+            <td class="text-right">{{ item.UNIORG }}</td>
             <td class="text-right">{{ item.IDREP }}</td>
             <td class="text-right">{{ item.ORDEN }}</td>
             <td class="text-right">{{ item.DOCUMENTO }}</td>
@@ -179,6 +190,7 @@ function exportFile() {
         </template>
         <template v-slot:body.append>
           <tr>
+            <th></th>
             <th></th>
             <th></th>
             <th></th>

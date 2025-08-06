@@ -180,7 +180,7 @@ export const useUserStore = defineStore('userStore', {
                     throw new Error('Error fetching user')
                 }
                 const data = await response.json()
-                data.push({"IDROL":5, "IDMENU":7,"DESCRIPCION":"Archivos","PATH":"/archivos"})
+                //data.push({"IDROL":5, "IDMENU":7,"DESCRIPCION":"Archivos","PATH":"/archivos"})
                 this.rol = data
                 this.success = true
             } catch (error) {

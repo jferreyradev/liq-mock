@@ -1,10 +1,25 @@
 <script setup>
-import { onBeforeMount, ref } from 'vue';
+import { onBeforeMount, ref, computed } from 'vue';
 import { useFilterStore } from '@/stores/filterStore.js'
 
 const store = useFilterStore();
 
 const emit = defineEmits(['submit'])
+const props = defineProps({
+    tipoliq: {
+        type: Boolean,
+        default: true
+    },
+    nroadi: {
+        type: Boolean,
+        default: true
+    },
+    esley:{
+        type: Boolean,
+        default:false
+    }
+
+})
 
 const props = defineProps({
     tipoliq: {
@@ -50,6 +65,12 @@ const year = ref(store.year)
 
 const month = ref('')
 const year = ref('')
+const esLey = ref(false)
+
+const esLeyVal = computed(() => {   
+  return esLey. value ? 1 : 0
+})
+
 
 onBeforeMount(()=>{
     month.value = months[store.month-1]
@@ -64,8 +85,10 @@ const handleClick = () => {
     store.nroadi = nroAdi.value
     store.month = months.indexOf(month.value) + 1
     store.year = year
-
+    store.ley = esLeyVal.value
+    
     console.log(store.filterString )
+    console.log(store.filterStringLey)
 
     emit('submit')
 }
@@ -88,6 +111,9 @@ const handleClick = () => {
             </v-col>
             <v-col>
                 <v-text-field label="Año" v-model="year" required type="number"></v-text-field>
+            </v-col>
+            <v-col  v-if="props.esley" >
+                <v-checkbox v-model="esLey" label="Es Ley"></v-checkbox>
             </v-col>
             <v-col>
                 <slot></slot>

@@ -21,6 +21,7 @@ const { data, error, isPending } = useResLiqCod(() => store.filterString)
 const props = defineProps(['fileName'])
 
 const headers = [
+  { title: 'Uni Org', key: 'UNIORG', align: 'start', sortable: false },
   { title: 'Rep', key: 'IDREP', align: 'start', sortable: false },
   { title: 'Codigo', key: 'CODIGO', align: 'end', sortable: false },
   { title: 'Subcodigo', key: 'SUBCODIGO', align: 'start', sortable: false },
@@ -37,10 +38,11 @@ function handleDownload() {
 
 function exportFile() {
   const map1 = data.value.map((x) => {
-    return [x.IDREP, x.CODIGO, x.SUBCODIGO, x.DESCRIPCION, x.CANTIDAD, x.IMPORTE, x.TIPOTOTAL]
+    return [x.UNIORG,x.IDREP, x.CODIGO, x.SUBCODIGO, x.DESCRIPCION, x.CANTIDAD, x.IMPORTE, x.TIPOTOTAL]
   })
 
   const titulosTabla = [
+    'UniOrg',
     'Rep',
     'Codigo',
     'Subcódigo',
@@ -54,6 +56,7 @@ function exportFile() {
   agregaTitulosExcel(map1, tituloReporte, filtros, titulosTabla)
   const ws = utils.aoa_to_sheet(map1)
   ws['!cols'] = [
+    { wch: 5 },
     { wch: 10 },
     { wch: 10 },
     { wch: 10 },
@@ -90,6 +93,7 @@ function exportFile() {
       >
         <template v-slot:item="{ item }">
           <tr class="pa-0 ma-0">
+            <td class="text-right">{{ item.UNIORG }}</td>
             <td class="text-right">{{ item.IDREP }}</td>
             <td class="text-right ma-0 pa-0">{{ item.CODIGO }}</td>
             <td class="text-right">{{ item.SUBCODIGO }}</td>

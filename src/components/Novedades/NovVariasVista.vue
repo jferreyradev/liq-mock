@@ -16,7 +16,7 @@ const vencimiento = ref(null)
 const periodo = ref(getVtoActual())
 
 const registroVacio = ref({
-  IDREP: 470,
+  IDREP: 0,
   ORDEN: 0,
   CODIGO: 0,
   SUBCODIGO: 0,
