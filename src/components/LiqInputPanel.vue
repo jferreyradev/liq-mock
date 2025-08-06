@@ -21,6 +21,17 @@ const props = defineProps({
 
 })
 
+const props = defineProps({
+    tipoliq: {
+        type: Boolean,
+        default: true
+    },
+    nroadi: {
+        type: Boolean,
+        default: true
+    }
+})
+
 const liq = [{
     name: 'Mensual',
     value: '1'

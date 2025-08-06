@@ -15,7 +15,6 @@ function useResumenIPSST(getId) {
   return useFetch(() => `${apiBase.value}/api/view/resumenIPSST?${getId()}`)
 }
 
-//const { data, error, isPending } = useResumenIPSST(() => store.filterString)
 
 const { data, error, isPending } = useResumenIPSST(() => store.filterPeriodoString )
 

@@ -93,6 +93,21 @@ const router = createRouter({
       component: () => import('../views/ArchivosView.vue')
     },
     {
+      path: '/agentes',
+      name: 'agentes',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/AgentesView.vue')
+    },
+    {
+      path: '/cargos',
+      name: 'cargos',
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/CargosView.vue')
+    },{
       path: '/acred',
       name: 'acreditaciones',
       // route level code-splitting
