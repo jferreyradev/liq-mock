@@ -148,6 +148,7 @@ if (camposFiltros == null) {
 }
 
 leerRegistros(filtros.getFiltroString())
+
 </script>
 
 <style>
