@@ -45,7 +45,7 @@ const lecturaListaRegs = ref(true)
 async function leerListaRegs() {
   isPending.value = true
   //const { datos, operacionOk } = await leerDatos('view/novAltas?HojaId=' + hojaEditar.ID)
-  const { datos, operacionOk } = await leerDatos('cargo?TipoLiquidacionId=1&EstadoCargoId=1&PersonaId=' + personaId)
+  const { datos, operacionOk } = await leerDatos('view/cargo?TipoLiquidacionId=1&EstadoCargoId=1&PersonaId=' + personaId)
   data.value = datos
   lecturaListaRegs.value = operacionOk
   isPending.value = false
